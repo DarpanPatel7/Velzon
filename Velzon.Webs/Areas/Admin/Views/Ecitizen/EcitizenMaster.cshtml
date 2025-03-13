@@ -1,0 +1,172 @@
+﻿@model EcitizenFormModel
+
+@{
+    ViewData["Title"] = "Ecitizen Master";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var rightsModel = Functions.GetPageRightsCheck(Context.Session);
+}
+
+@section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 1007px;
+        }
+
+    </style>
+}
+
+<section class="basic-elements">
+    <div class="row">
+        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+        <input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
+
+        <div class="col-md-12">
+            <div class="card card-outline-primary">
+                <div class="card-body collapse show">
+                    <div class="card-block card-dashboard">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" id="EcitizenTypeFilter">
+                                        <option value="">--Select Type--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-9 text-right">
+                                @if (rightsModel.Insert)
+                                {
+                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
+                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table display nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldata">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Type</th>
+                                            <th>Date</th>
+                                            <th>Number</th>
+                                            <th>Branch</th>
+                                            <th>Is Active</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="@Href("~/Admin/CKEditor/ckeditor.js")"></script>
+    <script src="@Href("~/Admin/js/PageDetails/EcitizenMaster/EcitizenMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white" id="myModalLabel9">@ViewData["Title"] Form</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddEdit" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ImagePath" />
+                        <div class="form-group mt-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="LanguageId" class="control-label">Language<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="LanguageId">
+                                            <option value="">--Select Language--</option>
+                                        </select>
+                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="EcitizenTypeId" class="control-label">Type<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="EcitizenTypeId">
+                                        </select>
+                                        <span asp-validation-for="EcitizenTypeId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="BranchId" class="control-label">Branch</label>
+                                        <select class="form-control" asp-for="BranchId">
+                                        </select>
+                                        <span asp-validation-for="BranchId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label asp-for="Date" class="control-label">Date<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="Date" class="form-control border-primary pickadate" placeholder="Enter Date">
+                                        <span asp-validation-for="Date" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="shgr">
+                                    <div class="form-group">
+                                        <label asp-for="Number" class="control-label">Number<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="Number" class="form-control border-primary" onkeypress="return isNumberKey(event)" placeholder="Enter Number">
+                                        <span asp-validation-for="Number" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label asp-for="Subject" class="control-label">Subject / Details / Title<span style="color:red">*</span></label>
+                                        <textarea rows="5" cols="12" asp-for="Subject" class="form-control border-primary" placeholder="Enter Descriptions"></textarea>
+                                        <span asp-validation-for="Subject" class="text-danger"></span>
+                                        <script type="text/javascript">
+                                            CKEDITOR.dtd.$removeEmpty['i'] = false;
+                                            var editor = CKEDITOR.replace('Subject', {
+                                                extraPlugins: 'tableresize'
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1" id="ImageNameDiv">
+                                    <div class="custom-control custom-checkbox pl-0">
+                                        <label asp-for="ImageName" class="control-label">Upload Document</label>
+                                        <input type="file" name="ImageName" asp-for="ImageName" accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx,.txt" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <label asp-for="ImageName" class="control-label" visable="false">&nbsp;</label>
+                                    <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <br />
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
+                                        <label class="custom-control-label float-left" asp-for="IsActive">Is Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

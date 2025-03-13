@@ -1,0 +1,196 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@model Feedback
+@{
+    ViewData["Title"] = "Contact US";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+}
+
+<style>
+    .fa-refresh::before {
+        content: "\f021";
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }
+</style>
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner">
+               @*  <div class="pbmit-tbar">
+                    <div class="pbmit-tbar-inner">
+                        <h1 class="pbmit-tbar-title"> About Us</h1>
+                    </div>
+                </div> *@
+                <div class="pbmit-breadcrumb">
+                    <div class="pbmit-breadcrumb-inner">
+                       @*  <a title="" href="#" class="home">Home</a>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span> *@
+                        <span><a title="" href="/Index" class="home"><span>Home</span></a></span>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span>
+                        <span class="post-root post post-post current-item">Feedback</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="site-main pt-50 pb-50">
+    <div class="sidebar ttm-sidebar ttm-bgcolor-white clearfix team-members-list mb-30 mt-30">
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-12">
+                        <h4>Feedback details</h4>
+                        <p>
+                            Complete the below form to send us your comments and feedback on the website.
+                            Your opinion, suggestions and feedback
+                            will be very much appreciated. If you provide us with your contact
+                            information, we
+                            will be able to answer your
+                            questions.
+                        </p>
+                        <p>Fields marked with <abbr>*</abbr> are required.</p>
+                        <form id="frmAdd" autocomplete="off" class="checkout ro">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" class="form-control" asp-for="hfCaptcha">
+                            <input type="hidden" class="form-control" asp-for="hfEmail">
+                            <div class="row feed">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>First Name<abbr>*</abbr></label>
+                                        <input type="text" asp-for="FName" class="form-control border" onkeypress="return lettersOnly()">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Last Name<abbr>*</abbr></label>
+                                        <input type="text" asp-for="LName" class="form-control border" onkeypress="return lettersOnly()">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Email Address<abbr>*</abbr></label>
+                                        <input type="email" asp-for="Email" class="form-control border">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Phone<abbr>*</abbr></label>
+                                        <input type="text" asp-for="MobileNo" class="form-control border" onkeypress="return isNumberKey(event)" maxlength="10">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Subject<abbr>*</abbr></label>
+                                        <input type="text" asp-for="Subject" class="form-control border" maxlength="50">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Town / City<abbr>*</abbr></label>
+                                        <input type="text" asp-for="City" class="form-control border" onkeypress="return lettersOnly()">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <textarea asp-for="Address" class="form-control border" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Comments / Queries<abbr>*</abbr></label>
+                                        <textarea asp-for="FeedbackDetails" class="form-control border" rows="4" onkeypress="return lettersAndNumbersOnly(event)"></textarea>
+                                    </div>
+                                </div>
+
+
+
+                                @* <div class="col-sm-4">
+                                <div class="form-group">
+                                <label>ZIP</label>
+                                <input type="text" asp-for="Zip" class="form-control border">
+                                </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                <div class="form-group">
+                                <label>Country </label>
+                                <input type="text" asp-for="Country" class="form-control border">
+                                </div>
+                                </div>
+
+
+                                <div class="col-sm-4">
+                                <div class="form-group">
+                                <label>State</label>
+                                <input type="text" asp-for="State" class="form-control border">
+                                </div>
+                                </div> *@
+
+
+
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center mt-4 gap-3">
+                                <div class="form-group ">
+                                   
+                                        <img id="imgCapcha" />
+                                  
+                                </div>
+                                <div class="form-group ">
+                                    <div class="col-md-6">
+                                        <button type="button" value="Login" class="btn btn-danger px-4 py-2 text-uppercase white font-small-4 box-shadow-2 border-0" onclick="return resetCaptchaImage();"><i class="fa fa-refresh"></i></button>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <div class="col-md-12">
+                                        <input type="text" class="form-control border" asp-for="Captcha" placeholder="Enter Captcha" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center mt-3 mb-3">
+                                <button id="btnMdlSave" name="add-to-cart" type="button"
+                                        class="pbmit-btn pbmit-btn-outline loginbtn" title="Submit now">
+                                    Submit
+                                </button>
+                                <button id="SearchClear" name="add-to-cart" type="button"
+                                        class="pbmit-btn pbmit-btn-outline loginbtn ml-4" title="Submit now">
+                                    Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Contact Us -End-->
+@section Scripts {
+    <script src="@Href("~/Users/js/PageDetails/Feedbacks.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+}

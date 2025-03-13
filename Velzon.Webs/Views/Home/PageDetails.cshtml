@@ -1,0 +1,111 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@model CMSMenuMasterModel
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+}
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner mb-20">
+
+                @{
+                    var stringData = Velzon.Webs.Common.Functions.GetPublicBreadcum(Url, Context, LangId);
+                    if (!string.IsNullOrWhiteSpace(stringData))
+                    {
+                        @Html.Raw(stringData)
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="page-content pbmit-bg-color-light">
+
+	<!-- Service Detail Start -->
+	<section>
+		<div class="container">
+
+			@if (Model.IsFullScreen == true)
+			{
+				<div class="row mt-2">
+					<div class="col-lg-9 service-right-col">
+						<div class="service-details">
+							@Html.Raw(Model.PageDescription)
+						</div>
+					</div>
+				</div>
+			}
+			else
+			{
+				
+				<div class="row mt-2">
+					<div class="col-lg-9 service-right-col">
+						<div class="service-details">
+							@Html.Raw(Model.PageDescription)
+						</div>
+					</div>
+
+					@* <div class="col-lg-3 widget-area">
+						@{
+							var stringQuiData = Functions.GetQuickLink(Url, Context, LangId);
+							if (!string.IsNullOrWhiteSpace(stringQuiData))
+							{
+								@Html.Raw(stringQuiData)
+							}
+						}
+					</div> *@
+
+					<div class="col-lg-3 service-left-col">
+						<aside class="service-sidebar">
+							<aside class="widget post-list">
+								@{
+									var stringQuiData = Functions.GetQuickLink(Url, Context, LangId);
+									if (!string.IsNullOrWhiteSpace(stringQuiData))
+									{
+										@Html.Raw(stringQuiData)
+									}
+								}
+							</aside>
+
+
+						</aside>
+					</div>
+				</div>
+
+			}
+		
+		</div>
+	</section>
+	<!-- Service Detail End -->
+
+</div>
+
+@section Scripts {
+<script>
+    var pagename = '@ViewBag.pagename';
+</script>
+
+}
+
+
+

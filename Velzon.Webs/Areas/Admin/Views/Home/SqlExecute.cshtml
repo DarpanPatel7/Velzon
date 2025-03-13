@@ -1,0 +1,44 @@
+﻿@model SqlExecuteModel
+
+@{
+    ViewData["Title"] = "SQL Execute";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<section class="basic-elements">
+    <form id="formSQLExecute">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-outline-primary">
+                    <div class="card-body">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="SqlQuery" class="control-label">SQL Query :</label>
+                                        <textarea asp-for="SqlQuery" class="form-control" rows="4" placeholder="SQL query"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-12 col-12">
+                                    <button type="button" class="btn btn-primary btn-round mr-2" id="btnSQlQueryExecute"><i class="fa fa-check mr-2"></i>Execute</button>
+                                    <button type="button" class="btn grey btn-outline-secondary btn-round mr-2" id="btnClear"><i class="fa fa-times mr-2"></i>Clear</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" id="tbldata">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+      <script src="@Href("~/Areas/Admin/Views/Home/SqlExecute.cshtml.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+}

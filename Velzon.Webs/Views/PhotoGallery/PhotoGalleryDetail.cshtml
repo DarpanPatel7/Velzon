@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@model Velzon.Model.Service.EventTypeModel
+@{
+    ViewData["Title"] = "Photo Gallery Detail";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    long LangId = 1;
+    var tid = Model.Id;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+        @Html.HiddenFor(m => m.Id, new { Value = tid })
+    }
+    catch
+    {
+    }
+}
+
+<!-- Breadcrumbs Start -->
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner">
+                
+                <div class="pbmit-breadcrumb">
+                    <div class="pbmit-breadcrumb-inner">
+                        
+                        <span><a title="" href="/Index" class="home"><span>Home</span></a></span>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span>
+                        <span><a title="" href="/PhotoGallery" class="home"><span>PhotoGallery</span></a></span>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span>
+                        <span class="post-root post post-post current-item" id="breadcrumbTitle">@Model.PlaceName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumbs End -->
+
+<div class="rs-gallery sec-spacer">
+    <div class="container">
+        <div class="sec-title-2 pht-glr-dtl-title">
+            <h2 id="ShowPhotoGalleryImageTitle"></h2>
+        </div>
+        <div class="row g-3 pht-glr-dtl-row" id="ShowPhotoGalleryImage">
+        </div>
+    </div>
+    <nav aria-label="Page navigation example"></nav>
+    <ul id="PaginationListArea" class="pagination justify-content-center">
+    </ul>
+</div>
+
+@section Scripts {
+    <script src="@Href("~/Users/js/pagination.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Users/js/PageDetails/PhotoGallery/PhotoGalleryDetail.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+}

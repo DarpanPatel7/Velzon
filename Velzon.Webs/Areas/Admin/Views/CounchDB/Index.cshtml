@@ -1,0 +1,39 @@
+﻿
+@model IEnumerable<Velzon.Model.CouchDB.AttachmentInfo>
+@{
+    ViewData["Title"] = "CouchDB File Upload";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>FileName</th>
+            <th>Action</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model!=null)
+        {
+            @foreach (Velzon.Model.CouchDB.AttachmentInfo item in Model)
+            {
+                <tr>
+                    @*<th scope="row">@item.Id</th>*@
+                    <td><a href='@Url.Action("DownloadFile", "CounchDB", new { id = item.Id, fileName=item.FileName, Area = "Admin" })'>@item.FileName</a></td>
+                    <td>
+                        <input type="button" class="btn btn-primary submit" value="Edit" onclick='window.location = "@Url.Action("EditAttachment", "CounchDB", new { id = @item.Id, Area = "Admin" })";' />
+                    </td>
+                    <td>
+                        <input type="button" class="btn btn-primary submit" value="Delete" onclick='window.location = "@Url.Action("DeleteAttachment", "CounchDB", new { id = @item.Id, Area = "Admin" })";' />
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<input type="button" class="btn btn-primary submit" value="Add Attachment" onclick='window.location = "@Url.Action("AddAttachment", "CounchDB", new { Area = "Admin" })";' />
+<div class="clearfix"></div>
+
+<div id="dialog" title="edit view" style="overflow: hidden;"></div>
+<div class="border-success"><label>@ViewBag.DeleteMessage</label>  </div>

@@ -1,0 +1,110 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Admin\Data\**" />
+    <Compile Remove="Common\**" />
+    <Compile Remove="GSCPS\**" />
+    <Compile Remove="IService\**" />
+    <Compile Remove="Service\**" />
+    <Compile Remove="Views\AdminMenuMaster\**" />
+    <Compile Remove="Views\Master\**" />
+    <Compile Remove="Views\MenuResourceURL\**" />
+    <Compile Remove="Views\MenuRights\**" />
+    <Compile Remove="Views\UserDetailMaster\**" />
+    <Compile Remove="wwwroot\ACMAP\**" />
+    <Compile Remove="wwwroot\Admin\CK\**" />
+    <Compile Remove="wwwroot\Guser\**" />
+    <Content Remove="Areas\Admin\Data\**" />
+    <Content Remove="Common\**" />
+    <Content Remove="GSCPS\**" />
+    <Content Remove="IService\**" />
+    <Content Remove="Service\**" />
+    <Content Remove="Views\AdminMenuMaster\**" />
+    <Content Remove="Views\Master\**" />
+    <Content Remove="Views\MenuResourceURL\**" />
+    <Content Remove="Views\MenuRights\**" />
+    <Content Remove="Views\UserDetailMaster\**" />
+    <Content Remove="wwwroot\ACMAP\**" />
+    <Content Remove="wwwroot\Admin\CK\**" />
+    <Content Remove="wwwroot\Guser\**" />
+    <EmbeddedResource Remove="Areas\Admin\Data\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="GSCPS\**" />
+    <EmbeddedResource Remove="IService\**" />
+    <EmbeddedResource Remove="Service\**" />
+    <EmbeddedResource Remove="Views\AdminMenuMaster\**" />
+    <EmbeddedResource Remove="Views\Master\**" />
+    <EmbeddedResource Remove="Views\MenuResourceURL\**" />
+    <EmbeddedResource Remove="Views\MenuRights\**" />
+    <EmbeddedResource Remove="Views\UserDetailMaster\**" />
+    <EmbeddedResource Remove="wwwroot\ACMAP\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\CK\**" />
+    <EmbeddedResource Remove="wwwroot\Guser\**" />
+    <None Remove="Areas\Admin\Data\**" />
+    <None Remove="Common\**" />
+    <None Remove="GSCPS\**" />
+    <None Remove="IService\**" />
+    <None Remove="Service\**" />
+    <None Remove="Views\AdminMenuMaster\**" />
+    <None Remove="Views\Master\**" />
+    <None Remove="Views\MenuResourceURL\**" />
+    <None Remove="Views\MenuRights\**" />
+    <None Remove="Views\UserDetailMaster\**" />
+    <None Remove="wwwroot\ACMAP\**" />
+    <None Remove="wwwroot\Admin\CK\**" />
+    <None Remove="wwwroot\Guser\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AdminMenuMasterController.cs" />
+    <Compile Remove="Controllers\MasterController.cs" />
+    <Compile Remove="Controllers\MenuResourceURLController.cs" />
+    <Compile Remove="Controllers\MenuRightsController.cs" />
+    <Compile Remove="Controllers\UserDetailMasterController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\Advertisement.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Common\CustomResultFilterAttribute.cs" />
+    <Compile Include="Common\Functions.cs" />
+    <Compile Include="Common\MyMiddleware.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Admin\Views\Branch\BranchMaster.cshtml" />
+    <None Include="Areas\Admin\Views\Utility\UtilityMaster.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="EPPlus" Version="4.5.3.3" />
+	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Velzon.Common\Velzon.Common.csproj" />
+    <ProjectReference Include="..\Velzon.IService\Velzon.IService.csproj" />
+    <ProjectReference Include="..\Velzon.Model\Velzon.Model.csproj" />
+    <ProjectReference Include="..\Velzon.Service\Velzon.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\AdminMenuMaster\AdminMenu.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Admin\Views\MenuResourceURL\MenuResource.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

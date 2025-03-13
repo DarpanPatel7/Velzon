@@ -1,0 +1,142 @@
+﻿@model SearchFormModel
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+}
+<div class="content-wrapper">
+
+    <div class="pbmit-title-bar-wrapper">
+        <div class="container">
+            <div class="pbmit-title-bar-content">
+                <div class="pbmit-title-bar-content-inner mb-20">
+
+                    @{
+                        var stringData = Velzon.Webs.Common.Functions.GetPublicBreadcum(Url, Context, LangId);
+                        if (!string.IsNullOrWhiteSpace(stringData))
+                        {
+                            @Html.Raw(stringData)
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+    <section class="about-wrap style1 ptb-100">
+        <div class="container">
+            <input type="hidden" id="hfSearch" value="@Model.serch" />
+            <h3>Search Result : @Model.serch </h3>
+            <div class="row mb-5" id="dvGlobalSearch">
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+            var token = $('input[name="AntiforgeryFieldname"]').val();
+            var lgLangId = $("#lgLanguageId").val();
+            var hfSearch = $("#hfSearch").val();
+
+            $("input").on("paste", function () {
+            var currentid = $(this).attr('id');
+            setTimeout(function () {
+             var num = $('#' + currentid).val();
+             if (!regexGlobalValidation.test(num)) {
+                 $('#' + currentid).val('');
+             }
+            }, 100);
+            });
+
+            ShowLoader();
+            $.ajax({
+
+                type: "POST", url: ResolveUrl("/GlobalSearch"),
+                contentType: "application/x-www-form-urlencoded",
+                data: { "AntiforgeryFieldname": token, 'search': encodeURIComponent(FrontValue(hfSearch)) },
+                dataType: "json",
+                success: function (res) {
+
+                    $("#dvGlobalSearch").empty();
+
+                    var strMainHTML = "";
+                    if (res.result.length > 0) {
+
+                        $.each(res.result, function (data, value) {
+
+                            var mainModel = value;
+                            var strSUBHTML = "";
+                            var strPath = "";
+
+                            if (mainModel.pagepath != null && mainModel.pagepath != undefined && mainModel.pagepath != "") {
+                                if (mainModel.pagepath.startsWith('http')) {
+                                    strPath = mainModel.pagepath;
+                                }
+                                else {
+                                    strPath = ResolveUrl(("/" + mainModel.pagepath).replace('//', '/'));
+                                }
+                            }
+
+                            if (mainModel.pathdata != null && mainModel.pathdata != undefined && mainModel.pathdata != "") {
+
+                                strPath = strPath + GreateHashString(mainModel.pathdata);
+
+                            }
+
+                            strSUBHTML = strSUBHTML + "";
+                            strSUBHTML = strSUBHTML + "<div class='col-md-6'>";
+                            strSUBHTML = strSUBHTML + "    <div class='card '>";
+                            strSUBHTML = strSUBHTML + "        <div class='card-body'>";
+                            strSUBHTML = strSUBHTML + "            <h5 class='card-title'> <a href='" + ResolveUrl(strPath) + "'> " + mainModel.metaTitle + "</a></h5>";
+                            strSUBHTML = strSUBHTML + "            <p>";
+                            strSUBHTML = strSUBHTML + "               " + mainModel.metaDescription;
+                            strSUBHTML = strSUBHTML + "            </p>";
+                            strSUBHTML = strSUBHTML + "        </div>";
+                            strSUBHTML = strSUBHTML + "    </div>";
+                            strSUBHTML = strSUBHTML + "</div>";
+
+                            strMainHTML = strMainHTML + strSUBHTML;
+                        });
+                    }
+                    else {
+                            strMainHTML = strMainHTML + "";
+                        strMainHTML = strMainHTML + "<div class='col-md-6'>";
+                            strMainHTML = strMainHTML + "    <div class='card '>";
+                            strMainHTML = strMainHTML + "        <div class='card-body'>";
+                            strMainHTML = strMainHTML + "            <h6 class='card-title'> <a href=''> Record not found !</a></h6>";
+                            strMainHTML = strMainHTML + "            <p>";
+                            strMainHTML = strMainHTML + "            </p>";
+                            strMainHTML = strMainHTML + "        </div>";
+                            strMainHTML = strMainHTML + "    </div>";
+                            strMainHTML = strMainHTML + "</div>";
+                    }
+                    $("#dvGlobalSearch").html(strMainHTML);
+                    HideLoader();
+                }
+            });
+            HideLoader();
+        });
+    </script>
+}
+

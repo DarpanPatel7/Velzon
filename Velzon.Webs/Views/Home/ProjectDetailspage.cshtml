@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@model Velzon.Model.Service.ProjectModel
+@{
+    ViewData["Title"] = "Project Detail ";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+}
+<!-- page-title -->
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner">
+               
+                <div class="pbmit-breadcrumb">
+                    <div class="pbmit-breadcrumb-inner">
+                       
+                        <span><a title="" href="/Index" class="home" id="home"><span>Home</span></a></span>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span>
+                        <span class="post-root post post-post current-item" id="breadcrumbTitle">@Model.ProjectName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hiddenProjectMasterId" value="@Model.ProjectMasterId" />
+<!--site-main start-->
+<div class="site-main">
+    <!-- sidebar -->
+    <div class="sidebar ttm-sidebar ttm-bgcolor-white clearfix mt-40 mb-40">
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-lg-9 content-area" id="image">
+                    
+                </div>
+                <div class="col-lg-3 widget-area">
+                   
+                    <aside class="widget post-widget">
+                        <h3 class="widget-title">Projects</h3>
+                        <ul class="widget-post ttm-recent-post-list" id="LatestProjectArea">
+                           
+
+                        </ul>
+                    </aside>
+                </div>
+            </div><!-- row end -->
+        </div>
+    </div>
+    <!-- sidebar end -->
+</div><!--site-main end-->
+@section Scripts {
+    <script src="@Href("~/Users/js/PageDetails/ProjectDetails.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+   
+}

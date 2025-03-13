@@ -1,0 +1,44 @@
+﻿@model Velzon.Model.CouchDB.SaveCouchDBAttachment
+@{
+    ViewData["Title"] = "Save CouchDB Attachment";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-controller="CouchDB" asp-action="SaveAttachment" asp-area="Admin" method="post" enctype="multipart/form-data" autocomplete="off" >
+    <input name="Id" asp-for="Id" type="hidden">
+    <input name="Rev" asp-for="Rev" type="hidden">
+    <input name="FileName" asp-for="FileName" type="hidden">
+    <input name="FileExtension" asp-for="FileExtension" type="hidden">
+
+    @if (Model == null)
+    {
+        <div class="form-group">
+            <div class="row">
+                <label for="ctl00_contentplaceholder1_txtComment" id="ctl00_contentplaceholder1_Label1" class="col-md-2 control-label">Upload File</label>
+                <div class="col-md-5">
+                    <input type="file" name="file" asp-for="File" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+
+        <div class="form-group">
+            <div class="row">
+                <label for="ctl00_contentplaceholder1_txtComment" id="ctl00_contentplaceholder1_Label1" class="col-md-2 control-label">Upload File</label>
+                <div class="col-md-5">
+                    <input type="file" name="file" asp-for="File" />
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-10 col-md-offset-2">
+            <button id="ctl00_contentplaceholder1_Button1" type="submit" name="AddComment" class="btn btn-primary submit">
+                <span class="fa fa-cloud-upload fa-fw"></span>Save
+            </button>
+        </div>
+    </div>
+</form>
+

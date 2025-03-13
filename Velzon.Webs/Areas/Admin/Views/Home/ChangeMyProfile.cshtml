@@ -1,0 +1,83 @@
+﻿@model ChangeMyProfileModel
+
+@{
+    ViewData["Title"] = "Change Profile";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Basic form layout section start -->
+<section id="basic-form-layouts">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+					<div class="card-title-wrap bar-success">
+						<h4 class="card-title" id="basic-layout-form">Change Profile</h4>
+					</div>
+					@*<p class="mb-0">This is the most basic and cost estimation form is the default position.</p>*@
+				</div>
+                <div class="card-body">
+                    <div class="px-3">
+                        <form class="form" asp-action="ChangeMyProfile" asp-area="Admin" asp-controller="Home" autocomplete="off" >
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-body">
+                                <h4 class="form-section">
+                                    <i class="icon-user"></i> Personal Details
+                                </h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FirstName">First Name</label>
+                                            <input type="text" asp-for="FirstName" class="form-control" placeholder="First Name" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="LastName">Last Name</label>
+                                            <input type="text" asp-for="LastName" class="form-control" placeholder="Last Name" />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Email">E-mail</label>
+                                            <input type="text" asp-for="Email" class="form-control" placeholder="Email" />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="PhoneNo">Contact Number</label>
+                                            <input type="text" asp-for="PhoneNo" class="form-control" placeholder="Phone No" />
+                                            <span asp-validation-for="PhoneNo" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="UserName">User Name</label>
+                                            <input type="text" asp-for="UserName" class="form-control" readonly="readonly" placeholder="UserName" />
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="icon-note"></i> Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

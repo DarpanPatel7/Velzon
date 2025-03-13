@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@{
+    @using Microsoft.AspNetCore.Http;
+    @inject IHttpContextAccessor HttpContextAccessor;
+    @using System.Text.Json;
+    @removeTagHelper Microsoft.AspNetCore.Mvc.TagHelpers.FormTagHelper, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    SessionUserModel UserModel = new SessionUserModel();
+    try
+    {
+        UserModel = (HttpContextAccessor.HttpContext.Session.Get("UserDetails") == null ? default(SessionUserModel) :
+        JsonSerializer.Deserialize<SessionUserModel>(HttpContextAccessor.HttpContext.Session.Get("UserDetails")));
+        if (UserModel == null)
+        {
+            Context.Response.Redirect(Url.Content("~/Account/Index"));
+        }
+        else if (UserModel.Id <= 0)
+        {
+            Context.Response.Redirect(Url.Content("~/Account/Index"));
+        }
+        else if (UserModel != null)
+        {
+            if (UserModel.IsPasswordReset && Context.Request.Path.Value.ToString() != "/Admin/Home/ChangePassword")
+            {
+                Context.Response.Redirect(Url.Content("~/Admin/Home/ChangePassword"));
+            }
+        }
+    }
+    catch
+    {
+        Context.Response.Redirect(Url.Content("~/Account/Index"));
+    }
+
+}
+<head>
+    <title>@ViewData["Title"] - CMS</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Convex admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Convex admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="GIL">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="shortcut icon" type="image/png" href="@Href("~/Admin/img/logos/favicon.png?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/fonts/feather/style.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/fonts/simple-line-icons/style.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/fonts/font-awesome/css/font-awesome.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/perfect-scrollbar.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/prism.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/chartist.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/sweetalert2.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/tables/datatable/datatables.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"> 
+    @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/> *@
+    @*<link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/pickadate/pickadate.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">*@
+
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/vendors/css/switchery.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/lib/clockpicker/bootstrap-clockpicker.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+
+    @* Daterange Picker *@
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/lib/daterangepicker/css/daterangepicker.css")" />
+
+    <link rel="stylesheet" type="text/css" href="@Href("~/Admin/css/app.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script>
+        javascript: window.history.forward(1);
+    </script>
+
+    @RenderSection("Styles", required: false)
+
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
+
+</head>
+
+<body data-col="2-columns" class=" 2-columns ">
+    <!--Preloader area start here-->
+    <div id="loading" class="icon-preloader">
+        <div class="loader">
+            <img src="@Href("~/Admin/img/Loader/loader.gif")" alt="Preloader Image animate3">
+        </div>
+    </div>
+    <!--Preloader area End here-->
+    <div class="wrapper">
+        <div data-active-color="white" data-background-color="aqua-marine" class="app-sidebar">
+
+            <div class="sidebar-header">
+                <div class="logo clearfix">
+                    <a href="@Href("~/Admin/Dashboard")" class="logo-text float-left">
+                        <div class="logo-img">
+                            <img src="@Href("~/Admin/img/logo.png")" alt="Convex Logo" />
+                        </div>
+                        <span class="text align-middle">CMS</span>
+                    </a>
+                    <a id="sidebarToggle" href="javascript:;" class="nav-toggle d-none d-sm-none d-md-none d-lg-block"><i data-toggle="expanded" class="ft-disc toggle-icon"></i></a>
+                    <a id="sidebarClose" href="javascript:;" class="nav-close d-block d-md-block d-lg-none d-xl-none"><i class="ft-circle"></i></a>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <div class="nav-container">
+                    <ul id="main-menu-navigation" data-menu="menu-navigation" class="navigation navigation-main">
+
+
+                        @if (UserModel != null)
+                        {
+                            var stringData = Functions.CreateMainLayoutMenu(Url, UserModel.RoleId, Context.Request.Path.Value.ToString());
+                            if (!string.IsNullOrWhiteSpace(stringData))
+                            {
+                                @Html.Raw(stringData)
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+            <div class="sidebar-background"></div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-faded">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" data-toggle="collapse" class="navbar-toggle d-lg-none float-left"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <span class="d-lg-none navbar-right navbar-collapse-toggle"><a class="open-navbar-container"><i class="ft-more-vertical"></i></a></span>
+                </div>
+                <div class="navbar-container">
+                    <div id="navbarSupportedContent" class="collapse navbar-collapse">
+                        <ul class="navbar-nav">
+                            <li class="dropdown nav-item mr-0">
+                                <a id="dropdownBasic3" href="#" data-toggle="dropdown" class="nav-link position-relative dropdown-user-link dropdown-toggle">
+                                    @if (UserModel == null || UserModel.Id <= 0)
+                                    {
+                                        Context.Response.Redirect(Href("/Account/Index"));
+                                    }
+                                    else
+                                    {
+                                        @(UserModel.FirstName + " " + UserModel.LastName)
+                                    }
+                                </a>
+                                <div aria-labelledby="dropdownBasic3" class="dropdown-menu dropdown-menu-right">
+                                    <div class="arrow_box_right">
+                                        <a asp-action="ChangeMyProfile" asp-area="Admin" asp-controller="Home" class="dropdown-item py-1"><i class="ft-settings mr-2"></i><span>My Profile</span></a>
+                                        <a asp-action="ChangePassword" asp-area="Admin" asp-controller="Home" class="dropdown-item py-1"><i class="ft-lock mr-2"></i><span>Change Password</span></a>
+                                        <div class="dropdown-divider"></div>
+                                        <a asp-action="Logout" asp-controller="Account" asp-area="" class="dropdown-item"><i class="ft-power mr-2"></i><span>Logout</span></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-panel">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div class="container-fluid">
+                        <main role="main">
+
+                            <div class="row mt-2">
+                                <div class="col-md-6 mt-2">
+                                    <h2>@ViewData["Title"]</h2>
+                                </div>
+                                <div class="col-md-6 text-right" style="height:60px">
+                                    @Html.Raw(Functions.GetBreadcum(Url,Context))
+                                </div>
+                            </div>
+
+                            @RenderBody()
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <script>
+        var baseUrl = "@Url.Content("~/")";
+       </script>
+    
+    <!-- BEGIN VENDOR JS-->
+    <script src="@Href("~/Admin/vendors/js/core/jquery.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/core/popper.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/core/bootstrap.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/lib/clockpicker/bootstrap-clockpicker.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/perfect-scrollbar.jquery.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/prism.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/jquery.matchHeight-min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/screenfull.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/pace/pace.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/datatable/datatables.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script> 
+   @* <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> *@
+    <!-- END VENDOR JS-->
+    <!-- BEGIN CONVEX JS-->
+    <script src="@Href("~/Admin/js/app-sidebar.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/notification-sidebar.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/customizer.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <!-- END CONVEX JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script src="@Href("~/Admin/vendors/js/sweetalert2.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+    @*<script src="@Href("~/Admin/vendors/js/pickadate/picker.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/pickadate/picker.date.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/pickadate/picker.time.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/vendors/js/pickadate/legacy.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>*@
+
+    <script src="@Href("~/Admin/vendors/js/switchery.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+    @* Daterange Picker *@
+    <script src="@Href("~/Admin/lib/daterangepicker/js/moment.min.js")"></script>
+    <script src="@Href("~/Admin/lib/daterangepicker/js/daterangepicker.min.js")"></script>
+
+    <!-- END PAGE VENDOR JS-->
+
+    <script src="@Href("~/Admin/js/Secure/aes.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/Secure/hash.js?dt"+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/Common.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/custom.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/switch.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff")))"></script>
+    <script src="@Href("~/Admin/js/purify.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff")))"></script>
+    <script>       
+        var regexGlobalValidation = new RegExp(htmlDecode("@Functions.regGlobalValidation"));
+        var regexName = new RegExp(htmlDecode("@Functions.regName"));
+        var regexMobileNo = new RegExp(htmlDecode("@Functions.regMobileNo"));
+        var regexPincode = new RegExp(htmlDecode("@Functions.regPincode"));
+        var regexNumber = new RegExp(htmlDecode("@Functions.regNumber"));
+        var regexEmail = new RegExp(htmlDecode("@Functions.regEmail"));
+        var regexPassword = new RegExp(htmlDecode("@Functions.regPassword"));
+        var regexURL = new RegExp(htmlDecode("@Functions.regURL"));
+        var dateFormat = '@Functions.dateFormat';
+        var allowModalOutsideClick = @Functions.allowModalOutsideClick.ToString().ToLower();
+        var allowKeyboardInputOnTime = @Functions.allowKeyboardInputOnTime.ToString().ToLower();
+        var allowKeyboardInputOnDate = @Functions.allowKeyboardInputOnDate.ToString().ToLower();
+        var allowInspectElement = @Functions.allowInspectElement.ToString().ToLower();
+
+    </script>
+    
+    <script src="@Href("~/Admin/js/MainLayout.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @RenderSection("Scripts", required: false)
+
+    <script>
+
+        $(function () {
+            $('.select2').select2();
+
+        })
+
+        @try
+        {
+            @if (ViewBag.MyScriptToRun != null)
+            {
+                @if (!string.IsNullOrWhiteSpace(ViewBag.MyScriptToRun.ToString()))
+                {
+                    @Html.Raw(ViewBag.MyScriptToRun.ToString())
+                }
+            }
+        }
+        catch (Exception)
+        {
+        }
+
+    </script>
+
+    
+
+</body>
+</html>

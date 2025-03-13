@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@model Velzon.Model.Service.ServiceRateModel
+@{
+	ViewData["Title"] = "Service Rate Detail";
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
+	long LangId = 1;
+	try
+	{
+		LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+		JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+		if (LangId == null)
+		{
+			Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+			LangId = 1;
+		}
+	}
+	catch
+	{
+	}
+}
+<!-- page-title -->
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner">
+               
+                <div class="pbmit-breadcrumb">
+                    <div class="pbmit-breadcrumb-inner">
+                       
+                        <span><a title="" href="/Index" class="home" id="home"><span>Home</span></a></span>
+                        <span class="sep"><i class="pbmit-base-icon-angle-double-right"></i></span>
+						<span class="post-root post post-post current-item" id="breadcrumbTitle">@Model.ServiceName</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hiddenServiceRateId" value="@Model.ServiceRateId" />
+
+
+<div class="page-content pbmit-bg-color-light">
+
+	<!-- Service Detail Start -->
+	<section>
+		<div class="container">
+			<div class="row mt-2">
+				<div class="col-lg-9 service-right-col" id="ServiceDetails">
+					
+
+				</div>
+				<div class="col-lg-3 service-left-col">
+					<aside class="service-sidebar">
+						<aside class="widget post-list" id="ServiceRateArea">
+							
+						</aside>
+
+
+					</aside>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Service Detail End -->
+
+</div>
+
+@section Scripts {
+	<script src="@Href("~/Users/js/PageDetails/ServiceRateDetails.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+}

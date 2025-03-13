@@ -1,0 +1,279 @@
+﻿@model CMSMenuResourceFrontModel
+@{
+    ViewData["Title"] = "CMS Menu Resource";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var rightsModel = Functions.GetPageRightsCheck(Context.Session);
+}
+
+@section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 807px;
+        }
+    </style>
+}
+
+<section class="basic-elements">
+    <div class="row">
+
+        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+
+        <div class="col-md-12">
+            <div class="card card-outline-primary">
+                <div class="card-body collapse show">
+                    <div class="card-block card-dashboard">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                @if (rightsModel.Insert)
+                                {
+                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
+                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table display nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer table-responsive" id="tbldata">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr No</th>
+                                            <th>Menu Name</th>
+                                            <th>Menu URL</th>
+                                            <th>Menu Resource Type</th>
+                                            <th>Parent Name</th>
+                                            <th>Is Active</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="@Href("~/Admin/CKEditor/ckeditor.js")"></script>
+
+    <script src="@Href("~/Admin/js/PageDetails/CMSMenuResource/CMSMenuResource.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+    <!-- Modal -->
+    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="width:120%">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white" id="myModalLabel9"> @ViewData["Title"] Form</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddEdit" autocomplete="off" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="TemplateId" />
+                        <input type="hidden" asp-for="CMSMenuResId" />
+                        <input type="hidden" asp-for="BannerImagePath" />
+                        <input type="hidden" asp-for="IconImagePath" />
+
+
+                        <div class="form-group mt-2">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="LanguageId" class="control-label">Language</label>
+                                        <select class="form-control" asp-for="LanguageId">
+                                            <option value="">--Select Language--</option>
+                                        </select>
+                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="ResourceType" class="control-label">Resource Type<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="ResourceType">
+                                            <option value="">--Select Resource Type--</option>
+                                        </select>
+                                        <span asp-validation-for="ResourceType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MenuName" class="control-label">Menu Name<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="MenuName" class="form-control border-primary" placeholder="Enter Menu Name">
+                                        <span asp-validation-for="MenuName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Tooltip" class="control-label">Tool tip<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="Tooltip" class="form-control border-primary" placeholder="Enter Tooltip">
+                                        <span asp-validation-for="Tooltip" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MenuURL" class="control-label">Menu URL<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="MenuURL" class="form-control border-primary" placeholder="Enter MenuURL">
+                                        <span asp-validation-for="MenuURL" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MetaTitle" class="control-label">Meta Title<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="MetaTitle" class="form-control border-primary" placeholder="Enter Meta Title">
+                                        <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MetaDescription" class="control-label">Meta Description<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="MetaDescription" class="form-control border-primary" placeholder="Enter Meta Description">
+                                        <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                @* <div class="col-md-4" id="dvParentId">
+                            <div class="form-group">
+                            <label asp-for="ParentId" class="control-label">Parent Menu</label>
+                            <select class="form-control" asp-for="ParentId">
+                            <option value="">--Select Parent Menu--</option>
+                            </select>
+                            <span asp-validation-for="ParentId" class="text-danger"></span>
+                            </div>
+                            </div>*@
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="col_menu_type" class="control-label">Menu Type<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="col_menu_type">
+                                            <option value="">--Select Menu Type--</option>
+                                        </select>
+                                        <span asp-validation-for="col_menu_type" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" id="dvParentId">
+                                    <div class="form-group">
+                                        <label asp-for="col_parent_id" class="control-label">Parent Menu<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="col_parent_id">
+                                            <option value="">--Select Parent Menu--</option>
+                                        </select>
+                                        <span asp-validation-for="col_parent_id" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ddlTemplateId" class="control-label">Template </label>
+                                    <select id="ddlTemplateId" class="form-control">
+                                    </select>
+                                </div>
+                                
+
+                               @*  <div class="col-md-4 mt-3 mb-2" id="answer">
+                                    <div class="custom-control mb-2 mr-sm-2 mb-sm-0 pl-0">
+                                        <label asp-for="BannerImage" class="control-label">Banner Image</label>
+                                        <input type="file" asp-for="BannerImage" class="form-control border-primary">
+                                        <span asp-validation-for="BannerImage" class="text-danger"></span>
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mt-3 mb-2" id="answer1">
+                                    <div class="custom-control mb-2 mr-sm-2 mb-sm-0 pl-0">
+                                        <label asp-for="IconImage" class="control-label">Icon Image</label>
+                                        <input type="file" asp-for="IconImage" class="form-control border-primary">
+                                        <span asp-validation-for="IconImage" class="text-danger"></span>
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF1" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                </div> *@
+
+                                <div class="row col-md-8">
+                                    <div class="col-md-5">
+                                        <div class="custom-control mb-2 mr-sm-2 mb-sm-0 pl-0">
+                                            <label asp-for="BannerImage" class="control-label">Banner Image</label>
+                                            <input type="file" asp-for="BannerImage" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="custom-control">
+                                            <label asp-for="IconImage" class="control-label">Icon Image</label>
+                                            <input type="file" asp-for="IconImage" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 mt-3">
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF1" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mt-1">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <br />
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
+                                        <label class="custom-control-label float-left" for="IsActive">Is Active</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <br />
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsRedirect" />
+                                        <label class="custom-control-label float-left" for="IsRedirect">Is Redirect</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <br />
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsFullScreen" />
+                                        <label class="custom-control-label float-left" for="IsFullScreen">Is FullScreen</label>
+                                    </div>
+                                </div>
+                                @* <div class="col-md-4 mt-4 mb-2" id="answer">
+                                    <div class="custom-control mb-2 mr-sm-2 mb-sm-0 pl-0">
+                                        <label asp-for="BannerImage" class="control-label">Banner Image</label>
+                                        <input type="file" asp-for="BannerImage" />
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                </div> *@
+
+                                @* <div class="col-md-4 mt-4 mb-2" id="answer1">
+                                    <div class="custom-control mb-2 mr-sm-2 mb-sm-0 pl-0">
+                                        <label asp-for="IconImage" class="control-label">Icon Image</label>
+                                        <input type="file" asp-for="IconImage" />
+                                        <a class="btn mb-0 btn-outline-info btnedit" title="View" target="_Target" href="" id="ViewfileIF1" style="width:fit-content;"><i class="fa fa-eye"></i></a>
+                                    </div>
+                                </div> *@
+                                
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-group">
+                                        <label asp-for="PageDescription" class="control-label">Page Description</label>
+                                        <textarea rows="5" cols="12" asp-for="PageDescription" class="form-control border-primary" placeholder="Enter Page Description"></textarea>
+                                        <span asp-validation-for="PageDescription" class="text-danger"></span>
+                                        <script type="text/javascript">
+                                            CKEDITOR.dtd.$removeEmpty['i'] = false;
+                                            var editor = CKEDITOR.replace('PageDescription', {
+                                                extraPlugins: 'tableresize'
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

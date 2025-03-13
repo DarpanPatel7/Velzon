@@ -1,0 +1,115 @@
+﻿@model BranchFormModel
+@{
+    ViewData["Title"] = "Branch Master";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var rightsModel = Functions.GetPageRightsCheck(Context.Session);
+}
+@section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 1007px;
+        }
+    </style>
+}
+
+<section class="basic-elements">
+    <div class="row">
+
+        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+        <input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
+
+        <div class="col-md-12">
+            <div class="card card-outline-primary">
+                <div class="card-body collapse show">
+                    <div class="card-block card-dashboard">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                @if (rightsModel.Insert)
+                                {
+                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
+                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table display nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldata">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Actions</th>
+                                                <th>Branch Name</th>                                                                                    
+                                                <th>Is Active</th>                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    <script src="@Href("~/Admin/js/PageDetails/BranchMaster/BranchMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <!-- Modal -->
+    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white" id="myModalLabel9"> @ViewData["Title"] Form</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddEdit" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />                        
+                        <div class="form-group mt-2">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label asp-for="LanguageId" class="control-label">Language<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="LanguageId">
+                                            <option value="">--Select Language--</option>
+                                        </select>
+                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                    </div>
+                                </div>                               
+                                <div class="col-md-3" id="OTInputDIV">
+                                    <div class="form-group">
+                                        <label asp-for="BranchName" class="control-label">Branch Name<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="BranchName" class="form-control border-primary" placeholder="Enter Branch Name">
+                                        <span asp-validation-for="BranchName" class="text-danger"></span>
+                                    </div>
+                                </div>                               
+                                <div class="col-md-4 mt-1">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <br />
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
+                                        <label class="custom-control-label float-left" asp-for="IsActive">Is Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

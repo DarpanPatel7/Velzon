@@ -1,0 +1,290 @@
+﻿@model ChangePasswordFormModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    @using Microsoft.AspNetCore.Http;
+    @inject IHttpContextAccessor HttpContextAccessor;
+    @using System.Text.Json;
+
+    SessionUserModel UserModel = new SessionUserModel();
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+        var userSessionData = HttpContextAccessor.HttpContext.Session.GetString("FrontUserSessionDetails");
+        if (!string.IsNullOrWhiteSpace(userSessionData))
+        {
+            UserModel = JsonSerializer.Deserialize<SessionUserModel>(userSessionData);
+        }
+
+
+    }
+    catch (Exception ex)
+    {
+
+    }
+}
+<link rel="stylesheet" href="@Href("~/Users/css/cropper.min.css")">
+
+
+    <section class="content-wrapper">
+        @{
+            var stringData = Functions.GetPublicBreadcum(Url, Context, LangId);
+            if (!string.IsNullOrWhiteSpace(stringData))
+            {
+                @Html.Raw(stringData)
+            }
+        }
+    </section>
+
+    <section class="pt-50 pb-100 bg-grey">
+        <div class="position-relative">
+            <div class="container">
+                <div class="add-listing-wrap w-100">
+                    <div class="add-listing-top w-100">
+                        <div class="add-listing-top-info">
+                            <div class="col-lg-7">
+                                <div class="add-listing-top-info-user text-center" id="divid">
+                                    <div class="add-listing-top-info-img position-relative" id="applicantPhoto">
+                                        <!-- Image will be dynamically inserted here -->
+                                    </div>
+                                   
+                                    <div class="description">
+                                        <h3 class="mb-0" id="username">@(UserModel.FirstName + " " + UserModel.LastName)</h3>
+                                        <p class="mb-0">@(UserModel.Designation)</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="add-listing-top-info-stats">
+                                    <img src="~/Users/img/dashboard-image.92b5cb38.svg">
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="nav nav-tabs add-listing-nav d-flex flex-wrap justify-content-between mb-0 mt-20 list-unstyled w-100" role="tablist">
+                            <li class="nav-item" role="presentation"><a class="nav-link active" data-bs-toggle="tab" href="#add-tab1" aria-selected="true" role="tab" tabindex="-1"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#add-tab2" aria-selected="false" role="tab" tabindex="-1"><i class="fas fa-user-edit"></i>Edit profile</a></li> 
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#add-tab3" aria-selected="false" role="tab" tabindex="-1"><i class="fas fa-key"></i>Change password</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#add-tab4" aria-selected="false" role="tab" tabindex="-1"><i class="fas fa-list"></i>My Event</a></li>
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#add-tab5" aria-selected="false" role="tab" tabindex="-1"><i class="fas fa-comments"></i>Reviews</a></li>
+
+                            <li class="nav-item" role="presentation"><a class="nav-link" data-bs-toggle="tab" href="#add-tab7" aria-selected="false" role="tab" tabindex="-1"><i class="fas fa-file-medical"></i>All Event</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="add-tab1" role="tabpanel">
+                           
+                            <form class="add-listing-form-wrap w-100">
+                                <div class="add-listing-inner-wrap w-100">
+                                    <h3 class="mb-0">Profile</h3>
+                                    <div class="add-listing-inner w-100" id="dashboarddata">
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                       <div class="tab-pane fade" id="add-tab2" role="tabpanel">
+                             @Html.Partial("_PartialChangeProfile", new ChangeProfileFormModel())
+                            
+                        </div>  
+                        <div class="tab-pane fade" id="add-tab3" role="tabpanel">
+                            <form autocomplete="off" class="add-listing-form-wrap w-100">
+                                <div class="add-listing-inner-wrap w-100">
+                                    <h3 class="mb-0">Change Password</h3>
+                                    <div class="add-listing-inner w-100">
+                                        <div class="row mrg20">
+                                            @Html.AntiForgeryToken()
+                                            <div class="col-md-12 col-sm-12 col-lg-12">
+                                               
+                                                <label asp-for="OldPassword" class="control-label">Old Password</label>
+                                                <div class="field w-100 position-relative">
+                                                    <input asp-for="OldPassword" class="form-control validpassword" type="password" placeholder="Old Password" />
+                                                    <span asp-validation-for="OldPassword" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12 col-lg-6">
+                                                <label asp-for="NewPassword" class="control-label">New Password</label>
+                                                <div class="field w-100 position-relative">
+                                                    <input asp-for="NewPassword" class="form-control validpassword" type="password" placeholder="New Password" />
+                                                    <span asp-validation-for="NewPassword" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-12 col-lg-6">
+                                                <label asp-for="ConfirmPassword" class="control-label">Confirm Password</label>
+                                                <div class="field w-100 position-relative">
+                                                    <input asp-for="ConfirmPassword" class="form-control validpassword" type="password" placeholder="Confirm Password" />
+                                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @* <div class="hero-btn text-center">
+                                            <a href="about.html" class="btn style6">Update <i class="flaticon-right-arrow-1"></i></a>
+                                            <button class="btn style2" type="submit" onclick="return SubmitsEncry();">Save</button>
+                                        </div> *@
+                                         <div class="hero-btn text-center">
+
+                                                <button type="button" class="btn style6" onclick="return SubmitsEncry();">Update</button>
+                                         </div>
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="add-tab4" role="tabpanel">
+                            <form class="add-listing-form-wrap w-100">
+                                <div class="add-listing-inner-wrap w-100">
+                                    <h3 class="mb-0">My Event Listing</h3>
+                                    <div class="listing-posts-wrap2 w-100" id="dvMyEvent">
+                                       
+                                    </div>
+                                    <div class="page-navigation">
+                                        <ul class="page-nav list-style" id="PaginationListAreaBindMyEvents">
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="add-tab5" role="tabpanel">
+                            Reviews
+                        </div>
+
+                        <div class="tab-pane fade" id="add-tab7" role="tabpanel">
+                            <form class="add-listing-form-wrap w-100">
+                                <div class="add-listing-inner-wrap w-100">
+                                    <h3 class="mb-0">All Event</h3>
+                                    <div class="listing-posts-wrap2 w-100" id="dvUpcommingEvent">
+                                       
+                                    </div>
+                                   <div class="page-navigation">
+                                        <ul class="page-nav list-style" id="PaginationListAreaBindUpcommingEvent">
+                                            
+                                        </ul>
+                                   </div> 
+                                   
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- Add Listing Wrap -->
+            </div>
+        </div>
+    </section>
+
+</div>
+@section Scripts {
+    <script src="@Href("~/Users/js/Dashboard.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Users/js/cropper.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+   @*  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script> *@
+
+    <script>
+        $(document).ready(function () {
+            var cropper;
+            var originalFileName = ""; 
+            var originalFileType = "";
+            var allowedExtensions = ["jpg", "jpeg", "png"];
+
+            // Handle file input change
+            $("#ApplicantPhoto").on("change", function (e) {
+                var file = e.target.files[0];
+               
+                if (file) {
+                    var fileName = file.name;
+                    var fileExtension = fileName.split(".").pop().toLowerCase();
+
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        ShowMessage("Select a valid Image file (png, jpeg, jpg)!", "", "error");
+                        $(this).val(""); // Clear the input
+                        return;
+                    }
+                    originalFileName = file.name; // Store original name
+                    originalFileType = file.type; // Store original MIME type
+
+                    var reader = new FileReader();
+                    reader.onload = function (event) {
+                        $("#uploadedImage").attr("src", event.target.result).show();
+                        $("#cropButton").show().text("Crop Image");
+
+                        // Initialize Cropper.js
+                        if (cropper) cropper.destroy(); // Destroy existing cropper instance
+                        cropper = new Cropper(document.getElementById("uploadedImage"), {
+                            aspectRatio: 1, // Square cropping (200x200)
+                            viewMode: 1,
+                            autoCropArea: 1,
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle crop button click
+            $("#cropButton").on("click", function () {
+                if (cropper) {
+                    // Get the cropped canvas
+                    var croppedCanvas = cropper.getCroppedCanvas({
+                        width: 200,
+                        height: 200,
+                    });
+
+                    // Convert the cropped image to a Blob
+                    croppedCanvas.toBlob(function (blob) {
+                        var croppedFile = new File([blob], originalFileName, { type: originalFileType });
+
+                        // Replace the original file input with the cropped image
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(croppedFile);
+                        $("#ApplicantPhoto")[0].files = dataTransfer.files;
+
+                        $("#cropButton").text(croppedFile.name);
+                    }, originalFileType); 
+                }
+            });
+        });
+
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            var cacheBuster = new Date().getTime();
+            var applicantPhotoPath = "@UserModel.ApplicantPhotoPath";
+            var strpath;
+
+            if (applicantPhotoPath) {
+                strpath = ResolveUrl("/ViewFile?fileName=" + GreateHashString(applicantPhotoPath) + "&c=" + cacheBuster);
+            } else {
+                strpath = "/Users/img/default-profile.png";
+            }
+
+            // Set the image in the element
+            document.getElementById("applicantPhoto").innerHTML = '<img src="' + strpath + '" alt="User Image" class="img-fluid rounded-circle">';
+        });
+    </script>
+
+    
+
+    @try
+    {
+        @if (ViewBag.MyScriptToRun != null)
+        {
+            @if (!string.IsNullOrWhiteSpace(ViewBag.MyScriptToRun.ToString()))
+            {
+                @Html.Raw(ViewBag.MyScriptToRun.ToString())
+            }
+        }
+    }
+    catch (Exception)
+    {
+    }
+   
+}

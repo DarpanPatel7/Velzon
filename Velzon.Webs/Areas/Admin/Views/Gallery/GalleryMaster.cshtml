@@ -1,0 +1,174 @@
+﻿@model GalleryFormModel
+@{
+    ViewData["Title"] = "Gallery Master";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var rightsModel = Functions.GetPageRightsCheck(Context.Session);
+}
+
+
+@section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 1007px;
+        }
+
+    </style>
+}
+
+<section class="basic-elements">
+    <div class="row">
+
+        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+        <input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
+
+        <div class="col-md-12">
+            <div class="card card-outline-primary">
+                <div class="card-body collapse show">
+                    <div class="card-block card-dashboard">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                @if (rightsModel.Insert)
+                                {
+                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
+                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table display Table-Responsive table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldatas">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Album Name</th>
+                                            <th>Is Active</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script src="@Href("~/Admin/js/PageDetails/Gallery/GalleryMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+
+    <!-- Modal -->
+    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white" id="myModalLabel9"> Add Images</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form id="frmAddEdit" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" value="0" />
+                        <input type="hidden" asp-for="GallerymasterId" />
+                        <input type="hidden" asp-for="ThumbImagePath" value="" />
+                        <input type="hidden" asp-for="ThumbImageName" value="" />
+                        <div class="form-group mt-2 mb-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label asp-for="LanguageId" class="control-label">Language<span style="color:red">*</span></label>
+                                        <select class="form-control" asp-for="LanguageId">
+                                            <option value="">--Select Language--</option>
+                                        </select>
+                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 pl-3">
+                                    <div class="form-group">
+                                        <label asp-for="PlaceName" class="control-label">Album Name<span style="color:red">*</span></label>
+                                        <input type="text" asp-for="PlaceName" class="form-control border-primary" placeholder="Enter Album Name">
+                                        <span asp-validation-for="PlaceName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1" style="display:none">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsVideo" />
+                                        <label class="custom-control-label float-left" asp-for="IsVideo">Is Video Album</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1" style="display:none">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <label for="Image" class="control-label">Thumb Image</label>
+                                        <input type="file" asp-for="ThumbImage" accept="image/*" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-1">
+                                    <label class="control-label"></label>
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
+                                        <label class="custom-control-label float-left" asp-for="IsActive">Is Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class=" ">
+
+                        <form id="frmAddEditImage" autocomplete="off">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" id="RowIndex" name="RowIndex" value="0" />
+                            <input type="hidden" id="Command" name="Command" value="0" />
+                            <input type="hidden" id="ImagePath" name="ImagePath" value="" />
+                            <input type="hidden" id="IsVideoGallery" name="IsVideoGallery" value="false" />
+
+                            <div class="form-group row mt-0">
+                                <div class="col-md-4 mt-1 pl-1">
+                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
+                                        <label for="Image" class="control-label">Images<span style="color:red">*</span></label><span style="color:red"> &nbsp;(Image Size 1200*800)</span>
+                                        <input type="file" name="Image" id="Image" multiple />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 pl-1">
+                                <button type="button" class="btn btn-primary btn-round" id="btnMdlSaveImage"><i class="fa fa-check mr-1"></i>Save Image</button>
+                                <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlClearImage"><i class="fa fa-check mr-1"></i>Clear Image</button>
+                            </div>
+
+                        </form>
+
+                        <div class="row table-responsive pl-3">
+                            <table class="table display table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tblSubdata">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Image</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
+                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

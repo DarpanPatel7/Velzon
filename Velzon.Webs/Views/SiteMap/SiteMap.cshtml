@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@{
+    ViewData["Title"] = "Site Map";
+    Layout = $"~/Views/Shared/_UserLayout.cshtml";
+
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+}
+
+<!-- Breadcrumbs Start -->
+<div class="pbmit-title-bar-wrapper">
+    <div class="container">
+        <div class="pbmit-title-bar-content">
+            <div class="pbmit-title-bar-content-inner mb-20">
+
+                @{
+                    var stringData = Velzon.Webs.Common.Functions.GetPublicBreadcum(Url, Context, LangId);
+                    if (!string.IsNullOrWhiteSpace(stringData))
+                    {
+                        @Html.Raw(stringData)
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumbs End -->
+
+<!-- Page Details Start -->
+<div class="rs-common-details pt-50 pb-70">
+    <div class="container">
+		<div class="row">
+			<div class="col-lg-12 content-area">
+				<div class="page_content">
+					<div class="row sitemap" id="dvSiteMap">
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+<!-- Page Details Start -->
+
+@section Scripts {
+	<script>
+		var lgLanguageId = $("#lgLanguageId").val();
+		BindSiteMap(lgLanguageId);
+		function BindSiteMap(lgLanguageId) {
+			var token = $('input[name="AntiforgeryFieldname"]').val();
+			$.ajax({
+				type: "POST",
+				url: ResolveUrl("/BindSiteMap"),
+				contentType: "application/x-www-form-urlencoded",
+				data: { "AntiforgeryFieldname": token, "lgLanguageId": lgLanguageId },
+				dataType: "json",
+				success: function (res) {
+					$("#dvSiteMap").empty();
+					$("#dvSiteMap").html(res ?? "");
+					ResolveUrlHTML();
+				}
+			});
+		}
+	</script>
+}

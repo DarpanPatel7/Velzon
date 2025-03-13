@@ -1,0 +1,252 @@
+﻿@model Velzon.Webs.Areas.Admin.Models.ChangeSMTPModel
+
+@{
+    ViewData["Title"] = "Change SMTP";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Basic form layout section start -->
+<section id="basic-form-layouts">
+    <div class="row justify-content-center">
+
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <div class=row style="align-content:center;">
+                            <div class="col-lg-6">
+                                <h4 class="card-title" id="basic-layout-form">Send Test SMTP E-Mail</h4>
+                            </div>
+                            <div class="col-lg-6">
+                                @*<div class="pull-right">
+                                    <div class="">
+                                        <input type="checkbox" id="SMTPIsTestEmail" name="SMTPIsTestEmail" class="switchery" data-size="sm" />
+                                        <label for="SMTPIsTestEmail" class="font-medium-2 text-bold-600 ml-1">SMTP Is Test</label>
+                                    </div>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="px-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="TestSentEmail">Email Id</label>
+                                    <input type="text" asp-for="TestSentEmail" class="form-control" placeholder="Test Sent Email" />
+                                    <span asp-validation-for="TestSentEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="btnSendEmailTest" class="btn btn-primary"><i class="icon-envelope"></i> Send Email</button>
+                            <button type="button" id="btnSendEmailClear" class="btn btn-primary"> Clear Form</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <div class=row style="align-content:center;">
+                            <div class="col-lg-6">
+                                <h4 class="card-title" id="basic-layout-form">Change SMTP</h4>
+
+                            </div>
+                            <div class="col-lg-6">
+
+                                <div class="pull-right">
+                                    <div class="">
+                                        <input type="checkbox" asp-for="SMTPIsTest" class="switchery" data-size="sm" />
+                                        <label asp-for="SMTPIsTest" class="font-medium-2 text-bold-600 ml-1">SMTP Is Test</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @*<p class="mb-0">This is the most basic and cost estimation form is the default position.</p>*@
+                </div>
+                <div class="card-body">
+                    <div class="px-3">
+                        <form asp-action="ChangeSMTP" id="frmChangesSMTP" asp-area="Admin" method="post" asp-controller="Home" autocomplete="off" >
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="SMTPServer">SMTPServer</label>
+                                        <input type="text" asp-for="SMTPServer" class="form-control" placeholder="SMTPServer" />
+                                        <span asp-validation-for="SMTPServer" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="SMTPPortNull" data-size="sm" />
+                                        <label asp-for="SMTPPortNull" class="font-medium-2 text-bold-600 ml-1">SMTP Port Null</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="SMTPPort">SMTPPort</label>
+                                        <input type="text" asp-for="SMTPPort" class="form-control" placeholder="SMTPPort" />
+                                        <span asp-validation-for="SMTPPort" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="SMTPAccount">SMTPAccount</label>
+                                        <input type="text" asp-for="SMTPAccount" class="form-control" placeholder="SMTPAccount" />
+                                        <span asp-validation-for="SMTPAccount" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="SMTPPassword">SMTPPassword</label>
+                                        <input type="text" asp-for="SMTPPassword" class="form-control" placeholder="SMTPPassword" />
+                                        <span asp-validation-for="SMTPPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="SMTPFromEmail">SMTPFromEmail</label>
+                                        <input type="text" asp-for="SMTPFromEmail" class="form-control" placeholder="SMTPFromEmail" />
+                                        <span asp-validation-for="SMTPFromEmail" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="SMTPIsSecure" data-size="sm" />
+                                        <label asp-for="SMTPIsSecure" class="font-medium-2 text-bold-600 ml-1">SMTPIsSecure</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="SMTPIsTestNull" data-size="sm" />
+                                        <label asp-for="SMTPIsTestNull" class="font-medium-2 text-bold-600 ml-1">SMTP Is Test Null</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="TestSMTPServer">TestSMTPServer</label>
+                                        <input type="text" asp-for="TestSMTPServer" class="form-control" placeholder="TestSMTPServer" />
+                                        <span asp-validation-for="TestSMTPServer" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="TestSMTPPortNull" data-size="sm" />
+                                        <label asp-for="TestSMTPPortNull" class="font-medium-2 text-bold-600 ml-1">Test SMTP Port Null</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="TestSMTPPort">TestSMTPPort</label>
+                                        <input type="text" asp-for="TestSMTPPort" class="form-control" placeholder="TestSMTPPort" />
+                                        <span asp-validation-for="TestSMTPPort" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="TestSMTPAccount">TestSMTPAccount</label>
+                                        <input type="text" asp-for="TestSMTPAccount" class="form-control" placeholder="TestSMTPAccount" />
+                                        <span asp-validation-for="TestSMTPAccount" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="TestSMTPPassword">TestSMTPPassword</label>
+                                        <input type="text" asp-for="TestSMTPPassword" class="form-control" placeholder="TestSMTPPassword" />
+                                        <span asp-validation-for="TestSMTPPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="TestSMTPFromEmail">TestSMTPFromEmail</label>
+                                        <input type="text" asp-for="TestSMTPFromEmail" class="form-control" placeholder="TestSMTPFromEmail" />
+                                        <span asp-validation-for="TestSMTPFromEmail" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="TestSMTPIsSecure" data-size="sm" />
+                                        <label asp-for="TestSMTPIsSecure" class="font-medium-2 text-bold-600 ml-1">TestSMTPIsSecure</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" class="switchery" asp-for="TestSMTPIsTestNull" data-size="sm" />
+                                        <label asp-for="TestSMTPIsTestNull" class="font-medium-2 text-bold-600 ml-1">Test SMTP Is Test Null</label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <button type="submit" value="ChangeSMTP" class="btn btn-primary"><i class="icon-settings"></i> Save Setting</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
+@section Scripts {
+<script>
+
+    $(document).ready(function() {
+
+        $('#btnSendEmailClear').click(function () {
+            $('#TestSentEmail').val("");
+        });
+
+        $('#btnSendEmailTest').click(function () {
+            ShowLoader();
+
+             var data={ "AntiforgeryFieldname": token, TestSentEmail: $('#TestSentEmail').val() };
+             var form = $('#frmChangesSMTP');
+             var token = $('input[name="AntiforgeryFieldname"]', form).val();
+             $.ajax({
+
+                 type: "POST", url: ResolveUrl("/Admin/SendTestEmail"),
+                 contentType: "application/x-www-form-urlencoded",
+                 data: { "AntiforgeryFieldname": token,TestSentEmail: $('#TestSentEmail').val() },
+                 dataType: "json",
+                 success: function (data) {
+                     if (data != null && data != undefined) {
+                         ShowMessage(data.strMessage, "", data.type);
+                         HideLoader();
+                     }
+                     else {
+                         ShowMessage("Record not Send, Try again", "", "error");
+                         HideLoader();
+                     }
+                 }
+
+             });
+
+            HideLoader();
+        });
+
+        $('#SMTPIsTest').on('change.bootstrapSwitch', function(e) {
+             ShowLoader();
+
+             var data={ "AntiforgeryFieldname": token,SMTPIsTest: e.target.checked };
+             var form = $('#frmChangesSMTP');
+             var token = $('input[name="AntiforgeryFieldname"]', form).val();
+             $.ajax({
+
+                 type: "POST", url: ResolveUrl("/Admin/UpdateSMTPEnvironment"),
+                 contentType: "application/x-www-form-urlencoded",
+                 data: { "AntiforgeryFieldname": token,SMTPIsTest: $('#SMTPIsTest').is(':checked') },
+                 dataType: "json",
+                 success: function (data) {
+                     if (data != null && data != undefined) {
+                         ShowMessage(data.strMessage, "", data.type);
+                         HideLoader();
+                     }
+                     else {
+                         ShowMessage("Record not saved, Try again", "", "error");
+                         HideLoader();
+                     }
+                 }
+
+             });
+
+             HideLoader();
+
+        });
+
+    });
+
+</script>
+
+}

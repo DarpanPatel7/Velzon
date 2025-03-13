@@ -1,0 +1,77 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@using System.Text.Json;
+@{
+    ViewData["Title"] = "User Feedback";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+
+    long LangId = 1;
+    try
+    {
+        LangId = (HttpContextAccessor.HttpContext.Session.Get("LanguageId") == null ? default(long) :
+        JsonSerializer.Deserialize<long>(HttpContextAccessor.HttpContext.Session.Get("LanguageId")));
+        if (LangId == null)
+        {
+            Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
+            LangId = 1;
+        }
+    }
+    catch
+    {
+    }
+
+    var rightsModel = Functions.GetPageRightsCheck(Context.Session);
+}
+
+@section Styles {
+    <style>
+        .modal-dialog {
+            max-width: 1007px;
+        }
+
+    </style>
+}
+
+    <section class="basic-elements">
+        
+   <form id="frmAddEdit" autocomplete="off">
+                        @Html.AntiForgeryToken()
+          <div class="col-md-12">
+            <div class="card card-outline-primary">
+                <div class="card-body collapse show">
+                    <div class="card-block card-dashboard">
+                 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table display nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldata">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Mobile</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Feedback</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+</section>
+
+@section Scripts {
+    <script src="@Href("~/Admin/CKEditor/ckeditor.js")"></script>
+
+
+    <script src="@Href("~/Admin/js/PageDetails/Feedback/Feedback.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    
+}
