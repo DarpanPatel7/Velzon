@@ -661,7 +661,7 @@ namespace Velzon.Webs.Common
             return strCurrentPath;
         }
 
-        private static string GetParentIdString(IUrlHelper urlHelper, MenuRightsMasterModel mainMenu, List<MenuRightsMasterModel> lstList, string strCurrentPath)
+        /*private static string GetParentIdString(IUrlHelper urlHelper, MenuRightsMasterModel mainMenu, List<MenuRightsMasterModel> lstList, string strCurrentPath)
         {
             bool isActive = false;
             if (mainMenu.MenuURL.ToString().ToLower() == strCurrentPath.ToLower())
@@ -691,6 +691,53 @@ namespace Velzon.Webs.Common
             {
                 string strPath = mainMenu.MenuURL;
                 strMenu.Append("<li " + (strPath == strCurrentPath ? " class=\"active\"" : "") + " ><a href='" + (string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath)) + "' >" + mainMenu.Name + "</a></li>");
+            }
+
+            return strMenu.ToString();
+        }*/
+
+        private static string GetParentIdString(IUrlHelper urlHelper, MenuRightsMasterModel mainMenu, List<MenuRightsMasterModel> lstList, string strCurrentPath)
+        {
+            bool isActive = mainMenu.MenuURL?.ToLower() == strCurrentPath.ToLower();
+            StringBuilder strMenu = new StringBuilder();
+
+            // Get child items
+            List<MenuRightsMasterModel> lstSubList = lstList
+                .Where(x => x.ParentId == mainMenu.Id)
+                .OrderBy(x => x.MenuRank)
+                .ToList();
+
+            // Check if this menu has submenus (child items)
+            if (lstSubList.Count > 0)
+            {
+                strMenu.Append($@"
+                <li class='nav-item'>
+                    <a class='nav-link menu-link' href='#sidebar-{mainMenu.Id}' data-bs-toggle='collapse' role='button' aria-expanded='false' aria-controls='sidebar-{mainMenu.Id}'>
+                        <i class='ri-dashboard-2-line'></i> <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
+                    </a>
+                    <div class='collapse menu-dropdown' id='sidebar-{mainMenu.Id}'>
+                        <ul class='nav nav-sm flex-column'>");
+
+                // Loop through submenus
+                foreach (var subMenu in lstSubList)
+                {
+                    strMenu.Append(GetParentIdString(urlHelper, subMenu, lstList, strCurrentPath));
+                }
+
+                strMenu.Append("</ul></div></li>");
+            }
+            else
+            {
+                // This is a direct link (no submenu)
+                string strPath = mainMenu.MenuURL;
+                string activeClass = isActive ? " class='active'" : "";
+
+                strMenu.Append($@"
+                <li class='nav-item'{activeClass}>
+                    <a href='{(string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath))}' class='nav-link'>
+                        <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
+                    </a>
+                </li>");
             }
 
             return strMenu.ToString();

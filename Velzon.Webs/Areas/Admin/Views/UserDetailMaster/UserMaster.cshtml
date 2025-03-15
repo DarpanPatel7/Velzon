@@ -1,152 +1,157 @@
 ﻿@model UserMasterFormModel
-
 @{
     ViewData["Title"] = "User Master";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     var rightsModel = Functions.GetPageRightsCheck(Context.Session);
 }
 
-<section class="basic-elements">
-    <div class="row">
-
-        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
-        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
-
-        <div class="col-md-12">
-            <div class="card card-outline-primary">
-                <div class="card-body collapse show">
-                    <div class="card-block card-dashboard">
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                @if (rightsModel.Insert)
-                                {
-                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
-                                        <i class="fa fa-plus mr-1"></i>Add New User
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                        <table class="table display nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldata">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>User Name</th>
-                                            <th>Email</th>
-                                            <th>Mobile No</th>
-                                            <th>Role Name</th>
-                                            @* <th>Is Password Reset</th> *@
-                                            <th>Is Active</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+@section Styles {
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/dataTables.bootstrap5.min.css")" />
+    <!-- DataTables Responsive CSS -->
+    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/responsive.bootstrap.min.css")" />
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/buttons.dataTables.min.css")" />
+}
 
 @section Scripts {
+    <!-- DataTables Core JS -->
+    <script src="@Href("~/Admin/libs/datatable/js/jquery.dataTables.min.js")"></script>
+    <script src="@Href("~/Admin/libs/datatable/js/dataTables.bootstrap5.min.js")"></script>
+    <!-- DataTables Responsive JS -->
+    <script src="@Href("~/Admin/libs/datatable/js/dataTables.responsive.min.js")"></script>
+    <!-- DataTables Buttons JS -->
+    <script src="@Href("~/Admin/libs/datatable/js/dataTables.buttons.min.js")"></script>
+    <script src="@Href("~/Admin/libs/datatable/js/buttons.print.min.js")"></script>
+    <script src="@Href("~/Admin/libs/datatable/js/buttons.html5.min.js")"></script>
 
-    <script src="@Href("~/Admin/js/PageDetails/UserDetailMaster/UserMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/pagedetails/usermaster/usermaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+}
 
-<!-- Modal -->
-<div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h4 class="modal-title text-white" id="myModalLabel9"><i class="fa fa-plus"></i>User Form</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="frmAddEdit" autocomplete="off" >
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="Id" />
-                    <div class="form-group mt-2">
+@section Modals {
+    <div id="mdlAddNew" class="modal fade zoomIn" tabindex="-1" aria-labelledby="mdlLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="mdlLabel">User Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="frmAddEdit" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
                         <div class="row">
-
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="FirstName" class="control-label">First Name</label>
-                                    <input type="text" asp-for="FirstName" class="form-control border-primary" placeholder="Enter First Name">
+                                <div class="mb-3">
+                                    <label asp-for="FirstName" class="form-label">First Name</label>
+                                    <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter First Name">
                                     <span asp-validation-for="FirstName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="LastName" class="control-label">Last Name</label>
-                                    <input type="text" asp-for="LastName" class="form-control border-primary" placeholder="Enter Last Name">
+                                <div class="mb-3">
+                                    <label asp-for="LastName" class="form-label">Last Name</label>
+                                    <input type="text" asp-for="LastName" class="form-control" placeholder="Enter Last Name">
                                     <span asp-validation-for="LastName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Username" class="control-label">User Name</label>
-                                    <input type="text" asp-for="Username" class="form-control border-primary" autocomplete="off" readonly="readonly" placeholder="Enter User Name">
+                                <div class="mb-3">
+                                    <label asp-for="Username" class="form-label">User Name</label>
+                                    <input type="text" asp-for="Username" class="form-control" autocomplete="off" readonly="readonly" placeholder="Enter User Name">
                                     <span asp-validation-for="Username" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="UserPassword" class="control-label">User Password</label>
-                                        <input type="password" asp-for="UserPassword" autocomplete="off" class="form-control border-primary validpassword" placeholder="Enter User Password">
+                                <div class="mb-3">
+                                    <label asp-for="UserPassword" class="form-label">User Password</label>
+                                    <input type="password" asp-for="UserPassword" autocomplete="off" class="form-control validpassword" placeholder="Enter User Password">
                                     <span asp-validation-for="UserPassword" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="Email" class="control-label">Email</label>
-                                    <input type="email" asp-for="Email" class="form-control border-primary" placeholder="Enter Email">
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input type="email" asp-for="Email" class="form-control" placeholder="Enter Email">
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="PhoneNo" class="control-label">Mobile No</label>
-                                    <input type="text" asp-for="PhoneNo" class="form-control border-primary" placeholder="Enter Mobile No">
+                                <div class="mb-3">
+                                    <label asp-for="PhoneNo" class="form-label">Mobile No</label>
+                                    <input type="text" asp-for="PhoneNo" class="form-control" placeholder="Enter Mobile No">
                                     <span asp-validation-for="PhoneNo" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label asp-for="RoleId" class="control-label">Role</label>
-
-                                    <select class="form-control" asp-for="RoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
+                                <div class="mb-3">
+                                    <label asp-for="RoleId" class="form-label">Role</label>
+                                    <select class="form-select" data-choices asp-for="RoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
                                         <option value="">--Select Role--</option>
                                     </select>
                                     <span asp-validation-for="RoleId" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4 mt-1">
-                                <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                                    <input type="checkbox" class="custom-control-input" asp-for="IsActive"/>
-                                    <label class="custom-control-label float-left" for="IsActive">Is Active</label>
+                            <div class="col-md-4">
+                            <label asp-for="RoleId" class="form-label">Status</label>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" asp-for="IsActive" />
+                                    <label class="form-check-label" for="IsActive">Is Active</label>
                                 </div>
                             </div>
-                            @* <div class="col-md-4 mt-1">
-                                <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                                    <input type="checkbox" class="custom-control-input" asp-for="IsPasswordReset"/>
-                                    <label class="custom-control-label float-left" for="IsActive">Is Password reset</label>
-                                </div>
-                            </div> *@
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnMdlSave">Save Changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+}
+
+
+<input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+<input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card" id="customerList">
+            <div class="card-header border-bottom-dashed">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm">
+                        <div>
+                            <h5 class="card-title mb-0">Customer List</h5>
                         </div>
                     </div>
-                </form>
+                    <div class="col-sm-auto">
+                        <div class="d-flex flex-wrap align-items-start gap-2">
+                            <button class="btn btn-soft-danger" id="remove-actions" onclick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button>
+                            <button type="button" class="btn btn-success add-btn" id="btnAddNew"><i class="ri-add-line align-bottom me-1"></i> Add New User</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
-                <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
-            </div>
+            <div class="card-body">
+                <table class="table table-bordered nowrap table-striped align-middle" id="tbldata">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Mobile No</th>
+                            <th>Role Name</th>
+                            <th>Is Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div><!-- end card -->
         </div>
+        <!-- end col -->
     </div>
+    <!-- end col -->
 </div>
-
-}
