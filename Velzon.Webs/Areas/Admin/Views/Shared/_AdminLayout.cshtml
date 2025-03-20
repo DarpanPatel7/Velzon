@@ -41,7 +41,7 @@
     <meta name="description" content="Multipurpose Admin & Dashboard Template.">
     <meta name="keywords" content="Multipurpose Admin & Dashboard Template">
     <meta name="author" content="GIL">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <!-- App favicon -->
@@ -64,6 +64,14 @@
         javascript: window.history.forward(1);
     </script>
 
+    @RenderSection("DataTableCssLoad", required: false)
+    @if (IsSectionDefined("DataTableCssLoad"))
+    {
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/dataTables.bootstrap5.min.css")" />
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/responsive.bootstrap.min.css")" />
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/buttons.dataTables.min.css")" />
+    }
     @RenderSection("Styles", required: false)
 </head>
 
@@ -865,9 +873,24 @@
             <!-- Start Page-content -->
             <div class="page-content">
                 <div class="container-fluid">
-                    <!-- start page title -->
+                    <!-- start page breadcrum -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                @{
+                                    var stringBreadcrumData = Velzon.Webs.Common.Functions.GetAdminBreadcum(Url, Context);
+                                    if (!string.IsNullOrWhiteSpace(stringBreadcrumData))
+                                    {
+                                        @Html.Raw(stringBreadcrumData)
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page breadcrum -->
+                    <!-- start page -->
                     @RenderBody()
-                    <!-- end page title -->
+                    <!-- end page -->
                 </div>
                 <!-- container-fluid -->
             </div>
@@ -1612,6 +1635,17 @@
         var allowInspectElement = @Functions.allowInspectElement.ToString().ToLower();
     </script>
 
+    @RenderSection("DataTableJsLoad", required: false)
+    @if (IsSectionDefined("DataTableJsLoad"))
+    {
+        <!-- DataTables Core JS -->
+        <script src="@Href("~/Admin/libs/datatable/js/jquery.dataTables.min.js")"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.bootstrap5.min.js")"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.responsive.min.js")"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.buttons.min.js")"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/buttons.print.min.js")"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/buttons.html5.min.js")"></script>
+    }
     @RenderSection("Scripts", required: false)
     @RenderSection("Modals", required: false)
 </body>

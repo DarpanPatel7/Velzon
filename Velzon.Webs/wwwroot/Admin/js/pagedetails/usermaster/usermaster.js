@@ -2,7 +2,6 @@
  * Page User Master
  */
 
-
 "use strict";
 
 var datatable; // Declare globally
@@ -66,8 +65,16 @@ $(function () {
         });
     });
 
-    // Delete Record
+    // open form modal
     $(document).on("click", "#add" + main, function () {
+        $('#Username').attr('readonly', false);
+        //$.resetForm('#addedit' + main + 'Form')
+        $.resetForm('#addedit' + main + 'Form', {
+            defaultValues: {
+                Id: 0
+            },
+            skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
+        });
         $('#addedit' + main + 'Modal').modal('show');
     });
 
@@ -76,27 +83,28 @@ $(function () {
         FrontEncryptFront("Username");
         $.easyAjax({
             container: "#addedit" + main + "Form",
-            url: ResolveUrl("/Admin/SaveUserData"),
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
             blockUI: "#addeditUserModal .modal-content",
             disableButton: true,
             formReset: true,
+            restrictPopupClose: true,
             datatable: datatable,
         });
         document.getElementById("Username").value = FrontdValue(document.getElementById("Username").value);
     });
 
     // render edit data
-    /*$(document).on("click", ".edit" + main, function () {
-        var url = $(this).data("url");
+    $(document).on("click", ".edit" + main, function () {
+        let url = $(this).attr("data-url"); // Get edit URL
+        let id = $(this).attr("data-id"); // Get edit id
         $.easyAjax({
             url: url,
-            type: "GET",
-            //appendHtml: "#edit" + main + "Content",
+            type: "POST",
+            data: { id: id }, // Send id in the request body
             showModal: "#addedit" + main + "Modal",
             blockUI: true,
-            initSelect2: "#edit" + main + "Modal",
+            initSelect2: "#addedit" + main + "Modal",
             success: function (data) {
                 $("#Username").attr("readonly", true);
                 var dataList = data.result;
@@ -116,24 +124,10 @@ $(function () {
                         }
                     }
                 });
-                $('#mdlAddNew').modal('show');
+                $("#addedit" + main + "Modal").modal('show');
                 HideLoader();
             },
         });
-    });*/
-
-    // update
-    /*$("body").on("click", "#edit" + main + "Submit", function (event) {
-        $.easyAjax({
-            container: "#edit" + main + "Form",
-            type: "PATCH",
-            buttonSelector: "#edit" + main + "Submit",
-            //file: true,
-            blockUI: true,
-            disableButton: true,
-            formReset: true,
-            datatable: datatable,
-        });
-    });*/
+    });
 
 });

@@ -476,6 +476,35 @@ namespace Velzon.Webs.Common
             }
             return stringBuilder.ToString();
         }
+
+        public static string GetAdminBreadcum(IUrlHelper url, HttpContext httpContext)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            string strCurrentPath = httpContext.Request.Path.Value.Replace("/Home/", ""); // Remove redundant ToString()
+
+            using (IAdminMenuMasterService adminMenuMasterService = new AdminMenuMasterService())
+            {
+                List<AdminMenuMasterModel> lstMenuList = adminMenuMasterService.GetList();
+                var mainModel = lstMenuList.FirstOrDefault(x => x.MenuURL == strCurrentPath);
+
+                // Set default values in case mainModel is null
+                string pageTitle = mainModel?.Name ?? "Dashboard";
+                string parentTitle = mainModel?.ParentName ?? "Dashboard";
+
+                stringBuilder.Append($@"
+                <h4 class='mb-sm-0'>{pageTitle}</h4>
+                <div class='page-title-right'>
+                    <ol class='breadcrumb m-0'>
+                        <li class='breadcrumb-item'><a href='javascript:void(0);'>{parentTitle}</a></li>
+                        <li class='breadcrumb-item active'>{pageTitle}</li>
+                    </ol>
+                </div>");
+            }
+
+            return stringBuilder.ToString();
+        }
+
+
         private static string CreatePublicSubBreadCum(List<CMSMenuResourceModel> lstMenuList, long parentId)
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -491,6 +520,7 @@ namespace Velzon.Webs.Common
             }
             return stringBuilder.ToString();
         }
+
         public string GreateHashString(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -660,62 +690,33 @@ namespace Velzon.Webs.Common
 
             return strCurrentPath;
         }
-
-        /*private static string GetParentIdString(IUrlHelper urlHelper, MenuRightsMasterModel mainMenu, List<MenuRightsMasterModel> lstList, string strCurrentPath)
-        {
-            bool isActive = false;
-            if (mainMenu.MenuURL.ToString().ToLower() == strCurrentPath.ToLower())
-            {
-                isActive = true;
-            }
-            StringBuilder strMenu = new StringBuilder();
-            List<MenuRightsMasterModel> lstSubList = lstList.Where(x => x.ParentId == mainMenu.Id).OrderBy(x => x.ParentId).ThenBy(n => n.MenuRank).ToList();
-            if (lstSubList.Count() > 0)
-            {
-                strMenu.Append("<li class='has-sub nav-item'><a href='#'><span data-i18n='' class='menu-title'>" + mainMenu.Name + "</span></a><ul class='menu-content'>");
-                foreach (var mainMenus in lstSubList)
-                {
-                    if (lstSubList.Count() > 0)
-                    {
-                        strMenu.Append(GetParentIdString(urlHelper, mainMenus, lstList, strCurrentPath));
-                    }
-                    else
-                    {
-                        string strPath = mainMenu.MenuURL;
-                        strMenu.Append("<li " + (strPath == strCurrentPath ? " class=\"active\"" : "") + " ><a href='" + (string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath)) + "' >" + mainMenu.Name + "</a></li>");
-                    }
-                }
-                strMenu.Append("</ul></li>");
-            }
-            else
-            {
-                string strPath = mainMenu.MenuURL;
-                strMenu.Append("<li " + (strPath == strCurrentPath ? " class=\"active\"" : "") + " ><a href='" + (string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath)) + "' >" + mainMenu.Name + "</a></li>");
-            }
-
-            return strMenu.ToString();
-        }*/
-
         private static string GetParentIdString(IUrlHelper urlHelper, MenuRightsMasterModel mainMenu, List<MenuRightsMasterModel> lstList, string strCurrentPath)
         {
             bool isActive = mainMenu.MenuURL?.ToLower() == strCurrentPath.ToLower();
-            StringBuilder strMenu = new StringBuilder();
 
-            // Get child items
+            // Get child items (submenus)
             List<MenuRightsMasterModel> lstSubList = lstList
                 .Where(x => x.ParentId == mainMenu.Id)
                 .OrderBy(x => x.MenuRank)
                 .ToList();
 
-            // Check if this menu has submenus (child items)
-            if (lstSubList.Count > 0)
+            // Determine if any child item is active
+            bool hasActiveChild = lstSubList.Any(subMenu => subMenu.MenuURL?.ToLower() == strCurrentPath.ToLower());
+
+            // If this menu has active child, mark parent as active and expanded
+            string parentActiveClass = hasActiveChild ? " active" : "";
+            string parentExpandedClass = hasActiveChild ? " show" : "";
+
+            StringBuilder strMenu = new StringBuilder();
+
+            if (lstSubList.Count > 0) // If has submenus
             {
                 strMenu.Append($@"
                 <li class='nav-item'>
-                    <a class='nav-link menu-link' href='#sidebar-{mainMenu.Id}' data-bs-toggle='collapse' role='button' aria-expanded='false' aria-controls='sidebar-{mainMenu.Id}'>
+                    <a class='nav-link menu-link{parentActiveClass}' href='#sidebar-{mainMenu.Id}' data-bs-toggle='collapse' role='button' aria-expanded='{(hasActiveChild ? "true" : "false")}' aria-controls='sidebar-{mainMenu.Id}'>
                         <i class='ri-dashboard-2-line'></i> <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
                     </a>
-                    <div class='collapse menu-dropdown' id='sidebar-{mainMenu.Id}'>
+                    <div class='collapse menu-dropdown{parentExpandedClass}' id='sidebar-{mainMenu.Id}'>
                         <ul class='nav nav-sm flex-column'>");
 
                 // Loop through submenus
@@ -726,15 +727,15 @@ namespace Velzon.Webs.Common
 
                 strMenu.Append("</ul></div></li>");
             }
-            else
+            else // Direct link (no submenu)
             {
-                // This is a direct link (no submenu)
                 string strPath = mainMenu.MenuURL;
-                string activeClass = isActive ? " class='active'" : "";
+                string activeClass = isActive ? " active" : "";
+                string href = string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath);
 
                 strMenu.Append($@"
-                <li class='nav-item'{activeClass}>
-                    <a href='{(string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath))}' class='nav-link'>
+                <li class='nav-item'>
+                    <a href='{href}' class='nav-link{activeClass}'>
                         <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
                     </a>
                 </li>");
@@ -759,7 +760,7 @@ namespace Velzon.Webs.Common
                 }
             }
         }
-
+        
         public static PageRightsModel GetViewPageRights(long lgRoleId, HttpContext httpContext)
         {
             using (IMenuRightsMasterService menuRightsMasterService = new MenuRightsMasterService())

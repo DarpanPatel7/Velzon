@@ -5,32 +5,15 @@
     var rightsModel = Functions.GetPageRightsCheck(Context.Session);
 }
 
-@section Styles {
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/dataTables.bootstrap5.min.css")" />
-    <!-- DataTables Responsive CSS -->
-    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/responsive.bootstrap.min.css")" />
-    <!-- DataTables Buttons CSS -->
-    <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/buttons.dataTables.min.css")" />
-}
-
+@section DataTableCssLoad {}
+@section DataTableJsLoad {}
 @section Scripts {
-    <!-- DataTables Core JS -->
-    <script src="@Href("~/Admin/libs/datatable/js/jquery.dataTables.min.js")"></script>
-    <script src="@Href("~/Admin/libs/datatable/js/dataTables.bootstrap5.min.js")"></script>
-    <!-- DataTables Responsive JS -->
-    <script src="@Href("~/Admin/libs/datatable/js/dataTables.responsive.min.js")"></script>
-    <!-- DataTables Buttons JS -->
-    <script src="@Href("~/Admin/libs/datatable/js/dataTables.buttons.min.js")"></script>
-    <script src="@Href("~/Admin/libs/datatable/js/buttons.print.min.js")"></script>
-    <script src="@Href("~/Admin/libs/datatable/js/buttons.html5.min.js")"></script>
-
     <script src="@Href("~/Admin/js/pagedetails/usermaster/usermaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
 }
 
 @section Modals {
-    <div id="addeditUserModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="mdlLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div id="addeditUserModal" class="modal fade" tabindex="-1" aria-labelledby="mdlLabel" style="display: none;">
+        <div class="modal-dialog modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-light p-3">
                     <h5 class="modal-title" id="mdlLabel">User Form</h5>
@@ -93,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                            <label asp-for="RoleId" class="form-label">Status</label>
+                                <label asp-for="RoleId" class="form-label">Status</label>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" asp-for="IsActive" />
                                     <label class="form-check-label" for="IsActive">Is Active</label>
@@ -111,7 +94,6 @@
     </div><!-- /.modal -->
 }
 
-
 <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
 <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
 
@@ -122,7 +104,7 @@
                 <div class="row g-4 align-items-center">
                     <div class="col-sm">
                         <div>
-                            <h5 class="card-title mb-0">Customer List</h5>
+                            <h5 class="card-title mb-0">User List</h5>
                         </div>
                     </div>
                     <div class="col-sm-auto">

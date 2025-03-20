@@ -1613,6 +1613,10 @@ $.getURLParam = function (name) {
     return encodeURIComponent(decodeURI(results[1])) || 0;
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function GetDateWithFormat(date, sep = '/') {
     try {
         if (date !== null && date !== undefined) {

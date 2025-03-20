@@ -56,7 +56,6 @@
             // Initialize DataTable
             var inDatatable = dt_selector.DataTable(finalOptions);
 
-            console.log(`DataTable initialized successfully for selector: '${selector}'`);
             return inDatatable;
 
         } catch (error) {
@@ -72,10 +71,12 @@
             showCancelButton: options.showCancelButton ?? true,
             confirmButtonText: options.confirmButtonText ?? "Yes, delete it!",
             cancelButtonText: options.cancelButtonText ?? "Cancel",
-            confirmButtonClass: options.confirmButtonClass ?? "btn btn-primary w-xs me-2 mt-2",
-            cancelButtonClass: options.cancelButtonClass ?? "btn btn-danger w-xs mt-2",
             buttonsStyling: options.buttonsStyling ?? false,
             showCloseButton: options.showCloseButton ?? true,
+            customClass: {
+                confirmButton: options.confirmButtonClass ?? "btn btn-primary w-xs me-2 mt-2",
+                cancelButton: options.cancelButtonClass ?? "btn btn-danger w-xs mt-2"
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 if (typeof options.onConfirm === "function") {
@@ -95,46 +96,46 @@
         });
     };
 
-    $.ShowMessage = function(msgDescription, msgTitle = "", msgType = "info", msgTimer = 0, msgShowButton = true) {
+    $.ShowMessage = function (msgDescription, msgTitle = "", msgType = "info", msgTimer = 0, msgShowButton = true) {
         let swalOptions = {
             title: msgTitle,
             text: msgDescription,
             icon: msgType,
             timer: msgTimer > 0 ? msgTimer : undefined,
             showConfirmButton: msgShowButton,
-            buttonsStyling: false
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: "btn btn-primary w-xs me-2 mt-2",
+                cancelButton: "btn btn-danger w-xs mt-2"
+            }
         };
 
-        // Custom styles and additional options based on message type
+        // Additional options based on message type
         switch (msgType) {
             case "success":
                 swalOptions.showCancelButton = true;
-                swalOptions.confirmButtonClass = "btn btn-primary w-xs me-2 mt-2";
-                swalOptions.cancelButtonClass = "btn btn-danger w-xs mt-2";
                 break;
 
             case "error":
-                swalOptions.confirmButtonClass = "btn btn-primary w-xs mt-2";
                 break;
 
             case "warning":
                 swalOptions.showCancelButton = true;
-                swalOptions.confirmButtonClass = "btn btn-primary w-xs me-2 mt-2";
-                swalOptions.cancelButtonClass = "btn btn-danger w-xs mt-2";
                 swalOptions.confirmButtonText = "Yes, delete it!";
                 swalOptions.preConfirm = () => {
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success",
-                        confirmButtonClass: "btn btn-primary w-xs mt-2",
-                        buttonsStyling: false
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: "btn btn-primary w-xs mt-2"
+                        }
                     });
                 };
                 break;
 
             case "info":
-                swalOptions.confirmButtonClass = "btn btn-primary w-xs mt-2";
                 break;
         }
 
@@ -145,47 +146,178 @@
         });
     };
 
+    $.resetForm = function (formId, options = {}) {
+        var $form = $(formId);
+
+        if ($form.length === 0) {
+            console.warn("Form not found:", formId);
+            return;
+        }
+
+        // Detect and store Antiforgery Token field value before reset
+        var antiforgeryField = $form.find("input[type='hidden'][name='AntiforgeryFieldname']");
+        var antiforgeryValue = antiforgeryField.val(); // Store current value
+
+        // Default options
+        var defaults = {
+            skipFields: [], // Allow skipping custom fields
+            defaultValues: {}, // Custom default values
+            afterReset: function () { } // Callback after reset
+        };
+
+        var settings = $.extend({}, defaults, options);
+
+        // Always ensure Antiforgery Token is skipped
+        if (antiforgeryField.length) {
+            settings.skipFields.push("AntiforgeryFieldname");
+        }
+
+        // Reset the form (resets all fields)
+        $form[0].reset();
+
+        // Restore Antiforgery Token value after reset
+        if (antiforgeryField.length) {
+            antiforgeryField.val(antiforgeryValue);
+        }
+
+        // Manually reset hidden fields except skipped fields
+        $form.find("input[type='hidden']").each(function () {
+            var fieldName = $(this).attr("name");
+            if (!settings.skipFields.includes(fieldName)) {
+                $(this).val(settings.defaultValues[fieldName] || ""); // Set default or empty
+            }
+        });
+
+        // Set custom default values for specified fields
+        $.each(settings.defaultValues, function (fieldName, value) {
+            if (!settings.skipFields.includes(fieldName)) {
+                $form.find("[name='" + fieldName + "']").val(value);
+            }
+        });
+
+        // Trigger afterReset callback
+        settings.afterReset.call($form);
+    };
+
     $.blockPopupClose = function (selector) {
         var $modal = $(selector);
-        var keyboard = false; // Prevent to close by ESC
-        var backdrop = "static"; // Prevent to close on click outside the modal
 
-        if (typeof $modal.data("bs.modal") === "undefined") {
-            // Modal did not open yet
+        var keyboard = false; // Prevent closing by ESC
+        var backdrop = "static"; // Prevent closing on click outside the modal
+        var modalInstance = bootstrap.Modal.getInstance($modal[0]); // Get existing instance
+
+        if (!modalInstance) {
+            // Modal has not been initialized yet
             $modal.modal({
                 keyboard: keyboard,
-                backdrop: backdrop,
+                backdrop: backdrop
             });
         } else {
-            // Modal has already been opened
-            $modal.data("bs.modal")._config.keyboard = keyboard;
-            $modal.data("bs.modal")._config.backdrop = backdrop;
+            // Modal already exists, update options
+            modalInstance._config.keyboard = keyboard;
+            modalInstance._config.backdrop = backdrop;
 
-            if (keyboard === false) {
-                $modal.off("keydown.dismiss.bs.modal"); // Disable ESC
+            if (!keyboard) {
+                $modal.off("keydown.dismiss.bs.modal"); // Disable ESC key
             } else {
-                //
-                $modal.data("bs.modal").escape(); // Resets ESC
+                $modal.on("keydown.dismiss.bs.modal", function (event) {
+                    if (event.key === "Escape") {
+                        modalInstance.hide();
+                    }
+                });
             }
         }
     };
 
     $.unblockPopupClose = function (selector) {
         var $modal = $(selector);
-        var keyboard = true; // Prevent to close by ESC
-        var backdrop = false; // Prevent to close on click outside the modal
+        var keyboard = true; // Allow closing by ESC
+        var backdrop = true; // Allow closing on click outside the modal
 
-        if (typeof $modal.data("bs.modal") === "undefined") {
-            // Modal did not open yet
+        var modalInstance = bootstrap.Modal.getInstance($modal[0]); // Get existing instance
+
+        if (!modalInstance) {
+            // Modal has not been initialized yet
             $modal.modal({
                 keyboard: keyboard,
                 backdrop: backdrop,
             });
         } else {
-            // Modal has already been opened
-            $modal.data("bs.modal")._config.keyboard = keyboard;
-            $modal.data("bs.modal")._config.backdrop = backdrop;
+            // Modal already exists, update options correctly
+            modalInstance._config.keyboard = keyboard;
+            modalInstance._config.backdrop = backdrop;
+
+            // Restore ESC key functionality
+            $modal.off("keydown.dismiss.bs.modal").on("keydown.dismiss.bs.modal", function (event) {
+                if (event.key === "Escape") {
+                    modalInstance.hide();
+                }
+            });
         }
+    };
+
+    $.easyBlockUI = function (blockUI, message) {
+        if (message != '') {
+            message = '<div class="d-flex justify-content-center"><p class="mb-0">' + message + '</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>';
+        } else {
+            message = '<div class="spinner-border text-white" role="status"></div>';
+        }
+
+        if (blockUI != undefined) {
+            // element blocking
+            var el = $(blockUI);
+            var centerY = false;
+            if (el.height() <= $(window).height()) {
+                centerY = true;
+            }
+            el.block({
+                message: message,
+                baseZ: 999999,
+                centerX: true,
+                centerY: centerY,
+                css: {
+                    backgroundColor: 'transparent',
+                    border: '0'
+                },
+                overlayCSS: {
+                    opacity: 0.5,
+                    cursor: "wait",
+                }
+            });
+        } else {
+            // page blocking
+            $.blockUI({
+                message: '<div class="spinner-border text-white" role="status"></div>',
+                baseZ: 999999,
+                css: {
+                    backgroundColor: 'transparent',
+                    border: '0'
+                },
+                overlayCSS: {
+                    opacity: 0.5,
+                    cursor: "wait",
+                }
+            });
+        }
+    };
+
+    $.easyUnblockUI = function (blockUI) {
+        $(blockUI).unblock();
+        $.unblockUI();
+    };
+
+    $.loadingButton = function (selector) {
+        var button = $(selector);
+        if (button.find("span.spinner-border-sm-new").length === 0) {
+            button.prepend('<span class="spinner-border-sm-new me-2" role="status"></span>');
+        }
+        button.prop("disabled", true);
+    };
+
+    $.unloadingButton = function (selector) {
+        var button = $(selector); // Fix: Directly use selector
+        button.find("span.spinner-border-sm-new").remove(); // Fix: Use `find` instead of `children`
+        button.prop("disabled", false);
     };
 
 })(jQuery);
@@ -213,7 +345,6 @@
             appendHtml: false,
             showModal: false,
             hideModal: true,
-            sweetAlert: false,
             restrictPopupClose: false,
             blockUIMessage:"",
             datatable: false,
@@ -245,7 +376,7 @@
                 }
 
                 if (opt.disableButton) {
-                    loadingButton(opt.buttonSelector);
+                    $.loadingButton(opt.buttonSelector);
                 }
 
                 if (opt.restrictPopupClose) {
@@ -264,7 +395,7 @@
                 }
 
                 if (opt.disableButton) {
-                    unloadingButton(opt.buttonSelector);
+                    $.unloadingButton(opt.buttonSelector);
                 }
 
                 if (opt.restrictPopupClose) {
@@ -294,14 +425,7 @@
             opt.error = function (jqXHR, textStatus, errorThrown) {
                 try {
                     var response = JSON.parse(jqXHR.responseText);
-                    console.log(response);
                     if (typeof response == "object") {
-                        if (opt.type == "DELETE" || opt.sweetAlert) {
-                            $(".sweet-alert .confirm")
-                                .removeClass("is-loading")
-                                .prop("disabled", false);
-                        }
-
                         handleFail(response, opt);
                     } else {
                         var msg =
@@ -314,11 +438,6 @@
                         $.ShowMessage(msg + '!', "Error!", "error");
                     }
                 } catch (e) {
-                    if (opt.type == "DELETE" || opt.sweetAlert) {
-                        $(".sweet-alert .confirm")
-                            .removeClass("is-loading")
-                            .prop("disabled", false);
-                    }
                     // when session expire then it reload user to login page
                     // window.location.reload();
                 }
@@ -328,23 +447,6 @@
         $.loadAjax = function() {
             //set post data based on file object //if file upload is set to true then it will set to formdata format
             var post_data = {};
-            /*if (typeof opt.data !== "undefined" && Object.keys(opt.data).length > 0) {
-                post_data = opt.data;
-            } else {
-                if (opt.file == true) {
-
-                    var data = new FormData($(opt.container)[0]);
-                    var keys = Object.keys(opt.data);
-
-                    for (var i = 0; i < keys.length; i++) {
-                        data.append(keys[i], opt.data[keys[i]]);
-                    }
-
-                    post_data = data;
-                } else {
-                    post_data = $(opt.container).serializeArray();
-                }
-            }*/
             if (typeof opt.data !== "undefined" && Object.keys(opt.data).length > 0) {
                 post_data = opt.data;
                 // Check if post_data is an object before adding a new property
@@ -366,30 +468,15 @@
                     }
 
                     post_data = data;
-
-                    // Log FormData entries
-                    console.log("Logging FormData:");
-                    for (var pair of data.entries()) {
-                        console.log(pair[0] + ": " + pair[1]);
-                    }
                 } else {
-                    //post_data = $(opt.container).serializeArray();
                     post_data = $(opt.container).serialize();
 
                     // Check if antiforgery token exists in serialized data
                     if (!post_data.includes("AntiforgeryFieldname") && opt.antiforgeryToken) {
                         post_data += (post_data ? "&" : "") + "AntiforgeryFieldname=" + encodeURIComponent(opt.antiforgeryToken);
                     }
-
-                    // Log serialized form data
-                    console.log("Serialized Form Data:", post_data);
                 }
             }
-
-            // Log final post data
-            console.log("Final Post Data:", post_data);
-
-            console.log(opt);
 
             $.ajax({
                 async: opt.async,
@@ -427,12 +514,15 @@
 
                                 // Show modal if `opt.showModal` is specified
                                 if (opt.showModal) {
+                                    console.log('showModal')
                                     $(opt.showModal).modal("show");
                                 }
 
                                 // Reset the form if `opt.formReset` is true and the form exists
                                 if (opt.formReset && $(opt.container).length) {
-                                    $(opt.container)[0].reset();
+                                    $.resetForm(opt.container, {
+                                        skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
+                                    })
                                 }
 
                                 // Reload the page if `opt.reload` is true
@@ -442,7 +532,18 @@
 
                                 // If a DataTable instance is provided, refresh it
                                 if (opt.datatable && typeof opt.datatable.ajax.reload === "function") {
-                                    opt.datatable.ajax.reload(null, false); // `false` keeps pagination, `true` resets to page 1
+                                    //opt.datatable.ajax.reload(null, false); // `false` keeps pagination, `true` resets to page 1
+                                    opt.datatable.ajax.reload(function () {
+                                        opt.datatable.column(0).nodes().each(function (cell, i) {
+                                            cell.innerHTML = i + 1;
+                                        });
+
+                                        // Get DataTable ID dynamically
+                                        let tableId = opt.datatable.table().node().id;
+
+                                        // Adjust content height after reload
+                                        setTimeout(() => forceLayoutFix(tableId), 50);
+                                    }, false);
                                     $('.modal').modal("hide"); // Hide any open modal after updating DataTable
                                     $.ShowMessage(response.strMessage, "Success!", "success");
                                 }
@@ -463,33 +564,27 @@
             });
         }
 
+        function forceLayoutFix(tableId) {
+            let table = $('#' + tableId); // Select table dynamically
+            let windowHeight = $(window).height();
+            let tableBottom = table.offset().top + table.outerHeight();
+            let footerHeight = $('.footer').outerHeight();
+
+            if (tableBottom + footerHeight < windowHeight) {
+                $('.footer').css({ position: 'fixed', bottom: '0', width: '100%' });
+            } else {
+                $('.footer').css({ position: 'absolute' });
+            }
+        }
+
         // ✅ Call after defining $.loadAjax
-        if (opt.type === "DELETE" || opt.deleteConfirmation) {
+        if (opt.deleteConfirmation) {
             $.showDeleteConfirmation();
         } else {
             $.loadAjax(opt);
         }
 
-        function loadingButton(selector) {
-            var button = $(selector);
-            if (button.find("span.spinner-border-sm-new").length === 0) {
-                button.prepend('<span class="spinner-border-sm-new me-2" role="status" aria-hidden="true"></span>');
-            }
-            button.prop("disabled", true);
-        }
-
-        function unloadingButton(selector) {
-            var button = $(selector); // Fix: Directly use selector
-
-            console.log("Before unloading:", button.html()); // Debugging
-
-            button.find("span.spinner-border-sm-new").remove(); // Fix: Use `find` instead of `children`
-            button.prop("disabled", false);
-
-            console.log("After unloading:", button.html()); // Debugging
-        }
-
-
+        
         
     };
 
@@ -580,57 +675,6 @@
         }
     }
 
-    $.easyBlockUI = function (blockUI, message) {
-        if (message != '') {
-            message = '<div class="d-flex justify-content-center"><p class="mb-0">'+message+'</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>';
-        }else{
-            message = '<div class="spinner-border text-white" role="status"></div>';
-        }
-
-        if (blockUI != undefined) {
-            // element blocking
-            var el = $(blockUI);
-            var centerY = false;
-            if (el.height() <= $(window).height()) {
-                centerY = true;
-            }
-            el.block({
-                message: message,
-                baseZ: 999999,
-                centerX: true,
-                centerY: centerY,
-                css: {
-                    backgroundColor: 'transparent',
-                    border: '0'
-                },
-                overlayCSS: {
-                    opacity: 0.5,
-                    cursor: "wait",
-                }
-            });
-        } else {
-            // page blocking
-            $.blockUI({
-                message: '<div class="spinner-border text-white" role="status"></div>',
-                baseZ: 999999,
-                css: {
-                    backgroundColor: 'transparent',
-                    border: '0'
-                },
-                overlayCSS: {
-                    opacity: 0.5,
-                    cursor: "wait",
-                }
-            });
-        }
-    };
-
-    $.easyUnblockUI = function (blockUI) {
-        $(blockUI).unblock();
-
-        $.unblockUI();
-    };
-
     $.ajaxModal = function (selector, url, onLoad) {
         $(selector + " .modal-content").load(url);
 
@@ -699,11 +743,13 @@ $(document).ajaxError(function (event, jqxhr, settings, thrownError) {
 $(document).on("click", ".sweet-alert .confirm", function (e) {
     $(".sweet-alert .confirm").addClass("is-loading").prop("disabled", true);
 });
+
 $(document).on("ready", function () {
     $(".ajax-form").on("submit", function (e) {
         e.preventDefault();
     });
 });
+
 $(document).on("ajaxPageLoad", function () {
     $(".ajax-form").on("submit", function (e) {
         e.preventDefault();
