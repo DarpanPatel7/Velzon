@@ -143,7 +143,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("Username", username);
                 dapperConnection.GetListResult<CMSMenuResourceModel>("cmsRemoveCMSMenuResourceMaster", CommandType.StoredProcedure, dictionary).FirstOrDefault();
 
-                jsonResponseModel.strMessage = "Record removed successfully";
+                jsonResponseModel.strMessage = "Record removed successfully!";
                 jsonResponseModel.isError = false;
                 jsonResponseModel.type = PopupMessageType.success.ToString();
             }

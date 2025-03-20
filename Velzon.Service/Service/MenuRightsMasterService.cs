@@ -130,7 +130,7 @@ namespace Velzon.Services.Service
                 dictionaryUserRole.Add("UserRoleId", id);
                 dapperConnection.GetListResult<MenuResourceMasterModel>("cmsRemoveRoleMenuRightsByRoleId", CommandType.StoredProcedure, dictionaryUserRole).ToList();
 
-                strMessage = "Record removed successfully";
+                strMessage = "Record removed successfully!";
                 isError = false;
             }
             catch (Exception ex)

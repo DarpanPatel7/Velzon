@@ -62,7 +62,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("ChangedBy", username);
                 dapperConnection.GetListResult<MenuResourceMasterModel>("cmsRemoveMenuResourceMaster", CommandType.StoredProcedure, dictionary).ToList();
 
-                objreturn.strMessage = "Record removed successfully";
+                objreturn.strMessage = "Record removed successfully!";
                 objreturn.isError = false;
                 objreturn.type = PopupMessageType.success.ToString();
             }

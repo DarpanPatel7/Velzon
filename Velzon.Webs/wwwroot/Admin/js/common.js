@@ -170,13 +170,22 @@ $(document).ready(function () {
     });*/
 
 });
-function ShowLoader() {
+/*function ShowLoader() {
     $("#loading").show();
 }
 
 function HideLoader() {
     $("#loading").hide();
+}*/
+
+function ShowLoader() {
+    $("#preloader").css({ "opacity": "1", "visibility": "visible" });
 }
+
+function HideLoader() {
+    $("#preloader").css({ "opacity": "0", "visibility": "hidden" });
+}
+
 
 function changeSwitchery(element, checked) {
     if ((element.is(':checked') && checked == false) || (!element.is(':checked') && checked == true)) {

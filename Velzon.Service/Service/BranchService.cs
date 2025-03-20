@@ -82,7 +82,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("pId", id);
                 dictionary.Add("pUsername", username);
                 dapperConnection.GetListResult<BranchModel>("cmsRemoveBranchMaster", CommandType.StoredProcedure, dictionary).ToList();
-                jsonResponseModel.strMessage = "Record removed successfully";
+                jsonResponseModel.strMessage = "Record removed successfully!";
                 jsonResponseModel.isError = false;
                 jsonResponseModel.type = PopupMessageType.success.ToString();
             }

@@ -29,7 +29,7 @@
 }
 
 @section Modals {
-    <div id="mdlAddNew" class="modal fade zoomIn" tabindex="-1" aria-labelledby="mdlLabel" aria-hidden="true" style="display: none;">
+    <div id="addeditUserModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="mdlLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-light p-3">
@@ -37,7 +37,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmAddEdit" autocomplete="off">
+                    <form id="addeditUserForm" action="@Url.Content("~/Admin/SaveUserData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
                         <div class="row">
@@ -58,7 +58,7 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label asp-for="Username" class="form-label">User Name</label>
-                                    <input type="text" asp-for="Username" class="form-control" autocomplete="off" readonly="readonly" placeholder="Enter User Name">
+                                    <input type="text" asp-for="Username" class="form-control" autocomplete="off" placeholder="Enter User Name">
                                     <span asp-validation-for="Username" class="text-danger"></span>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="btnMdlSave">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="addeditUserSubmit">Save Changes</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -128,13 +128,13 @@
                     <div class="col-sm-auto">
                         <div class="d-flex flex-wrap align-items-start gap-2">
                             <button class="btn btn-soft-danger" id="remove-actions" onclick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button>
-                            <button type="button" class="btn btn-success add-btn" id="btnAddNew"><i class="ri-add-line align-bottom me-1"></i> Add New User</button>
+                            <button type="button" class="btn btn-success add-btn" id="addUser"><i class="ri-add-line align-bottom me-1"></i> Add New User</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-bordered nowrap table-striped align-middle" id="tbldata">
+                <table class="table table-bordered nowrap table-striped align-middle" id="datatableUser" data-url="@Url.Content("~/Admin/GetUserData")">
                     <thead>
                         <tr>
                             <th>#</th>

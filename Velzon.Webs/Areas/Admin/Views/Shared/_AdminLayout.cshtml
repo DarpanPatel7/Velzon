@@ -57,6 +57,8 @@
     <link href="@Href("~/Admin/css/app.min.css")" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="@Href("~/Admin/css/custom.min.css")" rel="stylesheet" type="text/css" />
+    <!-- sweetalert Css-->
+    <link href="@Href("~/Admin/libs/sweetalert2/sweetalert2.min.css")" rel="stylesheet" type="text/css" />
 
     <script>
         javascript: window.history.forward(1);
@@ -1584,13 +1586,31 @@
     <script src="@Href("~/Admin/libs/node-waves/waves.min.js")"></script>
     <script src="@Href("~/Admin/libs/feather-icons/feather.min.js")"></script>
     <script src="@Href("~/Admin/js/pages/plugins/lord-icon-2.1.0.js")"></script>
+    <script src="@Href("~/Admin/libs/sweetalert2/sweetalert2.min.js")"></script>
     <script src="@Href("~/Admin/js/plugins.js")"></script>
     <script src="@Href("~/Admin/js/jquery.min.js")"></script>
     <!-- App js -->
     <script src="@Href("~/Admin/js/app.js")"></script>
-    <script src="@Href("~/Admin/js/Secure/aes.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-    <script src="@Href("~/Admin/js/Secure/hash.js?dt"+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-    <script src="@Href("~/Admin/js/Common.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/secure/aes.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/secure/hash.js?dt"+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/common.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+    <script src="@Href("~/Admin/js/helper.js?dt="+@DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+
+    <script>
+        var regexGlobalValidation = new RegExp(htmlDecode("@Functions.regGlobalValidation"));
+        var regexName = new RegExp(htmlDecode("@Functions.regName"));
+        var regexMobileNo = new RegExp(htmlDecode("@Functions.regMobileNo"));
+        var regexPincode = new RegExp(htmlDecode("@Functions.regPincode"));
+        var regexNumber = new RegExp(htmlDecode("@Functions.regNumber"));
+        var regexEmail = new RegExp(htmlDecode("@Functions.regEmail"));
+        var regexPassword = new RegExp(htmlDecode("@Functions.regPassword"));
+        var regexURL = new RegExp(htmlDecode("@Functions.regURL"));
+        var dateFormat = '@Functions.dateFormat';
+        var allowModalOutsideClick = @Functions.allowModalOutsideClick.ToString().ToLower();
+        var allowKeyboardInputOnTime = @Functions.allowKeyboardInputOnTime.ToString().ToLower();
+        var allowKeyboardInputOnDate = @Functions.allowKeyboardInputOnDate.ToString().ToLower();
+        var allowInspectElement = @Functions.allowInspectElement.ToString().ToLower();
+    </script>
 
     @RenderSection("Scripts", required: false)
     @RenderSection("Modals", required: false)

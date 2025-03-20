@@ -122,7 +122,7 @@ namespace Velzon.Services.Service
 
                 if (resultList.isError != true)
                 {
-                    jsonResponseModel.strMessage = "Record removed successfully";
+                    jsonResponseModel.strMessage = "Record removed successfully!";
                     jsonResponseModel.isError = false;
                     jsonResponseModel.type = PopupMessageType.success.ToString();
                 }

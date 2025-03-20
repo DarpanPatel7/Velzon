@@ -130,7 +130,7 @@ public class ServiceRateService : IServiceRateService
             dictionary.Add("Username", username);
             dapperConnection.GetListResult<AdminMenuMasterModel>("cmsRemoveServiceRateMaster", CommandType.StoredProcedure, dictionary).ToList();
 
-            jsonResponseModel.strMessage = "Record removed successfully";
+            jsonResponseModel.strMessage = "Record removed successfully!";
             jsonResponseModel.isError = false;
             jsonResponseModel.type = PopupMessageType.success.ToString();
         }

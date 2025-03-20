@@ -92,7 +92,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("pUsername", username);
                 dapperConnection.GetListResult<StatisticModel>("cmsRemoveStatisticMaster", CommandType.StoredProcedure, dictionary).ToList();
 
-                jsonResponseModel.strMessage = "Record removed successfully";
+                jsonResponseModel.strMessage = "Record removed successfully!";
                 jsonResponseModel.isError = false;
                 jsonResponseModel.type = PopupMessageType.success.ToString();
             }
