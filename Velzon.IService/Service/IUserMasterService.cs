@@ -13,6 +13,8 @@ namespace Velzon.IService.Service
 
         JsonResponseModel AddOrUpdate(UserMasterModel model);
 
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
+
         JsonResponseModel ChangePassword(ChangePasswordModel model);
     }
 }

@@ -31,7 +31,11 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    return row.isActive ? yesBadge : noBadge;
+                    var checked = row.isActive ? "checked" : "";
+                    return `<div class="form-check form-switch">
+                        <input class="form-check-input toggle-status statusUser" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateUserStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        | ${row.isActive ? yesBadge : noBadge}
+                    </div>`;
                 }
             },
             {
@@ -60,7 +64,7 @@ $(function () {
             type: "POST",
             data: { id: id }, // Send id in the request body
             blockUI: true,
-            deleteConfirmation: true,
+            confirmation: true,
             datatable: datatable, // ✅ Use global datatable
         });
     });
@@ -127,6 +131,23 @@ $(function () {
                 $("#addedit" + main + "Modal").modal('show');
                 HideLoader();
             },
+        });
+    });
+
+    // Handle status change
+    $(document).on("click", ".status" + main, function () {
+        let url = $(this).attr("data-url"); // Get edit URL
+        let id = $(this).attr("data-id"); // Get edit id
+        let $switch = $(this); // Store reference to the switch element
+        let isActive = $switch.is(":checked") ? 1 : 0;
+        $.easyAjax({
+            url: url,
+            type: "POST",
+            data: { Id: id, IsActive: isActive }, // Send id in the request body
+            blockUI: true,
+            confirmation: true,
+            statusSwitch: $switch,
+            datatable: datatable, // ✅ Use global datatable
         });
     });
 

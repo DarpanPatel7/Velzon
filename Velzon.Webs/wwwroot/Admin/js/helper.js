@@ -63,16 +63,16 @@
         }
     };
 
-    $.showDeleteConfirmation = function (options = {}) {
+    $.showConfirmation = function (options = {}) {
         Swal.fire({
             title: options.title ?? "Are you sure?",
             text: options.text ?? "You won't be able to revert this!",
             icon: options.icon ?? "warning",
             showCancelButton: options.showCancelButton ?? true,
-            confirmButtonText: options.confirmButtonText ?? "Yes, delete it!",
+            confirmButtonText: options.confirmButtonText ?? "Yes, Confirm it!",
             cancelButtonText: options.cancelButtonText ?? "Cancel",
             buttonsStyling: options.buttonsStyling ?? false,
-            showCloseButton: options.showCloseButton ?? true,
+            showCloseButton: options.showCloseButton ?? false,
             customClass: {
                 confirmButton: options.confirmButtonClass ?? "btn btn-primary w-xs me-2 mt-2",
                 cancelButton: options.cancelButtonClass ?? "btn btn-danger w-xs mt-2"
@@ -90,8 +90,19 @@
                     $.loadAjax(); // Default to calling global loadAjax()
                 }
 
-            } else if (result.dismiss === Swal.DismissReason.cancel && typeof options.onCancel === "function") {
-                options.onCancel(); // Call cancel callback if defined
+            } else if (result.dismiss === Swal.DismissReason.cancel ||
+                result.dismiss === Swal.DismissReason.backdrop ||
+                result.dismiss === Swal.DismissReason.close) {
+
+                // ✅ Revert the switch state if `statusSwitch` is provided
+                if (options.statusSwitch) {
+                    options.statusSwitch.prop("checked", !options.statusSwitch.prop("checked"));
+                }
+
+                // ✅ Call onCancel only if it's defined
+                if (typeof options.onCancel === "function") {
+                    options.onCancel();
+                }
             }
         });
     };
@@ -113,7 +124,7 @@
         // Additional options based on message type
         switch (msgType) {
             case "success":
-                swalOptions.showCancelButton = true;
+                //swalOptions.showCancelButton = true;
                 break;
 
             case "error":
@@ -349,6 +360,8 @@
             blockUIMessage:"",
             datatable: false,
             initSelect2: false,
+            confirmation: false,
+            statusSwitch: false,
         };
 
         var opt = defaults;
@@ -444,7 +457,8 @@
             };
         }
 
-        $.loadAjax = function() {
+        $.loadAjax = function () {
+            console.log('loadAjax');
             //set post data based on file object //if file upload is set to true then it will set to formdata format
             var post_data = {};
             if (typeof opt.data !== "undefined" && Object.keys(opt.data).length > 0) {
@@ -477,6 +491,8 @@
                     }
                 }
             }
+
+            console.log(opt);
 
             $.ajax({
                 async: opt.async,
@@ -578,13 +594,18 @@
         }
 
         // ✅ Call after defining $.loadAjax
-        if (opt.deleteConfirmation) {
-            $.showDeleteConfirmation();
+        if (opt.confirmation) {
+            console.log('confirmation');
+            if (opt.statusSwitch) {
+                $.showConfirmation({
+                    statusSwitch: opt.statusSwitch, // ✅ Pass switch element to revert on cancel
+                });
+            } else {
+                $.showConfirmation();
+            }
         } else {
             $.loadAjax(opt);
         }
-
-        
         
     };
 

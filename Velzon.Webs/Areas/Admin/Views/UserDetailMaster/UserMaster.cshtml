@@ -55,8 +55,11 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label asp-for="Email" class="form-label">Email</label>
-                                    <input type="email" asp-for="Email" class="form-control" placeholder="Enter Email">
-                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                    <div class="form-icon right">
+                                        <input type="email" asp-for="Email" class="form-control form-control-icon" placeholder="Enter Email">
+                                        <i class="ri-mail-unread-line"></i>
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -109,8 +112,14 @@
                     </div>
                     <div class="col-sm-auto">
                         <div class="d-flex flex-wrap align-items-start gap-2">
-                            <button class="btn btn-soft-danger" id="remove-actions" onclick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button>
-                            <button type="button" class="btn btn-success add-btn" id="addUser"><i class="ri-add-line align-bottom me-1"></i> Add New User</button>
+                            @if (rightsModel.Delete)
+                            {
+                                <button class="btn btn-soft-danger" id="remove-actions" onclick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button>
+                            }
+                            @if (rightsModel.Insert)
+                            {
+                                <button type="button" class="btn btn-success add-btn" id="addUser"><i class="ri-add-line align-bottom me-1"></i> Add New User</button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -126,7 +135,7 @@
                             <th>Email</th>
                             <th>Mobile No</th>
                             <th>Role Name</th>
-                            <th>Is Active</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
