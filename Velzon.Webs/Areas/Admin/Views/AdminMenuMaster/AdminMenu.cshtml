@@ -100,10 +100,9 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-bordered nowrap table-striped align-middle" id="datatableAdminMenu" data-url="@Url.Content("~/Admin/GetAdminMenuData")">
-                    <thead>
-                        <tr>
-                            <th hidden></th>
+                <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableAdminMenu" data-url="@Url.Content("~/Admin/GetAdminMenuData")">
+                    <thead class="table-light">
+                        <tr class="text-uppercase">
                             <th>#</th>
                             <th>Menu Name</th>
                             <th>Menu Type</th>
@@ -112,8 +111,6 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
                 </table>
             </div>
         </div>
