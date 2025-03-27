@@ -19,6 +19,8 @@
     <Compile Remove="Views\UserDetailMaster\**" />
     <Compile Remove="wwwroot\ACMAP\**" />
     <Compile Remove="wwwroot\Admin\CK\**" />
+    <Compile Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\**" />
+    <Compile Remove="wwwroot\Admin\js\pagedetails\usermaster\**" />
     <Compile Remove="wwwroot\Guser\**" />
     <Content Remove="Areas\Admin\Data\**" />
     <Content Remove="Common\**" />
@@ -32,6 +34,8 @@
     <Content Remove="Views\UserDetailMaster\**" />
     <Content Remove="wwwroot\ACMAP\**" />
     <Content Remove="wwwroot\Admin\CK\**" />
+    <Content Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\**" />
+    <Content Remove="wwwroot\Admin\js\pagedetails\usermaster\**" />
     <Content Remove="wwwroot\Guser\**" />
     <EmbeddedResource Remove="Areas\Admin\Data\**" />
     <EmbeddedResource Remove="Common\**" />
@@ -45,6 +49,8 @@
     <EmbeddedResource Remove="Views\UserDetailMaster\**" />
     <EmbeddedResource Remove="wwwroot\ACMAP\**" />
     <EmbeddedResource Remove="wwwroot\Admin\CK\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\js\pagedetails\usermaster\**" />
     <EmbeddedResource Remove="wwwroot\Guser\**" />
     <None Remove="Areas\Admin\Data\**" />
     <None Remove="Common\**" />
@@ -58,6 +64,8 @@
     <None Remove="Views\UserDetailMaster\**" />
     <None Remove="wwwroot\ACMAP\**" />
     <None Remove="wwwroot\Admin\CK\**" />
+    <None Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\**" />
+    <None Remove="wwwroot\Admin\js\pagedetails\usermaster\**" />
     <None Remove="wwwroot\Guser\**" />
   </ItemGroup>
 
@@ -71,7 +79,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Advertisement.cshtml" />
-    <Content Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\adminmenu.js" />
     <Content Remove="wwwroot\Admin\js\pagedetails\MenuResource\MenuResourceForm.js" />
   </ItemGroup>
 
@@ -84,9 +91,7 @@
   <ItemGroup>
     <None Include="Areas\Admin\Views\Branch\BranchMaster.cshtml" />
     <None Include="Areas\Admin\Views\Utility\UtilityMaster.cshtml" />
-    <None Include="wwwroot\Admin\js\pagedetails\adminmenumaster\adminmenu.js" />
     <None Include="wwwroot\Admin\js\pagedetails\MenuResource\MenuResourceForm.js" />
-    <None Include="wwwroot\Admin\js\pagedetails\usermaster\usermaster.js" />
   </ItemGroup>
 
   <ItemGroup>
