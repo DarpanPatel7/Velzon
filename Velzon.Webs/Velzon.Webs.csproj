@@ -87,12 +87,6 @@
     <None Include="wwwroot\Admin\js\pagedetails\adminmenumaster\adminmenu.js" />
     <None Include="wwwroot\Admin\js\pagedetails\MenuResource\MenuResourceForm.js" />
     <None Include="wwwroot\Admin\js\pagedetails\usermaster\usermaster.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\buttons.html5.min.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\buttons.print.min.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\dataTables.bootstrap5.min.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\dataTables.buttons.min.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\dataTables.responsive.min.js" />
-    <None Include="wwwroot\Admin\libs\datatable\js\jquery.dataTables.min.js" />
   </ItemGroup>
 
   <ItemGroup>

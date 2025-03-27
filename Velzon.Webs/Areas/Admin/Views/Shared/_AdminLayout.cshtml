@@ -53,12 +53,9 @@
     @if (IsSectionDefined("DataTableCssLoad"))
     {
         <!-- DataTables CSS -->
-        @* <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/dataTables.bootstrap5.min.css")" />
-        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/responsive.bootstrap.min.css")" />
-        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/buttons.dataTables.min.css")" /> *@
-        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable_new/css/dataTables.bootstrap5.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))" />
-        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable_new/css/responsive.bootstrap.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))" />
-        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable_new/css/buttons.dataTables.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/dataTables.bootstrap5.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))" />
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/responsive.bootstrap.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))" />
+        <link rel="stylesheet" href="@Href("~/Admin/libs/datatable/css/buttons.dataTables.min.css?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))">
     }
     <!-- Bootstrap Css -->
     <link href="@Href("~/Admin/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
@@ -72,9 +69,8 @@
     <link href="@Href("~/Admin/libs/sweetalert2/sweetalert2.min.css")" rel="stylesheet" type="text/css" />
 
     <script>
-        javascript: window.history.forward(1);
+        //javascript: window.history.forward(1);
     </script>
-
     
     @RenderSection("Styles", required: false)
 </head>
@@ -1642,21 +1638,15 @@
     @if (IsSectionDefined("DataTableJsLoad"))
     {
         <!-- DataTables Core JS -->
-        @* <script src="@Href("~/Admin/libs/datatable/js/jquery.dataTables.min.js")"></script>
-        <script src="@Href("~/Admin/libs/datatable/js/dataTables.bootstrap5.min.js")"></script>
-        <script src="@Href("~/Admin/libs/datatable/js/dataTables.responsive.min.js")"></script>
-        <script src="@Href("~/Admin/libs/datatable/js/dataTables.buttons.min.js")"></script>
-        <script src="@Href("~/Admin/libs/datatable/js/buttons.print.min.js")"></script>
-        <script src="@Href("~/Admin/libs/datatable/js/buttons.html5.min.js")"></script> *@
-        <script src="@Href("~/Admin/libs/datatable_new/js/jquery.dataTables.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/dataTables.bootstrap5.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/dataTables.responsive.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/dataTables.buttons.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/buttons.print.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/buttons.html5.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/vfs_fonts.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/pdfmake.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-        <script src="@Href("~/Admin/libs/datatable_new/js/jszip.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/jquery.dataTables.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.bootstrap5.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.responsive.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/dataTables.buttons.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/buttons.print.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/buttons.html5.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/vfs_fonts.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/pdfmake.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+        <script src="@Href("~/Admin/libs/datatable/js/jszip.min.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
     }
     @RenderSection("Scripts", required: false)
     @RenderSection("Modals", required: false)
