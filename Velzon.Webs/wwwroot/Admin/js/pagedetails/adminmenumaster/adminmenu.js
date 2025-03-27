@@ -37,7 +37,7 @@ $(function () {
                 render: function (data, type, row) {
                     var checked = row.isActive ? "checked" : "";
                     return `<div class="form-check form-switch">
-                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateUserStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateAdminMenuStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
                         | ${row.isActive ? yesBadge : noBadge}
                     </div>`;
                 }
@@ -95,7 +95,7 @@ $(function () {
 
     // add
     $(document).on("click", "#addedit" + main + "Submit", function () {
-        if ($.ValidateAndShowError($('#Name'), "menu name", "text", "Please enter name!")) return;
+        if ($.ValidateAndShowError($('#Name'), "menu name", "text", "Please enter menu name!")) return;
         if ($.ValidateAndShowError($('#MenuId'), "menu resource", "dropdown", "Please select menu resource!")) return;
         if ($.ValidateAndShowError($('#MenuType'), "menu type", "dropdown", "Please select menu type!")) return;
         if ($('#MenuType').val() == "1" && $.ValidateAndShowError($('#ParentId'), "parent menu", "dropdown", "Please select parent menu!")) return;
@@ -116,6 +116,7 @@ $(function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         BindMenu();
+        BindMenuType();
         $.easyAjax({
             url: url,
             type: "POST",
@@ -124,7 +125,6 @@ $(function () {
             blockUI: true,
             initSelect2: "#addedit" + main + "Modal",
             success: function (data) {
-                debugger;
                 var dataList = data.result;
                 $.easyAjax({
                     type: "POST",
@@ -142,7 +142,7 @@ $(function () {
                                 if (key.includes("is")) {
                                     $('#' + capitalizeFirstLetter(key)).prop('checked', dataList[key]);
                                 } else {
-                                    $('#' + capitalizeFirstLetter(key)).val(dataList[key]); console.log("key:" + capitalizeFirstLetter(key) + "value:" + dataList[key]);
+                                    $('#' + capitalizeFirstLetter(key)).val(dataList[key]);
                                 }
                             }
                         });
@@ -250,24 +250,18 @@ $(function () {
         }
     }
 
-    function SwapModel(row, dir, type, parentid) {
+    window.SwapModel = function (row, dir, type, parentid) {
         ShowLoader();
         $.easyAjax({
             type: "POST",
             url: ResolveUrl("/Admin/AdminMenuSwapDetails"),
             data: { "rank": row, "dir": dir, "type": type, "parentid": parentid },
-            success: function (data) {
-                if (data != null && data != undefined) {
-                    //ShowMessage(data.strMessage, "", data.type);
-                    //BindGrid();
-                    //BindMenu();
-                    //BindParentMenu(null);
-                    //BindMenuType();
-                    //ValidateParentOrNot();
-                    HideLoader();
-                }
-            }
+            datatable: datatable, // ✅ Use global datatable
         });
-    }
+        BindMenu();
+        BindParentMenu(null);
+        BindMenuType();
+        ValidateParentOrNot();
+    } 
 
 });

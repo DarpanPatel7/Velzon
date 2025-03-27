@@ -464,8 +464,8 @@
         let value = control.val().trim();
 
         // Set default messages if custom messages are not provided
-        let requiredMsg = customRequiredMsg || `Enter ${fieldName}!`;
-        let invalidMsg = customInvalidMsg || `Enter valid ${fieldName}!`;
+        let requiredMsg = customRequiredMsg || `Please enter ${fieldName}!`;
+        let invalidMsg = customInvalidMsg || `Please enter valid ${fieldName}!`;
 
         // Check if value is empty
         if (!value) {

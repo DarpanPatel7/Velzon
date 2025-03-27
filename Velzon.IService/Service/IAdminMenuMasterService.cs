@@ -14,5 +14,7 @@ namespace Velzon.IService.Service
         JsonResponseModel AddOrUpdate(AdminMenuMasterModel model);
 
         JsonResponseModel SwapSequance(long rank, string dir, string username, string type, long parentid);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }
