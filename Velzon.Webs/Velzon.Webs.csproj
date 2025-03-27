@@ -71,6 +71,8 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Advertisement.cshtml" />
+    <Content Remove="wwwroot\Admin\js\pagedetails\adminmenumaster\adminmenu.js" />
+    <Content Remove="wwwroot\Admin\js\pagedetails\MenuResource\MenuResourceForm.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,6 +84,8 @@
   <ItemGroup>
     <None Include="Areas\Admin\Views\Branch\BranchMaster.cshtml" />
     <None Include="Areas\Admin\Views\Utility\UtilityMaster.cshtml" />
+    <None Include="wwwroot\Admin\js\pagedetails\adminmenumaster\adminmenu.js" />
+    <None Include="wwwroot\Admin\js\pagedetails\MenuResource\MenuResourceForm.js" />
     <None Include="wwwroot\Admin\js\pagedetails\usermaster\usermaster.js" />
     <None Include="wwwroot\Admin\libs\datatable\js\buttons.html5.min.js" />
     <None Include="wwwroot\Admin\libs\datatable\js\buttons.print.min.js" />

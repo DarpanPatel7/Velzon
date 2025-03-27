@@ -1,5 +1,5 @@
 ﻿/**
- * Page User Master
+ * Page Manu Resource Master
  */
 
 "use strict";
@@ -7,7 +7,7 @@
 var datatable; // Declare globally
 
 $(function () {
-    var main = 'User';
+    var main = 'MenuResource';
     var yesBadge = '<td><span class="badge badge-soft-success text-uppercase">Active</span></td>';
     var noBadge = '<td><span class="badge badge-soft-danger text-uppercase">In Active</span></td>';
 
@@ -22,18 +22,14 @@ $(function () {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            { data: "firstName", name: "First Name", autoWidth: true },
-            { data: "lastName", name: "Last Name", autoWidth: true },
-            { data: "username", name: "Username", autoWidth: true },
-            { data: "email", name: "Email", autoWidth: true },
-            { data: "phoneNo", name: "Mobile No", autoWidth: true },
-            { data: "roleName", name: "Role Name", autoWidth: true },
+            { data: "menuName", name: "Menu Name", autoWidth: true },
+            { data: "menuURL", name: "Menu URL", autoWidth: true },
             {
                 data: null,
                 render: function (data, type, row) {
                     var checked = row.isActive ? "checked" : "";
                     return `<div class="form-check form-switch">
-                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateUserStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateMenuResourceStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
                         | ${row.isActive ? yesBadge : noBadge}
                     </div>`;
                 }
@@ -41,8 +37,8 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 editUser' data-url='${ResolveUrl('/Admin/GetUserDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
-                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 deleteUser' data-url='${ResolveUrl('/Admin/DeleteUserData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
+                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 edit${main}' data-url='${ResolveUrl('/Admin/GetMenuResourceDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
+                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 delete${main}' data-url='${ResolveUrl('/Admin/DeleteMenuResourceData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
 
                     return "<div class='hstack gap-3 flex-wrap'>" +
                         (frmPageUpdate == "true" ? strEdit : "") +
@@ -71,7 +67,6 @@ $(function () {
 
     // open form modal
     $(document).on("click", "#add" + main, function () {
-        $('#Username').attr('readonly', false);
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
                 Id: 0
@@ -83,32 +78,18 @@ $(function () {
 
     // add
     $(document).on("click", "#addedit" + main + "Submit", function () {
-        if ($.ValidateAndShowError($('#FirstName'), "first name", "text")) return;
-        if ($.ValidateAndShowError($('#LastName'), "last name", "text")) return;
-        if ($.ValidateAndShowError($('#Username'), "username", "text")) return;
-        // Special validation for password with custom messages
-        if ($('#UserPassword').val()) {
-            if ($.ValidateAndShowError($('#UserPassword'),
-                "user password",
-                "password",
-                "Password cannot be empty!",
-                "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be between 8 to 15 characters!")) return;
-        }
-        if ($.ValidateAndShowError($('#Email'), "email", "email")) return;
-        if ($.ValidateAndShowError($('#PhoneNo'), "mobile no", "mobileno")) return;
-        if ($.ValidateAndShowError($('#RoleId'), "role", "dropdown", "Please select a role!")) return;
-        FrontEncryptFront("Username");
+        if ($.ValidateAndShowError($('#MenuName'), "menu name", "text")) return;
+        if ($.ValidateAndShowError($('#MenuURL'), "menu url", "text")) return;
         $.easyAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
-            blockUI: "#addeditUserModal .modal-content",
+            blockUI: "#addedit" + main + "Modal .modal-content",
             disableButton: true,
             formReset: true,
             restrictPopupClose: true,
             datatable: datatable,
         });
-        document.getElementById("Username").value = FrontdValue(document.getElementById("Username").value);
     });
 
     // render edit data
@@ -122,21 +103,14 @@ $(function () {
             showModal: "#addedit" + main + "Modal",
             blockUI: true,
             success: function (data) {
-                $("#Username").attr("readonly", true);
                 var dataList = data.result;
                 Object.keys(dataList).forEach(function (key) {
-                    if (key == 'userPassword') {
-                        $("#UserPassword").val('');
-                        $("#UserPassword").text('');
-                    }
-                    else {
-                        if ($('#' + capitalizeFirstLetter(key)) != null && $('#' + key) != undefined) {
-                            if (key.includes("is")) {
-                                $('#' + capitalizeFirstLetter(key)).prop('checked', dataList[key]);
-                            }
-                            else {
-                                $('#' + capitalizeFirstLetter(key)).val(dataList[key]);
-                            }
+                    if ($('#' + capitalizeFirstLetter(key)) != null && $('#' + key) != undefined) {
+                        if (key.includes("is")) {
+                            $('#' + capitalizeFirstLetter(key)).prop('checked', dataList[key]);
+                        }
+                        else {
+                            $('#' + capitalizeFirstLetter(key)).val(dataList[key]); console.log("key:" + capitalizeFirstLetter(key) + "value:" + dataList[key]);
                         }
                     }
                 });

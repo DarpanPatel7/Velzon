@@ -1,6 +1,11 @@
 ﻿(function ($) {
     "use strict";
 
+    /**
+     * Initializes a DataTable with custom options.
+     * @param {string} selector - The jQuery selector for the table.
+     * @param {object} options - Additional configuration options.
+     */
     $.initializeDataTable = function (selector, options = {}) {
         try {
             var dt_selector = $(selector);
@@ -12,6 +17,7 @@
             // Default settings
             var defaultOptions = {
                 "responsive": true, // Enable responsive design
+                "autoWidth": false, // Helps prevent column width issues
                 "processing": true, // for show progress bar
                 "serverSide": false, // for process server side
                 "filter": true, // this is for disable filter (search box)
@@ -34,18 +40,29 @@
                         alert("An error occurred while loading the data. Please try again.");
                     }
                 },
-                columnDefs: [{
-                    targets: [0],
-                    searchable: false
-                }],
+                columnDefs: [
+                    { targets: [0], searchable: false }
+                ],
                 initComplete: function () {
                     var api = this.api();
                     var searchInput = $('.dataTables_filter input');
+
                     searchInput.on('keyup change', function () {
                         if (searchInput.val() === '') {
                             api.search('').draw();
                         }
                     });
+
+                    // Execute additional initComplete logic if provided in options
+                    if (typeof options.initComplete === "function") {
+                        options.initComplete.call(this, api);
+                    }
+                },
+                drawCallback: function (settings) {
+                    // Execute custom drawCallback if provided in options
+                    if (typeof options.drawCallback === "function") {
+                        options.drawCallback.call(this, settings);
+                    }
                 },
                 columns: []
             };
@@ -63,6 +80,10 @@
         }
     };
 
+    /**
+     * Displays a confirmation dialog.
+     * @param {object} options - Configuration options for the confirmation dialog.
+     */
     $.showConfirmation = function (options = {}) {
         Swal.fire({
             title: options.title ?? "Are you sure?",
@@ -107,6 +128,14 @@
         });
     };
 
+    /**
+     * Shows a message notification.
+     * @param {string} msgDescription - Message content.
+     * @param {string} msgTitle - Message title.
+     * @param {string} msgType - Type of message (info, success, warning, error).
+     * @param {number} msgTimer - Auto-hide timer duration.
+     * @param {boolean} msgShowButton - Whether to show a close button.
+     */
     $.ShowMessage = function (msgDescription, msgTitle = "", msgType = "info", msgTimer = 0, msgShowButton = true) {
         let swalOptions = {
             title: msgTitle,
@@ -157,6 +186,10 @@
         });
     };
 
+    /**
+     * Resets a form to its default state.
+     * @param {string} formId - The ID of the form to reset.
+     */
     $.resetForm = function (formId, options = {}) {
         var $form = $(formId);
 
@@ -210,6 +243,10 @@
         settings.afterReset.call($form);
     };
 
+    /**
+     * Unblocks a popup and allows it to close.
+     * @param {string} selector - The jQuery selector for the popup.
+     */
     $.blockPopupClose = function (selector) {
         var $modal = $(selector);
 
@@ -240,6 +277,10 @@
         }
     };
 
+    /**
+     * Blocks a popup to prevent closing.
+     * @param {string} selector - The jQuery selector for the popup.
+     */
     $.unblockPopupClose = function (selector) {
         var $modal = $(selector);
         var keyboard = true; // Allow closing by ESC
@@ -267,6 +308,11 @@
         }
     };
 
+    /**
+     * Blocks the UI with a loading overlay.
+     * @param {string} blockUI - The selector to block.
+     * @param {string} message - Optional message to display.
+     */
     $.easyBlockUI = function (blockUI, message) {
         if (message != '') {
             message = '<div class="d-flex justify-content-center"><p class="mb-0">' + message + '</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>';
@@ -312,11 +358,19 @@
         }
     };
 
+    /**
+     * Unblocks the UI and removes the loading overlay.
+     * @param {string} blockUI - The selector to unblock.
+     */
     $.easyUnblockUI = function (blockUI) {
         $(blockUI).unblock();
         $.unblockUI();
     };
 
+    /**
+     * Shows a loading spinner on a button.
+     * @param {string} selector - The button selector.
+     */
     $.loadingButton = function (selector) {
         var button = $(selector);
         if (button.find("span.spinner-border-sm-new").length === 0) {
@@ -325,58 +379,159 @@
         button.prop("disabled", true);
     };
 
+    /**
+     * Removes the loading spinner from a button.
+     * @param {string} selector - The button selector.
+     */
     $.unloadingButton = function (selector) {
         var button = $(selector); // Fix: Directly use selector
         button.find("span.spinner-border-sm-new").remove(); // Fix: Use `find` instead of `children`
         button.prop("disabled", false);
     };
 
+    /**
+     * Validates an input value based on the specified type.
+     * @param {string} controlValue - The value to validate.
+     * @param {string} type - The type of validation (text, email, mobileno, password, pincode, dropdown, date, time, etc.).
+     * @returns {boolean} - True if the value is valid, false otherwise.
+     */
+    $.ValidControlValue = function(controlValue, type = "none") {
+        let allow = false;
+        try {
+            let strControlValue = controlValue instanceof jQuery ? controlValue.val().trim() : controlValue.toString().trim();
+
+            if (strControlValue && regexGlobalValidation.test(strControlValue)) {
+                switch (type) {
+                    case "text":
+                        allow = regexName.test(strControlValue);
+                        break;
+                    case "email":
+                        allow = regexEmail.test(strControlValue);
+                        break;
+                    case "mobileno":
+                        allow = regexMobileNo.test(strControlValue);
+                        break;
+                    case "password":
+                        allow = regexPassword.test(strControlValue);
+                        break;
+                    case "pincode":
+                        allow = regexPincode.test(strControlValue);
+                        break;
+                    case "dropdown":
+                        let dropdownValue = parseInt(strControlValue, 10);
+                        allow = !isNaN(dropdownValue) && (dropdownValue >= 0);
+                        break;
+                    case "date":
+                        allow = $.isValidDate(strControlValue, dateFormat);
+                        break;
+                    case "time":
+                        allow = $.isValidDate(strControlValue, "hh:mm A");
+                        break;
+                    default:
+                        allow = true;
+                }
+            }
+        } catch (error) {
+            console.error("Validation Error:", error);
+        }
+        return allow;
+    }
+
+    /**
+     * Validates whether a given date string matches the expected format.
+     * @param {string} dateStr - The date string to validate.
+     * @param {string} format - The expected date format.
+     * @returns {boolean} - True if the date is valid, false otherwise.
+     */
+    $.isValidDate = function(dateStr, format) {
+        try {
+            return moment(dateStr, format, true).isValid();
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Validates a field and shows an error message if invalid.
+     * @param {jQuery} control - The jQuery object of the input field.
+     * @param {string} fieldName - The name of the field for error messages.
+     * @param {string} type - The validation type (text, email, password, dropdown, etc.).
+     * @param {string} [customRequiredMsg] - Custom message for required field (optional).
+     * @param {string} [customInvalidMsg] - Custom message for invalid value (optional).
+     * @returns {boolean} - True if validation fails (invalid), false otherwise.
+     */
+    $.ValidateAndShowError = function (control, fieldName, type, customRequiredMsg = "", customInvalidMsg = "") {
+        let value = control.val().trim();
+
+        // Set default messages if custom messages are not provided
+        let requiredMsg = customRequiredMsg || `Enter ${fieldName}!`;
+        let invalidMsg = customInvalidMsg || `Enter valid ${fieldName}!`;
+
+        // Check if value is empty
+        if (!value) {
+            ShowMessage(requiredMsg, "Error!", "error"); // Show required field error
+            return true;
+        }
+
+        // Validate the value using ValidControlValue
+        if (!$.ValidControlValue(control, type)) {
+            ShowMessage(invalidMsg, "Error!", "error"); // Show invalid format error
+            return true;
+        }
+
+        return false; // No error
+    };
+
+
+
 })(jQuery);
 
 (function ($) {
     "use strict";
 
+    /**
+     * Performs an AJAX request with predefined settings.
+     * @param {object} options - The AJAX request configuration (URL, method, data, success/error handlers, etc.).
+     */
     $.easyAjax = function (options) {
         var defaults = {
-            type: "GET",
-            container: "body",
-            dataType: "json",
-            blockUI: false,
-            disableButton: false,
-            buttonSelector: "[type='submit']",
-            antiforgeryToken: document.querySelector('input[name="AntiforgeryFieldname"]').value,
-            errorPosition: "field",
-            redirect: false,
-            reload: false,
-            data: {},
-            file: false,
-            formReset: false,
-            async: true,
-            historyPush: false,
-            appendHtml: false,
-            showModal: false,
-            hideModal: true,
-            restrictPopupClose: false,
-            blockUIMessage:"",
-            datatable: false,
-            initSelect2: false,
-            confirmation: false,
-            statusSwitch: false,
+            type: "GET", // Default HTTP method
+            container: "body", // Default container
+            dataType: "json", // Expected data type
+            blockUI: false, // Whether to block UI during request
+            disableButton: false, // Whether to disable button during request
+            buttonSelector: "[type='submit']", // Selector for the button
+            antiforgeryToken: document.querySelector('input[name="AntiforgeryFieldname"]').value, // CSRF token
+            errorPosition: "field", // Where to display errors
+            redirect: false, // Whether to redirect on success
+            reload: false, // Whether to reload the page after success
+            data: {}, // Default data object
+            file: false, // Whether request contains file upload
+            formReset: false, // Reset form on success
+            async: true, // Async request
+            historyPush: false, // Whether to push state to history
+            appendHtml: false, // Append response HTML
+            showModal: false, // Show modal on success
+            hideModal: true, // Hide modal after request
+            restrictPopupClose: false, // Restrict popup close
+            blockUIPopup: false, // Block UI for popups
+            datatable: false, // Whether request is related to DataTable
+            initSelect2: false, // Initialize Select2 plugin
+            confirmation: false, // Whether to show confirmation before request
+            statusSwitch: false // Handle toggle switch UI
         };
 
         var opt = defaults;
 
-        // Extend user-set options over defaults
-        if (options) {
-            opt = $.extend(defaults, options);
-        }
+        // Merge user-defined options with defaults
+        var opt = $.extend(defaults, options || {});
 
         // ✅ If `blockUI` is true and `opt.container` is still `"body"`, set a new value
         if (opt.blockUI === true) {
             opt.blockUI = opt.container; // Change to your desired container
         }
 
-        // Methods if not given in option
+        // Set default methods if not provided in options
         if (typeof opt.beforeSend != "function") {
             console.log('beforeSend');
             opt.beforeSend = function () {
@@ -400,6 +555,7 @@
             };
         }
 
+        // Set default methods if not provided in options
         if (typeof opt.complete != "function") {
             console.log('complete');
             opt.complete = function (jqXHR, textStatus) {
@@ -432,31 +588,56 @@
             };
         }
 
-        // Default error handler
-        if (typeof opt.error != "function") {
-            console.log('error');
+        // Set default methods if not provided in options
+        if (typeof opt.error !== "function") {
             opt.error = function (jqXHR, textStatus, errorThrown) {
                 try {
-                    var response = JSON.parse(jqXHR.responseText);
-                    if (typeof response == "object") {
-                        handleFail(response, opt);
-                    } else {
-                        var msg =
-                            "A server side error occurred. Please try again after sometime.";
+                    let response = jqXHR.responseText
+                        ? (() => {
+                            try { return JSON.parse(jqXHR.responseText); }
+                            catch { return null; }
+                        })()
+                        : null;
 
-                        if (textStatus == "timeout") {
-                            msg =
-                                "Connection timed out! Please check your internet connection";
+                    if (response && typeof response === "object") {
+                        $.handleFail(response, opt);
+                    } else {
+                        let msg = "A server-side error occurred. Please try again later.";
+
+                        switch (jqXHR.status) {
+                            case 404:
+                                msg = "Requested resource not found (404).";
+                                break;
+                            case 500:
+                                msg = "Internal Server Error (500).";
+                                break;
+                            case 403:
+                                msg = "You are not authorized to perform this action (403).";
+                                break;
+                            default:
+                                if (textStatus === "timeout") {
+                                    msg = "Connection timed out! Please check your internet connection.";
+                                }
+                                break;
                         }
-                        $.ShowMessage(msg + '!', "Error!", "error");
+
+                        $.ShowMessage(msg, "Error!", "error");
                     }
                 } catch (e) {
-                    // when session expire then it reload user to login page
-                    // window.location.reload();
+                    // When session expires, reload the login page
+                    if (jqXHR.status === 401) {
+                        window.location.reload();
+                    } else {
+                        $.ShowMessage("An unexpected error occurred!", "Error!", "error");
+                    }
                 }
             };
         }
 
+        /**
+         * Function to load AJAX request
+         * @param {object} options - The AJAX request options
+         */
         $.loadAjax = function () {
             console.log('loadAjax');
             //set post data based on file object //if file upload is set to true then it will set to formdata format
@@ -491,8 +672,6 @@
                     }
                 }
             }
-
-            console.log(opt);
 
             $.ajax({
                 async: opt.async,
@@ -558,7 +737,7 @@
                                         let tableId = opt.datatable.table().node().id;
 
                                         // Adjust content height after reload
-                                        setTimeout(() => forceLayoutFix(tableId), 50);
+                                        setTimeout(() => $.forceLayoutFix(tableId), 50);
                                     }, false);
                                     $('.modal').modal("hide"); // Hide any open modal after updating DataTable
                                     $.ShowMessage(response.strMessage, "Success!", "success");
@@ -580,7 +759,11 @@
             });
         }
 
-        function forceLayoutFix(tableId) {
+        /**
+         * Helper function to adjust layout after AJAX load.
+         * @param {string} tableId - The ID of the table to fix layout for
+         */
+        $.forceLayoutFix = function(tableId) {
             let table = $('#' + tableId); // Select table dynamically
             let windowHeight = $(window).height();
             let tableBottom = table.offset().top + table.outerHeight();
@@ -595,7 +778,6 @@
 
         // ✅ Call after defining $.loadAjax
         if (opt.confirmation) {
-            console.log('confirmation');
             if (opt.statusSwitch) {
                 $.showConfirmation({
                     statusSwitch: opt.statusSwitch, // ✅ Pass switch element to revert on cancel
@@ -609,7 +791,12 @@
         
     };
 
-    function handleFail(response, opt) {
+    /**
+     * Handles AJAX request failures.
+     * @param {object} response - The response object from the failed AJAX request.
+     * @param {object} opt - Optional additional settings for error handling.
+     */
+    $.handleFail = function(response, opt) {
         console.log('handleFail');
         if (typeof response.strMessage != "undefined" && response.strMessage != "") {
             $.ShowMessage(response.strMessage + '!', 'Error!', "error");
@@ -641,13 +828,6 @@
                         ele = $(opt.container).find("#" + key);
                     }
 
-                    console.log(ele);
-
-                    // Find the closest form group
-                    /*var grp = ele.closest(".form-group");
-                    if (grp.length === 0) {
-                        grp = ele.closest(".inp-group");
-                    }*/
                     // Find the closest form group and add error class
                     var grp = ele.closest(".form-group"); // You can customize this if needed
                     grp.addClass("error-group"); // Adding new class for error styling
@@ -695,57 +875,6 @@
             }
         }
     }
-
-    $.ajaxModal = function (selector, url, onLoad) {
-        $(selector + " .modal-content").load(url);
-
-        $(selector).removeData("bs.modal").modal({
-            remote: url,
-            show: true,
-        });
-
-        // Trigger to do stuff with form loaded in modal
-        $(document).trigger("ajaxPageLoad");
-
-        // Call onload method if it was passed in function call
-        if (typeof onLoad != "undefined") {
-            onLoad();
-        }
-
-        // Reset modal when it hides
-        $(selector).on("hidden.bs.modal", function () {
-            $(this).find(".modal-body").html("Loading...");
-            $(this)
-                .find(".modal-footer")
-                .html(
-                    '<button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancel</button>'
-                );
-            $(this).data("bs.modal", null);
-        });
-    };
-
-    $.showErrors = function (object) {
-        var keys = Object.keys(object);
-
-        $(".invalid-feedback").remove();
-        $(".is-invalid").removeClass("is-invalid");
-
-        for (var i = 0; i < keys.length; i++) {
-            var ele = $("[name='" + keys[i] + "']");
-            if (ele.length == 0) {
-                ele = $("#" + keys[i]);
-            }
-            var grp = ele.closest(".form-group");
-            $(grp).find(".invalid-feedback").remove();
-            var helpBlockContainer = $(grp);
-            console.log(helpBlockContainer);
-
-            helpBlockContainer.append(
-                '<div class="invalid-feedback">' + object[keys[i]] + "</div>"
-            );
-            ele.addClass("is-invalid");
-        }
-    };
 })(jQuery);
 
 //history pushstate

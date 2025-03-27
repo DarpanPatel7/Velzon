@@ -13,5 +13,6 @@ namespace Velzon.IService.Service
 
         JsonResponseModel AddOrUpdate(MenuResourceMasterModel model);
 
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }
