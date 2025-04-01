@@ -1650,5 +1650,14 @@
     }
     @RenderSection("Scripts", required: false)
     @RenderSection("Modals", required: false)
+    <script>
+        @if (ViewBag.MyScriptToRun != null)
+        {
+            @if (!string.IsNullOrWhiteSpace(ViewBag.MyScriptToRun.ToString()))
+            {
+                @Html.Raw(ViewBag.MyScriptToRun.ToString())
+            }
+        }
+    </script>
 </body>
 </html>

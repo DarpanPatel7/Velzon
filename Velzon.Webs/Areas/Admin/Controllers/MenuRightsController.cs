@@ -8,6 +8,7 @@ using Velzon.Webs.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Text;
+using MySqlX.XDevAPI.Relational;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -62,9 +63,9 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         {
 
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("<table class=\"table display nowrap table-striped table-bordered scroll-horizontal text-center nowrap\" id=\"tblRoleRightdata\">");
-            stringBuilder.Append("    <thead>");
-            stringBuilder.Append("        <tr>");
+            stringBuilder.Append("<table class=\"table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer\" id=\"tblRoleRightdata\">");
+            stringBuilder.Append("    <thead class=\"table-light\">");
+            stringBuilder.Append("        <tr class=\"text-uppercase\">");
             stringBuilder.Append("            <th>Page Name</th>");
             stringBuilder.Append("            <th>Page URL</th>");
             stringBuilder.Append("            <th> <input id=\"chkAllInsert\" type=\"checkbox\" onclick=\"return SelectAllCheckBox('Insert');\"/> Insert</th>");

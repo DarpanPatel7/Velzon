@@ -1,89 +1,72 @@
 ﻿@model MenuRightsFilterModel
 @{
     ViewData["Title"] = "Menu Rights Master";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 @section Scripts {
     <script src="@Href("~/Admin/js/PageDetails/MenuRights/MenuRights.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
 }
 
-
 @section Styles {
     <style>
-
         tbody tr td:first-child { padding-left:10px;text-align:left }
     </style>
 }
-<section class="basic-elements">
 
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title-wrap bar-success">
-                <h4 class="card-title" id="basic-layout-form">Role Base Menu Rights</h4>
-            </div>
-            @*<p class="mb-0">This is the most basic and cost estimation form is the default position.</p>*@
-        </div>
-        <div class="card-body">
-            <div class="px-3">
-                <form asp-action="MenuRights" asp-area="Admin" asp-controller="MenuRights" id="frmCardUpdate" autocomplete="off" >
-                    @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label asp-for="SelectedRoleId" class="control-label">Role</label>
-
-                                <select class="form-control" asp-for="SelectedRoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
-                                    <option value="">--Select Role--</option>
-                                </select>
-                                <span asp-validation-for="SelectedRoleId" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                             <div class="form-group">
-                                 <label asp-for="SelectedMenuId" class="control-label">Menu Master</label>
-                                 <select class="form-control" asp-for="SelectedMenuId" asp-items="@(new SelectList(Model.ParentMenuList, "Value", "Text"))">
-                                     <option value="">--Select Master Menu--</option>
-                                 </select>
-                                 <span asp-validation-for="SelectedMenuId" class="text-danger"></span>
-                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <br />
-                                <input type="submit" value="Bind Menu" class="btn btn-primary" />
-                            </div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <br />
-                                <a href="#" onclick="return GetAllSaveResult()" class="btn btn-primary" id="btnSaveRight" style="display: @Model.SubmitDisable " >Save Rights</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card-body">
-                <div class="px-3" id="dvRightsTable">
-                    @try
-                    {
-                        if (Model.StrTable != null)
-                        {
-                            @if (!string.IsNullOrWhiteSpace(Model.StrTable))
-                            {
-                                @Html.Raw(Model.StrTable);
-                            }
-                        }
-                    }catch(Exception ex)
-                    {
-
-                    }
+<div class="card">
+    <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+            <div class="col-sm">
+                <div>
+                    <h5 class="card-title mb-0">Role Base Menu Rights</h5>
                 </div>
             </div>
         </div>
     </div>
-</section>
+    <div class="card-body">
+        <form asp-action="MenuRights" asp-area="Admin" asp-controller="MenuRights" id="frmCardUpdate" autocomplete="off" >
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row gx-3 gy-2 align-items-center">
+                <div class="col-md-4">
+                    <label asp-for="SelectedRoleId" class="form-label">Role<span style="color:red">*</span></label>
+                    <select class="form-select" asp-for="SelectedRoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
+                        <option value="">--Select Role--</option>
+                    </select>
+                    <span asp-validation-for="SelectedRoleId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="SelectedMenuId" class="form-label">Menu Master<span style="color:red">*</span></label>
+                    <select class="form-select" asp-for="SelectedMenuId" asp-items="@(new SelectList(Model.ParentMenuList, "Value", "Text"))">
+                        <option value="">--Select Master Menu--</option>
+                    </select>
+                    <span asp-validation-for="SelectedMenuId" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <br />
+                    <input type="submit" value="Bind Menu" class="btn btn-primary" />
+                </div>
+                <div class="col-md-2">
+                    <br />
+                    <a href="#" onclick="return GetAllSaveResult()" class="btn btn-primary" id="btnSaveRight" style="display: @Model.SubmitDisable " >Save Rights</a>
+                </div>
+            </div>
+        </form>
+        <div class="mt-3" id="dvRightsTable">
+            @try
+            {
+                if (Model.StrTable != null)
+                {
+                    @if (!string.IsNullOrWhiteSpace(Model.StrTable))
+                    {
+                        @Html.Raw(Model.StrTable);
+                    }
+                }
+            }catch(Exception ex)
+            {
 
+            }
+        </div>
+    </div>
+</div>
