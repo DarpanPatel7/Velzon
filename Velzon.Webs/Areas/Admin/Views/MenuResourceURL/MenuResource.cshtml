@@ -23,20 +23,16 @@
                     <form id="addeditMenuResourceForm" action="@Url.Content("~/Admin/SaveMenuResourceData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
-                        <div class="row">
+                        <div class="row gx-3 gy-2">
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="MenuName" class="form-label">Menu Name<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="MenuName" class="form-control" placeholder="Enter Menu Name">
-                                    <span asp-validation-for="MenuName" class="text-danger"></span>
-                                </div>
+                                <label asp-for="MenuName" class="form-label">Menu Name<span style="color:red">*</span></label>
+                                <input type="text" asp-for="MenuName" class="form-control" placeholder="Enter Menu Name">
+                                <span asp-validation-for="MenuName" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="MenuURL" class="form-label">Menu URL<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="MenuURL" class="form-control" placeholder="Enter Menu URL">
-                                    <span asp-validation-for="MenuURL" class="text-danger"></span>
-                                </div>
+                                <label asp-for="MenuURL" class="form-label">Menu URL<span style="color:red">*</span></label>
+                                <input type="text" asp-for="MenuURL" class="form-control" placeholder="Enter Menu URL">
+                                <span asp-validation-for="MenuURL" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="IsActive" class="form-label">Status</label>

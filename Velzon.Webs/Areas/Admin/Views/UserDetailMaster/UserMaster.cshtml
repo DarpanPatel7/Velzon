@@ -23,60 +23,46 @@
                     <form id="addeditUserForm" action="@Url.Content("~/Admin/SaveUserData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
-                        <div class="row">
+                        <div class="row gx-3 gy-2">
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="FirstName" class="form-label">First Name<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter First Name">
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                <label asp-for="FirstName" class="form-label">First Name<span style="color:red">*</span></label>
+                                <input type="text" asp-for="FirstName" class="form-control" placeholder="Enter First Name">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="LastName" class="form-label">Last Name<span style="color:red">*</span></label>
+                                <input type="text" asp-for="LastName" class="form-control" placeholder="Enter Last Name">
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Username" class="form-label">User Name<span style="color:red">*</span></label>
+                                <input type="text" asp-for="Username" class="form-control" autocomplete="off" placeholder="Enter User Name">
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="UserPassword" class="form-label">User Password<span style="color:red">*</span></label>
+                                <input type="password" asp-for="UserPassword" autocomplete="off" class="form-control validpassword" placeholder="Enter User Password">
+                                <span asp-validation-for="UserPassword" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Email" class="form-label">Email<span style="color:red">*</span></label>
+                                <div class="form-icon right">
+                                    <input type="email" asp-for="Email" class="form-control form-control-icon" placeholder="Enter Email">
+                                    <i class="ri-mail-unread-line"></i>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="LastName" class="form-label">Last Name<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="LastName" class="form-control" placeholder="Enter Last Name">
-                                    <span asp-validation-for="LastName" class="text-danger"></span>
-                                </div>
+                                <label asp-for="PhoneNo" class="form-label">Mobile No<span style="color:red">*</span></label>
+                                <input type="text" asp-for="PhoneNo" class="form-control" placeholder="Enter Mobile No">
+                                <span asp-validation-for="PhoneNo" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="Username" class="form-label">User Name<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="Username" class="form-control" autocomplete="off" placeholder="Enter User Name">
-                                    <span asp-validation-for="Username" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="UserPassword" class="form-label">User Password<span style="color:red">*</span></label>
-                                    <input type="password" asp-for="UserPassword" autocomplete="off" class="form-control validpassword" placeholder="Enter User Password">
-                                    <span asp-validation-for="UserPassword" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">Email<span style="color:red">*</span></label>
-                                    <div class="form-icon right">
-                                        <input type="email" asp-for="Email" class="form-control form-control-icon" placeholder="Enter Email">
-                                        <i class="ri-mail-unread-line"></i>
-                                        <span asp-validation-for="Email" class="text-danger"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="PhoneNo" class="form-label">Mobile No<span style="color:red">*</span></label>
-                                    <input type="text" asp-for="PhoneNo" class="form-control" placeholder="Enter Mobile No">
-                                    <span asp-validation-for="PhoneNo" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label asp-for="RoleId" class="form-label">Role<span style="color:red">*</span></label>
-                                    <select class="form-select" asp-for="RoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
-                                        <option value="">--Select Role--</option>
-                                    </select>
-                                    <span asp-validation-for="RoleId" class="text-danger"></span>
-                                </div>
+                                <label asp-for="RoleId" class="form-label">Role<span style="color:red">*</span></label>
+                                <select class="form-select" asp-for="RoleId" asp-items="@(new SelectList(Model.RoleList, "Value", "Text"))">
+                                    <option value="">--Select Role--</option>
+                                </select>
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="IsActive" class="form-label">Status</label>

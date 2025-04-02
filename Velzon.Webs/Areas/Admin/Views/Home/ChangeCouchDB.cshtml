@@ -23,7 +23,7 @@
                     <form asp-action="ChangeCouchDB" id="frmChangesCouchDB" asp-area="Admin" method="post" asp-controller="Home" autocomplete="off" >
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="row g-3">
+                        <div class="row gx-3 gy-2">
                             <div class="col-md-12">
                                 <label asp-for="CouchDBURL">CouchDBURL</label>
                                 <input type="text" asp-for="CouchDBURL" class="form-control" placeholder="CouchDBURL" />
@@ -43,7 +43,7 @@
                                 <label asp-for="AllowCouchDBStore" class="font-medium-2 text-bold-600 ml-1">AllowCouchDBStore</label>
                                 <input type="checkbox" class="switchery" asp-for="AllowCouchDBStore" data-size="sm" />
                             </div>
-                            <div class="col-md-12">
+                            <div class="col-md-12 mt-4">
                                 <button type="submit" value="ChangeSMTP" class="btn btn-primary"><i class="icon-settings"></i> Save Setting</button>
                             </div>
                         </div>

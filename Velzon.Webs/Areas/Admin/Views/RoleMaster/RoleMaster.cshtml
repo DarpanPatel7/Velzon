@@ -23,7 +23,7 @@
                     <form id="addeditRoleForm" action="@Url.Content("~/Admin/SaveRoleData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
-                        <div class="row">
+                        <div class="row gx-3 gy-2">
                             <div class="col-md-6">
                                 <label asp-for="RoleName" class="form-label">Role Name<span style="color:red">*</span></label>
                                 <input type="text" asp-for="RoleName" class="form-control" placeholder="Enter Role Name">
