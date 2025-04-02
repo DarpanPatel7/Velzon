@@ -112,8 +112,8 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                    if (ValidCmsMenuResource(objModel, ref objreturn))
-                    {
+                if (ValidCmsMenuResource(objModel, ref objreturn))
+                {
                     if (ModelState.IsValid)
                     {
                         CMSMenuResourceModel cmsMenuResource = new CMSMenuResourceModel();
@@ -235,6 +235,12 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         objreturn.isError = true;
                         objreturn.type = PopupMessageType.error.ToString();
                     }
+                }
+                else
+                {
+                    objreturn.strMessage = objreturn.strMessage;
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
                 }
             }
             catch (Exception ex)

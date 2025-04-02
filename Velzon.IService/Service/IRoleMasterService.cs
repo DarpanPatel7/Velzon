@@ -14,5 +14,7 @@ namespace Velzon.IService.Service
         JsonResponseModel AddOrUpdate(RoleMasterModel model);
 
         List<UserMasterModel> CheckRoleAssignedUser(long roleId);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }

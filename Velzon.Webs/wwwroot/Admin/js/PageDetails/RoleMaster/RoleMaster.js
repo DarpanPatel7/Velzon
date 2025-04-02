@@ -1,5 +1,5 @@
 ﻿/**
- * Page Manu Resource Master
+ * Page Role Master
  */
 
 "use strict";
@@ -7,7 +7,7 @@
 var datatable; // Declare globally
 
 $(function () {
-    var main = 'MenuResource';
+    var main = 'Role';
     var yesBadge = '<td><span class="badge badge-soft-success text-uppercase">Active</span></td>';
     var noBadge = '<td><span class="badge badge-soft-danger text-uppercase">In Active</span></td>';
 
@@ -22,14 +22,13 @@ $(function () {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
-            { data: "menuName", name: "Menu Name", autoWidth: true },
-            { data: "menuURL", name: "Menu URL", autoWidth: true },
+            { data: "roleName", name: "Role Name", autoWidth: true },
             {
                 data: null,
                 render: function (data, type, row) {
                     var checked = row.isActive ? "checked" : "";
                     return `<div class="form-check form-switch">
-                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateMenuResourceStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateRoleStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
                         | ${row.isActive ? yesBadge : noBadge}
                     </div>`;
                 }
@@ -37,8 +36,8 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 edit${main}' data-url='${ResolveUrl('/Admin/GetMenuResourceDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
-                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 delete${main}' data-url='${ResolveUrl('/Admin/DeleteMenuResourceData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
+                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 editRole' data-url='${ResolveUrl('/Admin/GetRoleDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
+                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 deleteRole' data-url='${ResolveUrl('/Admin/DeleteRoleData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
 
                     return "<div class='hstack gap-3 flex-wrap'>" +
                         (frmPageUpdate == "true" ? strEdit : "") +
@@ -78,13 +77,12 @@ $(function () {
 
     // add
     $(document).on("click", "#addedit" + main + "Submit", function () {
-        /*if ($.ValidateAndShowError($('#MenuName'), "menu name", "text")) return;
-        if ($.ValidateAndShowError($('#MenuURL'), "menu url", "text")) return;*/
+        //if ($.ValidateAndShowError($('#RoleName'), "role name", "text")) return;
         $.easyAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
-            blockUI: "#addedit" + main + "Modal .modal-content",
+            blockUI: "#addeditRoleModal .modal-content",
             disableButton: true,
             formReset: true,
             restrictPopupClose: true,
@@ -110,7 +108,7 @@ $(function () {
                             $('#' + capitalizeFirstLetter(key)).prop('checked', dataList[key]);
                         }
                         else {
-                            $('#' + capitalizeFirstLetter(key)).val(dataList[key]); console.log("key:" + capitalizeFirstLetter(key) + "value:" + dataList[key]);
+                            $('#' + capitalizeFirstLetter(key)).val(dataList[key]);
                         }
                     }
                 });

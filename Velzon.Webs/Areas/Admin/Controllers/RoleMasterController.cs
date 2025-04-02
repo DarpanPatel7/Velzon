@@ -50,33 +50,42 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                if (ModelState.IsValid)
+                if (ValidRoleData(objModel, ref objreturn))
                 {
-                    RoleMasterModel roleMasterModel = new RoleMasterModel();
-                    roleMasterModel.Id = objModel.Id;
-                    roleMasterModel.RoleName = objModel.RoleName;
-                    roleMasterModel.IsActive = objModel.IsActive;
-                    roleMasterModel.CreatedBy = UserModel.Username;
+                    if (ModelState.IsValid)
+                    {
+                        RoleMasterModel roleMasterModel = new RoleMasterModel();
+                        roleMasterModel.Id = objModel.Id;
+                        roleMasterModel.RoleName = objModel.RoleName;
+                        roleMasterModel.IsActive = objModel.IsActive;
+                        roleMasterModel.CreatedBy = UserModel.Username;
 
-                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
-                    {
-                        objreturn = objIRoleMasterService.AddOrUpdate(roleMasterModel);
-                    }
-                    else if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update && objModel.Id != 0)
-                    {
-                        objreturn = objIRoleMasterService.AddOrUpdate(roleMasterModel);
+                        if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
+                        {
+                            objreturn = objIRoleMasterService.AddOrUpdate(roleMasterModel);
+                        }
+                        else if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update && objModel.Id != 0)
+                        {
+                            objreturn = objIRoleMasterService.AddOrUpdate(roleMasterModel);
+                        }
+                        else
+                        {
+                            objreturn.strMessage = "You Don't have Rights perform this action.";
+                            objreturn.isError = true;
+                            objreturn.type = PopupMessageType.error.ToString();
+                        }
+
                     }
                     else
                     {
-                        objreturn.strMessage = "You Don't have Rights perform this action.";
+                        objreturn.strMessage = "Form Input is not valid";
                         objreturn.isError = true;
                         objreturn.type = PopupMessageType.error.ToString();
                     }
-
                 }
-                else
+                    else
                 {
-                    objreturn.strMessage = "Form Input is not valid";
+                    objreturn.strMessage = objreturn.strMessage;
                     objreturn.isError = true;
                     objreturn.type = PopupMessageType.error.ToString();
                 }
@@ -89,6 +98,37 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 objreturn.type = PopupMessageType.error.ToString();
             }
             return Json(objreturn);
+        }
+
+        public bool ValidRoleData(RoleMasterFormModel objModel, ref JsonResponseModel objreturn)
+        {
+            bool allow = false;
+            try
+            {
+                if (!ValidControlValue(objModel.RoleName, ControlInputType.text))
+                {
+                    if (ValidLength(objModel.RoleName))
+                    {
+                        objreturn.strMessage = "Enter valid role name!";
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "Enter role name!";
+                    }
+                }
+                else
+                {
+                    allow = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Record not saved, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return allow;
         }
 
         //[IgnoreAntiforgeryToken]
@@ -186,6 +226,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
                 objreturn.strMessage = "Record not deleted, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
+        [Route("/Admin/UpdateRoleStatus")]
+        [HttpPost]
+        public JsonResult UpdateRoleStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = objIRoleMasterService.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
                 objreturn.isError = true;
                 objreturn.type = PopupMessageType.error.ToString();
             }

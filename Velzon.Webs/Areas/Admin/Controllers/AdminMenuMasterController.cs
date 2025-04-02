@@ -56,38 +56,47 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                if (ModelState.IsValid)
+                if (ValidAdminMenuData(objModel, ref objreturn))
                 {
-                    AdminMenuMasterModel adminMenuMasterModel = new AdminMenuMasterModel();
-                    adminMenuMasterModel.Id = objModel.Id;
-                    adminMenuMasterModel.MenuId = objModel.MenuId;
-                    adminMenuMasterModel.Name = objModel.Name;
-                    adminMenuMasterModel.ParentId = (objModel.ParentId==null?0: objModel.ParentId);
-                    adminMenuMasterModel.MenuType = objModel.MenuType;
-                    adminMenuMasterModel.IsActive = objModel.IsActive;
-                    adminMenuMasterModel.CreatedBy = UserModel.Username;
+                    if (ModelState.IsValid)
+                    {
+                        AdminMenuMasterModel adminMenuMasterModel = new AdminMenuMasterModel();
+                        adminMenuMasterModel.Id = objModel.Id;
+                        adminMenuMasterModel.MenuId = objModel.MenuId;
+                        adminMenuMasterModel.Name = objModel.Name;
+                        adminMenuMasterModel.ParentId = (objModel.ParentId==null?0: objModel.ParentId);
+                        adminMenuMasterModel.MenuType = objModel.MenuType;
+                        adminMenuMasterModel.IsActive = objModel.IsActive;
+                        adminMenuMasterModel.CreatedBy = UserModel.Username;
 
-                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
-                    {
-                        adminMenuMasterModel.MenuRank = objAdminMenuMasterService.GetList().Max(x=> x.MenuRank)+1;
-                        objreturn = objAdminMenuMasterService.AddOrUpdate(adminMenuMasterModel);
-                    }
-                    else if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update && objModel.Id != 0)
-                    {
-                        adminMenuMasterModel.MenuRank = objAdminMenuMasterService.Get(objModel.Id).MenuRank;
-                        objreturn = objAdminMenuMasterService.AddOrUpdate(adminMenuMasterModel);
+                        if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
+                        {
+                            adminMenuMasterModel.MenuRank = objAdminMenuMasterService.GetList().Max(x=> x.MenuRank)+1;
+                            objreturn = objAdminMenuMasterService.AddOrUpdate(adminMenuMasterModel);
+                        }
+                        else if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update && objModel.Id != 0)
+                        {
+                            adminMenuMasterModel.MenuRank = objAdminMenuMasterService.Get(objModel.Id).MenuRank;
+                            objreturn = objAdminMenuMasterService.AddOrUpdate(adminMenuMasterModel);
+                        }
+                        else
+                        {
+                            objreturn.strMessage = "You Don't have Rights perform this action.";
+                            objreturn.isError = true;
+                            objreturn.type = PopupMessageType.error.ToString();
+                        }
+
                     }
                     else
                     {
-                        objreturn.strMessage = "You Don't have Rights perform this action.";
+                        objreturn.strMessage = "Form Input is not valid";
                         objreturn.isError = true;
                         objreturn.type = PopupMessageType.error.ToString();
                     }
-
                 }
                 else
                 {
-                    objreturn.strMessage = "Form Input is not valid";
+                    objreturn.strMessage = objreturn.strMessage;
                     objreturn.isError = true;
                     objreturn.type = PopupMessageType.error.ToString();
                 }
@@ -100,6 +109,50 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 objreturn.type = PopupMessageType.error.ToString();
             }
             return Json(objreturn);
+        }
+
+        public bool ValidAdminMenuData(AdminMenuFromModel objModel, ref JsonResponseModel objreturn)
+        {
+            bool allow = false;
+            try
+            {
+                if (!ValidControlValue(objModel.Name, ControlInputType.text))
+                {
+                    if (ValidLength(objModel.Name))
+                    {
+                        objreturn.strMessage = "Enter valid menu name!";
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "Enter menu name!";
+                    }
+                }
+                else if (!ValidControlValue(objModel.MenuId, ControlInputType.dropdown))
+                {
+                    objreturn.strMessage = "Please select menu resource!";
+                }
+                // Validate menu type with proper condition
+                else if (!ValidControlValue(objModel.MenuType, ControlInputType.dropdown) && objModel.MenuType != "0")
+                {
+                    objreturn.strMessage = "Please select menu type!";
+                }
+                else if (objModel.MenuType == "1" && !ValidControlValue(objModel.ParentId, ControlInputType.dropdown))
+                {
+                    objreturn.strMessage = "Please select parent menu!";
+                }
+                else
+                {
+                    allow = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Record not saved, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return allow;
         }
 
         [HttpPost]
