@@ -261,7 +261,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("/Admin/ChangeCouchDB")]
-        public IActionResult ChangeCouchDB(ChangeCouchDBModel changeMyProfileModel)
+        public IActionResult ChangeCouchDB(ChangeCouchDBModel changeCouchDBModel)
         {
             try
             {
@@ -269,13 +269,13 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 {
                     string strError = "";
                     CouchDBModel userMasterModel = new CouchDBModel();
-                    //if (ValidateChangeMyProfile(changeMyProfileModel, ref userMasterModel, out strError))
+                    if (ValidateChangeCouchDB(changeCouchDBModel, out strError))
                     {
                         var mdl = new CouchDBModel();
-                        mdl.AllowCouchDBStore = (changeMyProfileModel.AllowCouchDBStore?"1":"0");
-                        mdl.CouchDBURL = changeMyProfileModel.CouchDBURL;
-                        mdl.CouchDBUser = changeMyProfileModel.CouchDBUser;
-                        mdl.CouchDBDbName = changeMyProfileModel.CouchDBDbName;
+                        mdl.AllowCouchDBStore = (changeCouchDBModel.AllowCouchDBStore?"1":"0");
+                        mdl.CouchDBURL = changeCouchDBModel.CouchDBURL;
+                        mdl.CouchDBUser = changeCouchDBModel.CouchDBUser;
+                        mdl.CouchDBDbName = changeCouchDBModel.CouchDBDbName;
 
                         if (couchDBMasterService.InsertOrUpdate(mdl, out strError))
                         {
@@ -284,24 +284,25 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                             if (smtpModel != null)
                             {
 
-                                changeMyProfileModel.AllowCouchDBStore = (smtpModel.AllowCouchDBStore == "1"?true : false);
-                                changeMyProfileModel.CouchDBURL = smtpModel.CouchDBURL;
-                                changeMyProfileModel.CouchDBUser = smtpModel.CouchDBUser;
-                                changeMyProfileModel.CouchDBDbName = smtpModel.CouchDBDbName;
+                                changeCouchDBModel.AllowCouchDBStore = (smtpModel.AllowCouchDBStore == "1"?true : false);
+                                changeCouchDBModel.CouchDBURL = smtpModel.CouchDBURL;
+                                changeCouchDBModel.CouchDBUser = smtpModel.CouchDBUser;
+                                changeCouchDBModel.CouchDBDbName = smtpModel.CouchDBDbName;
 
                             }
 
                             Functions.MessagePopup(this, "CouchDB Setting Updated Successfully..", PopupMessageType.success);
-                            return View(changeMyProfileModel);
+                            return View(changeCouchDBModel);
                         }
                         else
                         {
                             Functions.MessagePopup(this, strError, PopupMessageType.error);
                         }
                     }
-                    //else
+                    else
                     {
                         Functions.MessagePopup(this, strError, PopupMessageType.error);
+                        return View(changeCouchDBModel);
                     }
                 }
                 else
@@ -314,7 +315,57 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 ErrorLogger.Error(ex.Message, ex.ToString(), this.ControllerContext.ActionDescriptor.ControllerName, this.ControllerContext.ActionDescriptor.ActionName);
                 return RedirectToAction("Logout", "Account");
             }
-            return RedirectToAction("ChangeSMTP", "Home", new { area = "Admin" });
+            return RedirectToAction("ChangeCouchDB", "Home", new { area = "Admin" });
+        }
+
+        private bool ValidateChangeCouchDB(ChangeCouchDBModel changeMyProfileModel, out string strError)
+        {
+            bool isError = true;
+            strError = "";
+
+            if (string.IsNullOrWhiteSpace(changeMyProfileModel.CouchDBURL))
+            {
+                strError = "Please Enter CouchDB URL";
+                return false;
+            }
+            else
+            {
+                if (!ValidControlValue(changeMyProfileModel.CouchDBURL, ControlInputType.none))
+                {
+                    strError = "Invalid CouchDB URL";
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(changeMyProfileModel.CouchDBDbName))
+            {
+                strError = "Please Enter CouchDB Name";
+                return false;
+            }
+            else
+            {
+                if (!ValidControlValue(changeMyProfileModel.CouchDBDbName, ControlInputType.text))
+                {
+                    strError = "Invalid CouchDB Name";
+                    return false;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(changeMyProfileModel.CouchDBUser))
+            {
+                strError = "Please Enter CouchDB User";
+                return false;
+            }
+            else
+            {
+                if (!ValidControlValue(changeMyProfileModel.CouchDBUser, ControlInputType.none))
+                {
+                    strError = "Invalid CouchDB User";
+                    return false;
+                }
+            }
+
+            return isError;
         }
 
         #endregion

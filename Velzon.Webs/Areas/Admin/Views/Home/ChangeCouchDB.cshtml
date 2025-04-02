@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Change CouchDB";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <!-- Basic form layout section start -->
@@ -18,56 +18,38 @@
                             </div>
                         </div>
                     </div>
-                    @*<p class="mb-0">This is the most basic and cost estimation form is the default position.</p>*@
                 </div>
                 <div class="card-body">
-                    <div class="px-3">
-                        <form asp-action="ChangeCouchDB" id="frmChangesCouchDB" asp-area="Admin" method="post" asp-controller="Home" autocomplete="off" >
-                            @Html.AntiForgeryToken()
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label asp-for="CouchDBURL">CouchDBURL</label>
-                                        <input type="text" asp-for="CouchDBURL" class="form-control" placeholder="CouchDBURL" />
-                                        <span asp-validation-for="CouchDBURL" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label asp-for="CouchDBDbName">CouchDBDbName</label>
-                                        <input type="text" asp-for="CouchDBDbName" class="form-control" placeholder="SMTPPort" />
-                                        <span asp-validation-for="CouchDBDbName" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label asp-for="CouchDBUser">CouchDBUser</label>
-                                        <input type="text" asp-for="CouchDBUser" class="form-control" placeholder="CouchDBUser" />
-                                        <span asp-validation-for="CouchDBUser" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label asp-for="AllowCouchDBStore" class="font-medium-2 text-bold-600 ml-1">AllowCouchDBStore</label>
-                                        <input type="checkbox" class="switchery" asp-for="AllowCouchDBStore" data-size="sm" />
-                                    </div>
-                                </div>
+                    <form asp-action="ChangeCouchDB" id="frmChangesCouchDB" asp-area="Admin" method="post" asp-controller="Home" autocomplete="off" >
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label asp-for="CouchDBURL">CouchDBURL</label>
+                                <input type="text" asp-for="CouchDBURL" class="form-control" placeholder="CouchDBURL" />
+                                <span asp-validation-for="CouchDBURL" class="text-danger"></span>
                             </div>
-
-                            <div class="form-group">
+                            <div class="col-md-4">
+                                <label asp-for="CouchDBDbName">CouchDBDbName</label>
+                                <input type="text" asp-for="CouchDBDbName" class="form-control" placeholder="SMTPPort" />
+                                <span asp-validation-for="CouchDBDbName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                    <label asp-for="CouchDBUser">CouchDBUser</label>
+                                <input type="text" asp-for="CouchDBUser" class="form-control" placeholder="CouchDBUser" />
+                                <span asp-validation-for="CouchDBUser" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="AllowCouchDBStore" class="font-medium-2 text-bold-600 ml-1">AllowCouchDBStore</label>
+                                <input type="checkbox" class="switchery" asp-for="AllowCouchDBStore" data-size="sm" />
+                            </div>
+                            <div class="col-md-12">
                                 <button type="submit" value="ChangeSMTP" class="btn btn-primary"><i class="icon-settings"></i> Save Setting</button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
-
     </div>
 </section>
-
-@section Scripts {
-}
