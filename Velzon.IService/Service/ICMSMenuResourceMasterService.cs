@@ -31,5 +31,7 @@ namespace Velzon.IService.Service
         JsonResponseModel UpdateSwap(CMSMenuResourceModel model, string username);
 
         CMSMenuResourceModel PageDeails(long Id);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }

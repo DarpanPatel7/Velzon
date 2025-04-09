@@ -47,8 +47,7 @@ $(function () {
         $("#UserName").val(u_name);
         $.easyAjax({
             type: "POST",
-            url: ResolveUrl("/Admin/SaveUtilityData"),
-            container: "#frmAddEdit",
+            container: "#addedit" + main + "Form",
             datatable: datatable, // ✅ Use global datatable
         });
     }

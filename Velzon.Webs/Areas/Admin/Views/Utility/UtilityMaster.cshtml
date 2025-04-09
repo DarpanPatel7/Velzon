@@ -12,17 +12,15 @@
 }
 
 @section Modals {
-    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div id="addeditUtilityModal" class="modal fade" tabindex="-1" aria-labelledby="mdlLabel" style="display: none;">
+        <div class="modal-dialog modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h4 class="modal-title text-white" id="myModalLabel9"> @ViewData["Title"] Form</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="mdlLabel">@ViewData["Title"] Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmAddEdit" autocomplete="off">
+                    <form id="addeditUtilityForm" action="@Url.Content("~/Admin/SaveUtilityData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="FormUserId" />
                         <input type="hidden" asp-for="UserName" />

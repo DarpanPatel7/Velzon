@@ -154,7 +154,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("pId", id);
                 dictionary.Add("pIsActive", isActive);
                 dictionary.Add("pUsername", username);
-                dapperConnection.GetListResult<UserMasterModel>("cmsUpdateStatusRoleMaster", CommandType.StoredProcedure, dictionary).ToList();
+                dapperConnection.GetListResult<RoleMasterModel>("cmsUpdateStatusRoleMaster", CommandType.StoredProcedure, dictionary).ToList();
 
                 jsonResponseModel.strMessage = "Record updated successfully!";
                 jsonResponseModel.isError = false;

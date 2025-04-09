@@ -191,55 +191,70 @@
      * @param {string} formId - The ID of the form to reset.
      */
     $.resetForm = function (formId, options = {}) {
-        var $form = $(formId);
+        const $form = $(formId);
 
         if ($form.length === 0) {
             console.warn("Form not found:", formId);
             return;
         }
 
-        // Detect and store Antiforgery Token field value before reset
-        var antiforgeryField = $form.find("input[type='hidden'][name='AntiforgeryFieldname']");
-        var antiforgeryValue = antiforgeryField.val(); // Store current value
-
-        // Default options
-        var defaults = {
-            skipFields: [], // Allow skipping custom fields
-            defaultValues: {}, // Custom default values
-            afterReset: function () { } // Callback after reset
+        const defaults = {
+            skipFields: [],
+            defaultValues: {},
+            afterReset: function () { }
         };
 
-        var settings = $.extend({}, defaults, options);
+        const settings = $.extend(true, {}, defaults, options);
 
-        // Always ensure Antiforgery Token is skipped
+        // Preserve anti-forgery token
+        const antiforgeryField = $form.find("input[type='hidden'][name='AntiforgeryFieldname']");
+        const antiforgeryValue = antiforgeryField.val();
+
         if (antiforgeryField.length) {
             settings.skipFields.push("AntiforgeryFieldname");
         }
 
-        // Reset the form (resets all fields)
+        // Reset form
         $form[0].reset();
 
-        // Restore Antiforgery Token value after reset
+        // Restore anti-forgery token
         if (antiforgeryField.length) {
             antiforgeryField.val(antiforgeryValue);
         }
 
-        // Manually reset hidden fields except skipped fields
-        $form.find("input[type='hidden']").each(function () {
-            var fieldName = $(this).attr("name");
-            if (!settings.skipFields.includes(fieldName)) {
-                $(this).val(settings.defaultValues[fieldName] || ""); // Set default or empty
-            }
+        // Restore custom default values
+        $.each(settings.defaultValues, function (name, value) {
+            if (settings.skipFields.includes(name)) return;
+
+            const $fields = $form.find(`[name='${name}']`);
+
+            $fields.each(function () {
+                const $field = $(this);
+
+                if ($field.is(":checkbox")) {
+                    // Support both single and multiple checkbox values
+                    const values = Array.isArray(value) ? value : [value];
+                    $field.prop("checked", values.includes($field.val()));
+                } else if ($field.is(":radio")) {
+                    $field.prop("checked", $field.val() == value);
+                } else {
+                    $field.val(value);
+                }
+            });
         });
 
-        // Set custom default values for specified fields
-        $.each(settings.defaultValues, function (fieldName, value) {
-            if (!settings.skipFields.includes(fieldName)) {
-                $form.find("[name='" + fieldName + "']").val(value);
-            }
+        // Reset checkboxes that were not in defaultValues (unchecked)
+        $form.find("input[type='checkbox']").each(function () {
+            const $checkbox = $(this);
+            const name = $checkbox.attr("name");
+
+            // Skip if in skipFields or already handled
+            if (settings.skipFields.includes(name) || settings.defaultValues.hasOwnProperty(name)) return;
+
+            $checkbox.prop("checked", false);
         });
 
-        // Trigger afterReset callback
+        // Callback
         settings.afterReset.call($form);
     };
 
@@ -315,7 +330,7 @@
      */
     $.easyBlockUI = function (blockUI, message) {
         if (message != '') {
-            message = '<div class="d-flex justify-content-center"><p class="mb-0">' + message + '</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>';
+            message = '<div class="d-flex justify-content-center h4"><p class="mb-0">' + message + '</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>';
         } else {
             message = '<div class="spinner-border text-white" role="status"></div>';
         }
@@ -482,7 +497,56 @@
         return false; // No error
     };
 
+    /**
+     * Validates an image file input by ID and shows an error if invalid.
+     * @param {string} controlId - The jQuery selector for the file input (e.g. '#BannerImageInput').
+     * @param {string} fieldName - Field name to show in error messages.
+     * @param {boolean} required - Whether the image is required.
+     * @param {Array<string>} allowedExtensions - Allowed file extensions (default: jpg, jpeg, png).
+     * @returns {boolean} - True if validation fails (invalid), false otherwise.
+     */
+    $.ValidateImageAndShowError = function (controlId, fieldName, required, allowedExtensions = ['jpg', 'jpeg', 'png']) {
+        let control = $(controlId);
+        let fileName = control.val().split('\\').pop(); // Extract file name
+        let extension = fileName.split('.').pop().toLowerCase();
 
+        if (required) {
+            if (!fileName) {
+                ShowMessage(`Please select ${fieldName}!`, "Error!", "error");
+                return true;
+            }
+            if (allowedExtensions.indexOf(extension) === -1) {
+                ShowMessage(`Select a valid ${fieldName} file (${allowedExtensions.join(', ')})!`, "Error!", "error");
+                return true;
+            }
+        } else {
+            if (fileName && allowedExtensions.indexOf(extension) === -1) {
+                ShowMessage(`Select a valid ${fieldName} file (${allowedExtensions.join(', ')})!`, "Error!", "error");
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    /**
+     * Binds language options to the dropdown by fetching data from the server.
+     * This function sends an AJAX POST request with an anti-forgery token,
+     * retrieves language options, and updates the #LanguageId dropdown.
+     */
+    $.BindLanguage = function () {
+        $.easyAjax({
+            type: "POST",
+            url: ResolveUrl("/Admin/BindLanguage"), // Resolve the URL dynamically
+            success: function (res) { // Callback function on successful response
+                $("#LanguageId").empty(); // Clear the existing options in the dropdown
+                // Iterate over the response data and populate the dropdown
+                $.each(res, function (data, value) {
+                    $("#LanguageId").append($("<option></option>").val(value.value).html(value.text));
+                });
+            }
+        });
+    }
 
 })(jQuery);
 
@@ -499,6 +563,7 @@
             container: "body", // Default container
             dataType: "json", // Expected data type
             blockUI: false, // Whether to block UI during request
+            blockUIMessage: false,
             disableButton: false, // Whether to disable button during request
             buttonSelector: "[type='submit']", // Selector for the button
             antiforgeryToken: document.querySelector('input[name="AntiforgeryFieldname"]').value, // CSRF token
@@ -525,6 +590,7 @@
 
         // Merge user-defined options with defaults
         var opt = $.extend(defaults, options || {});
+        console.log(opt);
 
         // ✅ If `blockUI` is true and `opt.container` is still `"body"`, set a new value
         if (opt.blockUI === true) {
@@ -650,19 +716,24 @@
                 }
             } else {
                 if (opt.file === true) {
-                    post_data = new FormData($(opt.container)[0]);
-                    var keys = Object.keys(opt.data);
+                    var data = new FormData($(opt.container)[0]); // initialize FormData from the form
+                    post_data = data; // set this early in case you use it later
 
-                    for (var i = 0; i < keys.length; i++) {
-                        data.append(keys[i], opt.data[keys[i]]);
+                    // Add any extra fields from opt.data
+                    if (opt.data && typeof opt.data === "object") {
+                        var keys = Object.keys(opt.data);
+                        console.log("Extra fields from opt.data:", keys);
+
+                        for (var i = 0; i < keys.length; i++) {
+                            data.append(keys[i], opt.data[keys[i]]);
+                        }
                     }
 
                     // Check if antiforgery token exists, if not, add it
                     if (!data.has("AntiforgeryFieldname") && opt.antiforgeryToken) {
                         data.append("AntiforgeryFieldname", opt.antiforgeryToken);
+                        console.log("Antiforgery token appended to FormData.");
                     }
-
-                    post_data = data;
                 } else {
                     post_data = $(opt.container).serialize();
 
@@ -672,6 +743,8 @@
                     }
                 }
             }
+
+            console.log("post_data" + post_data)
 
             $.ajax({
                 async: opt.async,

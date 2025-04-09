@@ -41,8 +41,8 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 editUser' data-url='${ResolveUrl('/Admin/GetUserDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
-                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 deleteUser' data-url='${ResolveUrl('/Admin/DeleteUserData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
+                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 edit${main}' data-url='${ResolveUrl('/Admin/GetUserDataDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
+                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 delete${main}' data-url='${ResolveUrl('/Admin/DeleteUserData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
 
                     return "<div class='hstack gap-3 flex-wrap'>" +
                         (frmPageUpdate == "true" ? strEdit : "") +
@@ -75,8 +75,7 @@ $(function () {
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
                 Id: 0
-            },
-            skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
+            }
         });
         $('#addedit' + main + 'Modal').modal('show');
     });
@@ -102,7 +101,7 @@ $(function () {
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
-            blockUI: "#addeditUserModal .modal-content",
+            blockUI: "#addedit" + main + "Modal .modal-content",
             disableButton: true,
             formReset: true,
             restrictPopupClose: true,

@@ -18,10 +18,10 @@ $(function () {
     datatable = $.initializeDataTable(tableSelector, { // ✅ Assign to global datatable
         // Your DataTable configurations
         initComplete: function () {
-            MergeGridCells("datatableAdminMenu", [4]); // Apply initially
+            MergeGridCells("datatable" + main, [4]); // Apply initially
         },
         drawCallback: function () {
-            MergeGridCells("datatableAdminMenu", [4]); // Reapply on page change
+            MergeGridCells("datatable" + main, [4]); // Reapply on page change
         },
         columns: [
             {
@@ -87,8 +87,7 @@ $(function () {
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
                 Id: 0
-            },
-            skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
+            }
         });
         $('#addedit' + main + 'Modal').modal('show');
     });

@@ -69,8 +69,7 @@ $(function () {
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
                 Id: 0
-            },
-            skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
+            }
         });
         $('#addedit' + main + 'Modal').modal('show');
     });

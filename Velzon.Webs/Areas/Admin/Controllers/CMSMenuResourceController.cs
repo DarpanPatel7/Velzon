@@ -126,7 +126,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                             {
                                 if (!data.isError)
                                 {
-                                   
                                     cmsMenuResource.BannerImagePath = data.result.FilePath;
                                 }
                                 else
@@ -154,7 +153,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                             {
                                 if (!data.isError)
                                 {
-
                                     cmsMenuResource.IconImagePath = data.result.FilePath;
                                 }
                                 else
@@ -230,6 +228,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         }
                     }
                     else
+                    
                     {
                         objreturn.strMessage = "Form Input is not valid";
                         objreturn.isError = true;
@@ -335,7 +334,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         return false;
                     }
                 }
-                
                 else
                 {
                     allow = true;
@@ -554,6 +552,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
                 objreturn.strMessage = "Record not deleted, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
+        [Route("/Admin/UpdateCMSMenuResourceStatus")]
+        [HttpPost]
+        public JsonResult UpdateCMSMenuResourceStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = cMSMenuResourceMasterService.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
                 objreturn.isError = true;
                 objreturn.type = PopupMessageType.error.ToString();
             }

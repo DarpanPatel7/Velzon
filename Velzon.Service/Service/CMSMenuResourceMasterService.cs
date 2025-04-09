@@ -396,6 +396,32 @@ namespace Velzon.Services.Service
                 return null;
             }
         }
+
+        public JsonResponseModel UpdateStatus(long id, string username, int isActive)
+        {
+            JsonResponseModel jsonResponseModel = new JsonResponseModel();
+            try
+            {
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary.Add("pId", id);
+                dictionary.Add("pIsActive", isActive);
+                dictionary.Add("pUsername", username);
+                dapperConnection.GetListResult<CMSMenuResourceModel>("cmsUpdateStatusCMSMenuResourceMaster", CommandType.StoredProcedure, dictionary).ToList();
+
+                jsonResponseModel.strMessage = "Record updated successfully!";
+                jsonResponseModel.isError = false;
+                jsonResponseModel.type = PopupMessageType.success.ToString();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsUpdateStatusCMSMenuResourceMaster", ex.ToString(), "CMSMenuResourceMasterService", "UpdateStatus");
+                jsonResponseModel.strMessage = ex.Message;
+                jsonResponseModel.isError = true;
+                jsonResponseModel.type = PopupMessageType.error.ToString();
+            }
+            return jsonResponseModel;
+        }
+
         #endregion
 
         #region Disposing Method(s)
