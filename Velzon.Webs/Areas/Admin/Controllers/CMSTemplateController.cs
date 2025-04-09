@@ -178,40 +178,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(lsdata);
         }
 
-        //[HttpPost]
-        //[Route("/Admin/BindParentMenu")]
-        //public JsonResult BindParentMenu(long? lgId)
-        //{
-
-        //    List<ListItem> lsdata = new List<ListItem>();
-        //    try
-        //    {
-        //        lsdata.Add(new ListItem { Text = "-- Select Parent Menu --" });
-        //        if (lgId.HasValue)
-        //        {
-        //            if (lgId.Value > 0)
-        //            {
-        //                lsdata.AddRange(objCMSTemplateMasterService.GetList().Where(x => x.Id != lgId).Select(x => new ListItem { Text = x.Name, Value = x.Id.ToString() }).ToList());
-        //            }
-        //            else
-        //            {
-        //                lsdata.AddRange(objCMSTemplateMasterService.GetList().Select(x => new ListItem { Text = x.Name, Value = x.Id.ToString() }).ToList());
-        //            }
-        //        }
-        //        else
-        //        {
-        //            lsdata.AddRange(objCMSTemplateMasterService.GetList().Select(x => new ListItem { Text = x.Name, Value = x.Id.ToString() }).ToList());
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
-        //    }
-
-        //    return Json(lsdata);
-        //}
-
         [Route("/Admin/GetCMSTemplateDataDetails")]
         [HttpPost]
         public JsonResult GetCMSTemplateDetails(string id,string langId)
@@ -219,8 +185,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
                 if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(langId)), out long lgLangId))
                 {
                     objreturn.strMessage = "";
@@ -248,8 +212,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
                 if (long.TryParse((HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse((HttpUtility.UrlDecode(langId)), out long lgLangId))
                 {
                     objreturn.strMessage = "";
@@ -307,6 +269,42 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(objreturn);
         }
 
+        [Route("/Admin/UpdateCMSTemplateStatus")]
+        [HttpPost]
+        public JsonResult UpdateCMSTemplateStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = CMSTemplateMasterService.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
 
         #endregion
     }

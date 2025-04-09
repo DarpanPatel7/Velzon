@@ -12,7 +12,7 @@ namespace Velzon.Model.Service
         public long? TemplateId { get; set; }
         public long LanguageId { get; set; }
         public string TemplateName { get; set; }
-        public string Content { get; set; }
+        public string? Content { get; set; }
         public string TemplateType { get; set; }
         public bool IsActive { get; set; }
     }

@@ -1,5 +1,5 @@
 ﻿/**
- * Page Manu Resource Master
+ * Page Manu Right Master
  */
 
 "use strict";

@@ -96,11 +96,11 @@ $(function () {
 
     // open form modal
     $(document).on("click", "#add" + main, function () {
+        $.BindLanguage();
         ValidateParentOrNot();
         BindParentCMSMenu(null);
         BindMenuType();
         BindMenuTypes();
-        $.BindLanguage();
         $('#dvParentId').hide();
         $('#ViewfileIF').css('display', 'none');
         $('#ViewfileIF1').css('display', 'none');
