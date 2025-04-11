@@ -19,5 +19,7 @@ namespace Velzon.IService.Service
         JsonResponseModel Delete(long Doc_Id, string username);
 
         JsonResponseModel AddOrUpdate(DocumentModel model, string username);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }
