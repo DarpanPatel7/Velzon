@@ -27,6 +27,8 @@ namespace Velzon.Services.Service
 
         #endregion
 
+        #region Public Method(s)
+
         public MinisterModel Get(long id, long lgLangId = 1)
         {
             try
@@ -83,26 +85,6 @@ namespace Velzon.Services.Service
             JsonResponseModel jsonResponseModel = new JsonResponseModel();
             try
             {
-                //if (string.IsNullOrWhiteSpace(model.ImageName))
-                //{
-                //    model.ImageName = "";
-                //}
-                //if (string.IsNullOrWhiteSpace(model.ImagePath))
-                //{
-                //    model.ImagePath = "";
-                //}
-                //if (model.Id != 0)
-                //{
-                //    var dataModel = Get(model.Id);
-                //    if (dataModel != null)
-                //    {
-                //        if (model.ImagePath != null)
-                //        {
-                //            model.ImageName = dataModel.ImageName;
-                //            model.ImagePath = dataModel.ImagePath;
-                //        }
-                //    }
-                //}
                 Dictionary<string, object> dictionary = new Dictionary<string, object>();
                 dictionary.Add("pId", model.Id);
                 dictionary.Add("pLanguageId", model.LanguageId);
@@ -113,9 +95,6 @@ namespace Velzon.Services.Service
                 dictionary.Add("pIsActive", model.IsActive);
                 dictionary.Add("Username", username);
                 dictionary.Add("pMinisterRank", model.MinisterRank);
-                //  dictionary.Add("pMinisterSection", model.MinisterSection);
-
-
                 var data = dapperConnection.GetListResult<long>("cmsInsertOrUpdateMinisterMaster", CommandType.StoredProcedure, dictionary).FirstOrDefault();
 
                 if (model.Id == 0)
@@ -247,7 +226,34 @@ namespace Velzon.Services.Service
             }
             return jsonResponseModel;
         }
-        
+
+        public JsonResponseModel UpdateStatus(long id, string username, int isActive)
+        {
+            JsonResponseModel jsonResponseModel = new JsonResponseModel();
+            try
+            {
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary.Add("pId", id);
+                dictionary.Add("pIsActive", isActive);
+                dictionary.Add("pUsername", username);
+                dapperConnection.GetListResult<UserMasterModel>("cmsUpdateStatusMinisterMaster", CommandType.StoredProcedure, dictionary).ToList();
+
+                jsonResponseModel.strMessage = "Record updated successfully!";
+                jsonResponseModel.isError = false;
+                jsonResponseModel.type = PopupMessageType.success.ToString();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsUpdateStatusMinisterMaster", ex.ToString(), "MinisterMasterService", "UpdateStatus");
+                jsonResponseModel.strMessage = ex.Message;
+                jsonResponseModel.isError = true;
+                jsonResponseModel.type = PopupMessageType.error.ToString();
+            }
+            return jsonResponseModel;
+        }
+
+        #endregion
+
         #region Disposing Method(s)
 
         private bool disposed;

@@ -75,9 +75,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         if (objModel.MinisterImage != null)
                         {
                             var data = (await Functions.SaveFile(objModel.MinisterImage, httpClientFactory, "Minister", objModel.ImagePath, FileType.ImageType));
-
-                            //var data = (await Functions.SaveFile(objModel.MinisterImage, httpClientFactory, "Minister", "~/Areas/Admin/Views/Minister/"/*objModel.ImagePath*/, FileType.ImageType));
-
                             if (data != null)
                             {
                                 if (!data.isError)
@@ -107,18 +104,8 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         MinisterModel.LanguageId = objModel.LanguageId;
                         MinisterModel.MinisterName = objModel.MinisterName;
                         MinisterModel.MinisterDescription = objModel.MinisterDescription;
-                        //  MinisterModel.MinisterDescription = Common.Functions.CKEditerSanitizer(objModel.MinisterDescription);             
-                        //  MinisterModel.MinisterSection = objModel.MinisterSection;
                         MinisterModel.IsActive = objModel.IsActive;
 
-                        /*if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
-                        {
-                            objreturn = MinisterServices.AddOrUpdate(MinisterModel, UserModel.Username);
-                        }
-                        else if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update && objModel.Id != 0)
-                        {
-                            objreturn = MinisterServices.AddOrUpdate(MinisterModel, UserModel.Username);
-                        }*/
                         if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Insert && objModel.Id == 0)
                         {
                             if (MinisterServices.GetList().Count() == 0)
@@ -142,7 +129,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                             objreturn.isError = true;
                             objreturn.type = PopupMessageType.error.ToString();
                         }
-
                     }
                     else
                     {
@@ -150,6 +136,10 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         objreturn.isError = true;
                         objreturn.type = PopupMessageType.error.ToString();
                     }
+                }
+                else
+                {
+
                 }
                    
             }
@@ -172,11 +162,11 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 {
                     if (ValidLength(objModel.MinisterName))
                     {
-                        objreturn.strMessage = "Enter valid name!";
+                        objreturn.strMessage = "Enter valid minister name!";
                     }
                     else
                     {
-                        objreturn.strMessage = "Enter name!";
+                        objreturn.strMessage = "Enter minister name!";
                     }
                 }
                 else
@@ -338,6 +328,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             }
             return Json(objreturn);
         }
+
         [Route("/Admin/MinisterSwapDetails")]
         [HttpPost]
         public JsonResult MinisterSwapDetails(string rank, string dir)
@@ -371,6 +362,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
                 objreturn.strMessage = "Record not deleted, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
+        [Route("/Admin/UpdateMinisterStatus")]
+        [HttpPost]
+        public JsonResult UpdateMinisterStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = MinisterServices.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
                 objreturn.isError = true;
                 objreturn.type = PopupMessageType.error.ToString();
             }

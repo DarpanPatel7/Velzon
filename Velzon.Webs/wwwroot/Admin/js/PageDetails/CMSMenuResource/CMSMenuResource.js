@@ -108,7 +108,8 @@ $(function () {
         $('#LanguageId').attr('disabled', true);
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
-                Id: 0
+                Id: 0,
+                PageDescription: CKEDITOR.instances['PageDescription'].setData("")
             }
         });
         $('#addedit' + main + 'Modal').modal('show');

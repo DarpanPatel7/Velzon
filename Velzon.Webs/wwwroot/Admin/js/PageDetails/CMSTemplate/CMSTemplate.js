@@ -74,7 +74,8 @@ $(function () {
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
                 Id: 0,
-                TemplateId: 0
+                TemplateId: 0,
+                Content: CKEDITOR.instances['Content'].setData("")
             }
         });
         $('#addedit' + main + 'Modal').modal('show');
