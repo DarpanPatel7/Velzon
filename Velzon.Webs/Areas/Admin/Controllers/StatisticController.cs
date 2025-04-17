@@ -59,9 +59,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 return RedirectToAction("Index", "Account");
             }
         }
-        #endregion
 
-        #region Save Method
         [Route("/Admin/SaveStatisticData")]
         [HttpPost]
         [DisableRequestSizeLimit]
@@ -189,9 +187,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return allow;
         }
 
-        #endregion
-
-        #region Get Master Data
         [HttpPost]
         [Route("/Admin/GetStatisticData")]
         public JsonResult GetStatisticData(CMSStatisticGridModel model)
@@ -208,9 +203,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 return Json("");
             }
         }
-        #endregion
 
-        #region Get Master Details Data
         [Route("/Admin/GetStatisticDetails")]
         [HttpPost]
         public JsonResult GetStatisticDetails(string id, string langId)
@@ -239,9 +232,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             }
             return Json(objreturn);
         }
-        #endregion
-
-        #region Delete Data
+        
         [Route("/Admin/DeleteStatisticData")]
         [HttpPost]
         public JsonResult DeleteStatisticData(string id)
@@ -273,6 +264,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
                 objreturn.strMessage = "Record not deleted, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
+        [Route("/Admin/UpdateStatisticStatus")]
+        [HttpPost]
+        public JsonResult UpdateStatisticStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = StatisticServices.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
                 objreturn.isError = true;
                 objreturn.type = PopupMessageType.error.ToString();
             }

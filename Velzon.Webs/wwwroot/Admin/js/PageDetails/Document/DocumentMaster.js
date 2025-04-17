@@ -190,7 +190,6 @@ $(function () {
     }
 
     window.CopyPath = function(path) {
-        alert(path);
         document.addEventListener('copy', function (e) {
             e.clipboardData.setData('text/plain', path);
             e.preventDefault();

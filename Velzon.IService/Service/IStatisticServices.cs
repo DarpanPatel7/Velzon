@@ -21,5 +21,7 @@ namespace Velzon.IService.Service
         JsonResponseModel AddOrUpdate(StatisticModel model, string username);
 
         List<StatisticType> GetStatisticType();
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }

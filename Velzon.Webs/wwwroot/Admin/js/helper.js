@@ -27,8 +27,19 @@
                     url: ResolveUrl(dt_selector.data('url')),
                     contentType: "application/x-www-form-urlencoded",
                     type: "POST",
-                    data: {
-                        "AntiforgeryFieldname": document.querySelector('input[name="AntiforgeryFieldname"]').value,
+                    data: function (d) {
+                        let antiforgery = {
+                            "AntiforgeryFieldname": document.querySelector('input[name="AntiforgeryFieldname"]').value
+                        };
+
+                        let dynamicData = {};
+                        if (typeof options.data === "function") {
+                            dynamicData = options.data();
+                        } else if (typeof options.data === "object") {
+                            dynamicData = options.data;
+                        }
+
+                        return Object.assign({}, d, antiforgery, dynamicData);
                     },
                     datatype: "json",
                     dataSrc: function (json) {
