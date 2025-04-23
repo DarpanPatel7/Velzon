@@ -541,6 +541,39 @@
     };
 
     /**
+    * Validates a file input by ID and shows an error if invalid.
+    * @param {string} controlId - The jQuery selector for the file input (e.g. '#DocumentInput').
+    * @param {string} fieldName - Field name to show in error messages.
+    * @param {boolean} required - Whether the file is required.
+    * @param {Array<string>} allowedExtensions - Allowed file extensions (e.g. ['pdf', 'docx', 'xlsx']).
+    * @returns {boolean} - True if validation fails (invalid), false otherwise.
+    */
+    $.ValidateFileAndShowError = function (controlId, fieldName, required, allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx']) {
+        let control = $(controlId);
+        let fileName = control.val().split('\\').pop(); // Extract file name
+        let extension = fileName.split('.').pop().toLowerCase();
+
+        if (required) {
+            if (!fileName) {
+                ShowMessage(`Please select ${fieldName}!`, "Error!", "error");
+                return true;
+            }
+            if (allowedExtensions.indexOf(extension) === -1) {
+                ShowMessage(`Select a valid ${fieldName} file (${allowedExtensions.join(', ')})!`, "Error!", "error");
+                return true;
+            }
+        } else {
+            if (fileName && allowedExtensions.indexOf(extension) === -1) {
+                ShowMessage(`Select a valid ${fieldName} file (${allowedExtensions.join(', ')})!`, "Error!", "error");
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+
+    /**
      * Binds language options to the dropdown by fetching data from the server.
      * This function sends an AJAX POST request with an anti-forgery token,
      * retrieves language options, and updates the #LanguageId dropdown.

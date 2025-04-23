@@ -20,6 +20,8 @@ namespace Velzon.IService.Service
 
         JsonResponseModel AddOrUpdate(EcitizenModel model, string username);
 
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
+
         List<EcitizenType> GetEcitizenType();
     }
 }
