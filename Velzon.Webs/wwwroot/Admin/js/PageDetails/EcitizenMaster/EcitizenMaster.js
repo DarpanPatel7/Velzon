@@ -45,8 +45,12 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    return row.isActive ? yesBadge : noBadge;
-                }, autoWidth: true
+                    var checked = row.isActive ? "checked" : "";
+                    return `<div class="form-check form-switch">
+                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateEcitizenStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        | ${row.isActive ? yesBadge : noBadge}
+                    </div>`;
+                }
             },
             {
                 data: null,
@@ -233,7 +237,7 @@ $(function () {
                 let id = FrontValue(intId); // Get edit id
                 let langId = FrontValue(intLang); // Get langauge id
                 $.easyAjax({
-                    url: ResolveUrl('/Admin/GetEcitizenDataDetails'),
+                    url: ResolveUrl('/Admin/GetEcitizenDetails'),
                     type: "POST",
                     data: { "id": encodeURIComponent(id), "langId": encodeURIComponent(langId) }, // Send id in the request body
                     showModal: "#addedit" + main + "Modal",
