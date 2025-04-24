@@ -24,32 +24,30 @@
                     <form id="addeditPopupForm" action="@Url.Content("~/Admin/SavePopupData")" autocomplete="off">
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" value="0" />
-                        <div class="form-group mt-2">
-                            <div class="row gx-3 gy-2">
-                                <div class="col-md-4">
-                                    <label asp-for="LanguageId" class="form-label">Language<span style="color:red">*</span></label>
-                                    <select class="form-select" asp-for="LanguageId">
-                                        <option value="">--Select Language--</option>
-                                    </select>
-                                    <span asp-validation-for="LanguageId" class="text-danger"></span>
-                                </div>
-                                <div class="col-md-12">
-                                    <label asp-for="popupDescription" class="control-label">Popup Details</label>
-                                    <textarea rows="5" cols="12" asp-for="popupDescription" class="form-control border-primary" placeholder="Enter Popup Details"></textarea>
-                                    <span asp-validation-for="popupDescription" class="text-danger"></span>
-                                    <script type="text/javascript">
-                                        CKEDITOR.dtd.$removeEmpty['i'] = false;
-                                        var editor = CKEDITOR.replace('popupDescription', {
-                                            extraPlugins: 'tableresize'
-                                        });
-                                    </script>
-                                </div>
-                                <div class="col-md-4">
-                                    <label asp-for="IsActive" class="form-label">Status</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" asp-for="IsActive" />
-                                        <label class="form-check-label" for="IsActive">Is Active</label>
-                                    </div>
+                        <div class="row gx-3 gy-2">
+                            <div class="col-md-4">
+                                <label asp-for="LanguageId" class="form-label">Language<span style="color:red">*</span></label>
+                                <select class="form-select" asp-for="LanguageId">
+                                    <option value="">--Select Language--</option>
+                                </select>
+                                <span asp-validation-for="LanguageId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12">
+                                <label asp-for="popupDescription" class="form-label">Popup Details</label>
+                                <textarea rows="5" cols="12" asp-for="popupDescription" class="form-control" placeholder="Enter Popup Details"></textarea>
+                                <span asp-validation-for="popupDescription" class="text-danger"></span>
+                                <script type="text/javascript">
+                                    CKEDITOR.dtd.$removeEmpty['i'] = false;
+                                    var editor = CKEDITOR.replace('popupDescription', {
+                                        extraPlugins: 'tableresize'
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="IsActive" class="form-label">Status</label>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" asp-for="IsActive" />
+                                    <label class="form-check-label" for="IsActive">Is Active</label>
                                 </div>
                             </div>
                         </div>

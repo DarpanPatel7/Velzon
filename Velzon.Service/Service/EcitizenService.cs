@@ -153,21 +153,6 @@ namespace Velzon.Services.Service
             return jsonResponseModel;
         }
 
-        public List<EcitizenType> GetEcitizenType()
-        {
-            try
-            {
-                Dictionary<string, object> dictionary = new Dictionary<string, object>();
-                var data = dapperConnection.GetListResult<EcitizenType>("cmsGetAllEcitizenMasterType", CommandType.StoredProcedure).ToList();
-                return data;
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into cmsGetAllEcitizenMasterType", ex.ToString(), "EcitizenService", "GetEcitizenType");
-                return null;
-            }
-        }
-
         public JsonResponseModel UpdateStatus(long id, string username, int isActive)
         {
             JsonResponseModel jsonResponseModel = new JsonResponseModel();
@@ -191,6 +176,21 @@ namespace Velzon.Services.Service
                 jsonResponseModel.type = PopupMessageType.error.ToString();
             }
             return jsonResponseModel;
+        }
+
+        public List<EcitizenType> GetEcitizenType()
+        {
+            try
+            {
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                var data = dapperConnection.GetListResult<EcitizenType>("cmsGetAllEcitizenMasterType", CommandType.StoredProcedure).ToList();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsGetAllEcitizenMasterType", ex.ToString(), "EcitizenService", "GetEcitizenType");
+                return null;
+            }
         }
 
         #endregion

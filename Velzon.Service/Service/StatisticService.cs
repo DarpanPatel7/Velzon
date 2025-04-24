@@ -156,19 +156,6 @@ namespace Velzon.Services.Service
             return jsonResponseModel;
         }
 
-        public List<StatisticType> GetStatisticType()
-        {
-            try
-            {
-                return dapperConnection.GetListResult<StatisticType>("cmsGetAllStatisticDataMasterType", CommandType.StoredProcedure).ToList();
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into cmsGetAllStatisticDataMasterType", ex.ToString(), "StatisticService", "GetStatisticType");
-                return null;
-            }
-        }
-
         public JsonResponseModel UpdateStatus(long id, string username, int isActive)
         {
             JsonResponseModel jsonResponseModel = new JsonResponseModel();
@@ -192,6 +179,19 @@ namespace Velzon.Services.Service
                 jsonResponseModel.type = PopupMessageType.error.ToString();
             }
             return jsonResponseModel;
+        }
+
+        public List<StatisticType> GetStatisticType()
+        {
+            try
+            {
+                return dapperConnection.GetListResult<StatisticType>("cmsGetAllStatisticDataMasterType", CommandType.StoredProcedure).ToList();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsGetAllStatisticDataMasterType", ex.ToString(), "StatisticService", "GetStatisticType");
+                return null;
+            }
         }
 
         #endregion

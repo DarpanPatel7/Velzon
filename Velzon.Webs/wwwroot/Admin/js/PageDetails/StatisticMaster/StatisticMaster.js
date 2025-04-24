@@ -55,7 +55,7 @@ $(function () {
 
                     return "<div class='hstack gap-3 flex-wrap'>" +
                         (frmPageUpdate == "true" ? strEdit : "") +
-                        (frmPageView == "true" ? downloadLinks : "sdfsdf") +
+                        (frmPageView == "true" ? downloadLinks : "") +
                         (frmPageDelete == "true" ? strRemove : "") +
                         "</div>";
                 },
