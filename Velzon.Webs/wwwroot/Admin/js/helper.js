@@ -44,6 +44,9 @@
                     datatype: "json",
                     dataSrc: function (json) {
                         HideLoader();
+                        if (typeof options.dataSrc === "function") {
+                            return options.dataSrc(json);
+                        }
                         return json.data;
                     },
                     error: function (xhr, error, thrown) {

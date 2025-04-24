@@ -23,7 +23,7 @@
                 <div class="modal-body">
                     <form id="addeditBranchForm" action="@Url.Content("~/Admin/SaveBranchData")" autocomplete="off">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Id" value="0" />
                         <div class="row gx-3 gy-2">
                             <div class="col-md-4">
                                 <label asp-for="LanguageId" class="form-label">Language<span style="color:red">*</span></label>
@@ -81,8 +81,8 @@
             </div>
             <div class="card-body">
                 <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableBranch" data-url="@Url.Content("~/Admin/GetBranchData")">
-                    <thead>
-                        <tr>
+                    <thead class="table-light">
+                        <tr class="text-uppercase">
                             <th>#</th>
                             <th>Actions</th>
                             <th>Branch Name</th>                                                                                    
