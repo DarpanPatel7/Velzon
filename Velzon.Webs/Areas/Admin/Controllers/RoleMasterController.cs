@@ -169,6 +169,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
                 {
+                    objreturn.isError = false;
                     objreturn.result = lsdata = objIRoleMasterService.Get(lgid);
                 }
                 else

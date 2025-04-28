@@ -65,10 +65,10 @@ $(function () {
     });
 
     // Delete Record
-    $(document).on("click", ".delete" + main, function () {
+    $(document).on("click", ".delete" + main, async function () {
         let url = $(this).attr("data-url"); // Get delete URL
         let id = $(this).attr("data-id"); // Get delete id
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -93,12 +93,12 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#Name'), "menu name", "text", "Please enter menu name!")) return;
         if ($.ValidateAndShowError($('#MenuId'), "menu resource", "dropdown", "Please select menu resource!")) return;
         if ($.ValidateAndShowError($('#MenuType'), "menu type", "dropdown", "Please select menu type!")) return;
         if ($('#MenuType').val() == "1" && $.ValidateAndShowError($('#ParentId'), "parent menu", "dropdown", "Please select parent menu!")) return;
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -111,12 +111,12 @@ $(function () {
     });
 
     // render edit data
-    $(document).on("click", ".edit" + main, function () {
+    $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         BindMenu();
         BindMenuType();
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -125,7 +125,7 @@ $(function () {
             initSelect2: "#addedit" + main + "Modal",
             success: function (data) {
                 var dataList = data.result;
-                $.easyAjax({
+                safeAjax({
                     type: "POST",
                     url: ResolveUrl("/Admin/BindParentMenu"),
                     data: { lgId: dataList.id },
@@ -156,12 +156,12 @@ $(function () {
     });
 
     // Handle status change
-    $(document).on("click", ".status" + main, function () {
+    $(document).on("click", ".status" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let $switch = $(this); // Store reference to the switch element
         let isActive = $switch.is(":checked") ? 1 : 0;
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { Id: id, IsActive: isActive }, // Send id in the request body
@@ -172,9 +172,9 @@ $(function () {
         });
     });
 
-    function BindMenu() {
+    async function BindMenu() {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindMenu"),
             success: function (res) {
@@ -188,10 +188,10 @@ $(function () {
         HideLoader();
     }
 
-    function BindParentMenu(id) {
+    async function BindParentMenu(id) {
         ShowLoader();
         if (id == undefined && id == null) {
-            $.easyAjax({
+            await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/BindParentMenu"),
                 data: { lgId: null },
@@ -206,7 +206,7 @@ $(function () {
             HideLoader();
         }
         else {
-            $.easyAjax({
+            await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/BindParentMenu"),
                 data: { lgId: id },
@@ -222,9 +222,9 @@ $(function () {
         }
     }
 
-    function BindMenuType() {
+    async function BindMenuType() {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindMenuType"),
             success: function (res) {
@@ -249,9 +249,9 @@ $(function () {
         }
     }
 
-    window.SwapModel = function (row, dir, type, parentid) {
+    window.SwapModel = async function (row, dir, type, parentid) {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/AdminMenuSwapDetails"),
             data: { "rank": row, "dir": dir, "type": type, "parentid": parentid },

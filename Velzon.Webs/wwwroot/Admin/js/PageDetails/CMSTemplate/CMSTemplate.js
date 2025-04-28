@@ -52,10 +52,10 @@ $(function () {
     });
 
     // Delete Record
-    $(document).on("click", ".delete" + main, function () {
+    $(document).on("click", ".delete" + main, async function () {
         let url = $(this).attr("data-url"); // Get delete URL
         let id = $(this).attr("data-id"); // Get delete id
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -82,12 +82,12 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#TemplateType'), "template type", "dropdown", "Please select a template type!")) return;
         if ($.ValidateAndShowError($('#TemplateName'), "template name", "text")) return;
         $('#LanguageId').attr('disabled', false);
         $("#Content").val(sanitizeCKEditorHTML(CKEDITOR.instances['Content'].getData()));
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -100,12 +100,12 @@ $(function () {
     });
 
     // render edit data
-    $(document).on("click", ".edit" + main, function () {
+    $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         $.BindLanguage();
         BindMenuType();
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id, langId: FrontValue(1) }, // Send id in the request body
@@ -134,12 +134,12 @@ $(function () {
     });
 
     // Handle status change
-    $(document).on("click", ".status" + main, function () {
+    $(document).on("click", ".status" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let $switch = $(this); // Store reference to the switch element
         let isActive = $switch.is(":checked") ? 1 : 0;
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { Id: id, IsActive: isActive }, // Send id in the request body
@@ -150,12 +150,12 @@ $(function () {
         });
     });
 
-    $("#LanguageId").change(function () {
+    $("#LanguageId").change(async function () {
         if (ValidateControl($("#LanguageId")) && ValidateControl($("#TemplateId"))) {
             var intLang = parseInt($("#LanguageId").val());
             var intId = parseInt($("#TemplateId").val());
             if (intLang > 0 && intId > 0) {
-                $.easyAjax({
+                await safeAjax({
                     type: "POST",
                     url: ResolveUrl("/Admin/GetCMSTemplateDataDetailsByTempId"),
                     data: { "id": encodeURIComponent(intId), "langId": encodeURIComponent(intLang) },
@@ -200,9 +200,9 @@ $(function () {
         }
     });
 
-    function BindMenuType() {
+    async function BindMenuType() {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindCMSTemplateType"),
             success: function (res) {

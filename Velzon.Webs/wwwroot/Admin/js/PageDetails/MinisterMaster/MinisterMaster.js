@@ -71,10 +71,10 @@ $(function () {
     });
 
     // Delete Record
-    $(document).on("click", ".delete" + main, function () {
+    $(document).on("click", ".delete" + main, async function () {
         let url = $(this).attr("data-url"); // Get delete URL
         let id = $(this).attr("data-id"); // Get delete id
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -100,7 +100,7 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#MinisterName'), "minister name", "none")) return;
         $("#MinisterDescription").val(sanitizeCKEditorHTML(CKEDITOR.instances['MinisterDescription'].getData()));
         if (!ValidateControl($('#MinisterDescription'))) {
@@ -111,7 +111,7 @@ $(function () {
             if ($.ValidateImageAndShowError('#MinisterImage', "minister image", true)) return;
         }
         $('#LanguageId').attr('disabled', false);
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -125,12 +125,12 @@ $(function () {
     });
 
     // render edit data
-    $(document).on("click", ".edit" + main, function () {
+    $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let langId = $(this).attr("data-language"); // Get langauge id
         $.BindLanguage();
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { "id": encodeURIComponent(id), "langId": encodeURIComponent(langId) }, // Send id in the request body
@@ -179,12 +179,12 @@ $(function () {
     });
 
     // Handle status change
-    $(document).on("click", ".status" + main, function () {
+    $(document).on("click", ".status" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let $switch = $(this); // Store reference to the switch element
         let isActive = $switch.is(":checked") ? 1 : 0;
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { Id: id, IsActive: isActive }, // Send id in the request body
@@ -195,14 +195,14 @@ $(function () {
         });
     });
 
-    $("#LanguageId").change(function () {
+    $("#LanguageId").change(async function () {
         if (ValidateControl($("#LanguageId")) && ValidateControl($("#Id"))) {
             var intLang = parseInt($("#LanguageId").val());
             var intId = parseInt($("#Id").val());
             if (intLang > 0 && intId > 0) {
                 let id = FrontValue(intId); // Get edit id
                 let langId = FrontValue(intLang); // Get langauge id
-                $.easyAjax({
+                await safeAjax({
                     url: ResolveUrl('/Admin/GetMinisterDataDetails'),
                     type: "POST",
                     data: { "id": encodeURIComponent(id), "langId": encodeURIComponent(langId) }, // Send id in the request body
@@ -251,9 +251,9 @@ $(function () {
         }
     });
 
-    window.SwapModel = function (row, dir, type, parentid) {
+    window.SwapModel = async function (row, dir, type, parentid) {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/MinisterSwapDetails"),
             data: { "rank": row, "dir": dir },

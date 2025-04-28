@@ -41,11 +41,11 @@ $(function () {
     });
 
     // lock uplock user
-    window.lockunlock = function(islock, u_id, u_name) {
+    window.lockunlock = async function(islock, u_id, u_name) {
         $("#plock").val(islock);
         $("#FormUserId").val(u_id);
         $("#UserName").val(u_name);
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             container: "#addedit" + main + "Form",
             datatable: datatable, // ✅ Use global datatable

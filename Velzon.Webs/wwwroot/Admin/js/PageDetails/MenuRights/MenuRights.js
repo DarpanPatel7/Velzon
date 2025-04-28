@@ -34,7 +34,7 @@ $(function () {
         HideLoader();
     }
 
-    window.GetAllSaveResult = function () {
+    window.GetAllSaveResult = async function () {
         var string = "";
         ShowLoader();
 
@@ -67,7 +67,7 @@ $(function () {
         });
         if (string != "") {
             var ddlSelectedRoleId = document.getElementById("SelectedRoleId");
-            $.easyAjax({
+            await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/UpdatePageRights"),
                 data: { "strData": string, "lgRoleId": ddlSelectedRoleId.value },

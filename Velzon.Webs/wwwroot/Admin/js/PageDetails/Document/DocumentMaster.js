@@ -71,10 +71,10 @@ $(function () {
     });
 
     // Delete Record
-    $(document).on("click", ".delete" + main, function () {
+    $(document).on("click", ".delete" + main, async function () {
         let url = $(this).attr("data-url"); // Get delete URL
         let id = $(this).attr("data-id"); // Get delete id
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -98,13 +98,13 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#Doc_Name'), "document name", "text")) return;
         if ($('#Doc_Id').val() === '0') {
             if ($.ValidateImageAndShowError('#CouchFile', "document", true)) return;
         }
         $('#LanguageId').attr('disabled', false);
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -118,12 +118,12 @@ $(function () {
     });
 
     // render edit data
-    $(document).on("click", ".edit" + main, function () {
+    $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let langId = $(this).attr("data-language"); // Get langauge id
         //$.BindLanguage();
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { "id": encodeURIComponent(id), "langId": encodeURIComponent(langId) }, // Send id in the request body
@@ -164,12 +164,12 @@ $(function () {
     });
 
     // Handle status change
-    $(document).on("click", ".status" + main, function () {
+    $(document).on("click", ".status" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let $switch = $(this); // Store reference to the switch element
         let isActive = $switch.is(":checked") ? 1 : 0;
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { Id: id, IsActive: isActive }, // Send id in the request body

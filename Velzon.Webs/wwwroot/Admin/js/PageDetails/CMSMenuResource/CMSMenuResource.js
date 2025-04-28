@@ -81,10 +81,10 @@ $(function () {
     });
 
     // Delete Record
-    $(document).on("click", ".delete" + main, function () {
+    $(document).on("click", ".delete" + main, async function () {
         let url = $(this).attr("data-url"); // Get delete URL
         let id = $(this).attr("data-id"); // Get delete id
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { id: id }, // Send id in the request body
@@ -116,7 +116,7 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#ResourceType'), "resource type", "dropdown", "Please select a resource type!")) return;
         if ($.ValidateAndShowError($('#MenuName'), "menu name", "none")) return;
         if ($.ValidateAndShowError($('#Tooltip'), "tooltip", "none")) return;
@@ -129,7 +129,7 @@ $(function () {
         if ($.ValidateImageAndShowError('#IconImage', "Icon Image", false)) return;
         $('#LanguageId').attr('disabled', false);
         $("#PageDescription").val(sanitizeCKEditorHTML(CKEDITOR.instances['PageDescription'].getData()));
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -143,14 +143,14 @@ $(function () {
     });
 
     // render edit data
-    $(document).on("click", ".edit" + main, function () {
+    $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let langId = $(this).attr("data-language"); // Get langauge id
         BindMenuType();
         BindMenuTypes();
         $.BindLanguage();
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { "id": encodeURIComponent(id), "langId": encodeURIComponent(langId) }, // Send id in the request body
@@ -159,7 +159,7 @@ $(function () {
             success: function (data) {
                 $('#LanguageId').attr('disabled', false);
                 var dataList = data.result;
-                $.easyAjax({
+                safeAjax({
                     type: "POST",
                     url: ResolveUrl("/Admin/BindParentCMSMenus"),
                     data: { lgId: dataList.id },
@@ -232,12 +232,12 @@ $(function () {
     });
 
     // Handle status change
-    $(document).on("click", ".status" + main, function () {
+    $(document).on("click", ".status" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
         let $switch = $(this); // Store reference to the switch element
         let isActive = $switch.is(":checked") ? 1 : 0;
-        $.easyAjax({
+        await safeAjax({
             url: url,
             type: "POST",
             data: { Id: id, IsActive: isActive }, // Send id in the request body
@@ -248,12 +248,12 @@ $(function () {
         });
     });
 
-    $("#LanguageId").change(function () {
+    $("#LanguageId").change(async function () {
         if (ValidateControl($("#LanguageId")) && ValidateControl($("#Id"))) {
             var intLang = parseInt($("#LanguageId").val());
             var intId = parseInt($("#CMSMenuResId").val());
             if (intLang > 0 && intId > 0) {
-                $.easyAjax({
+                await safeAjax({
                     type: "POST",
                     url: ResolveUrl("/Admin/GetCMSMenuResourceDataDetailsByResId"),
                     data: { "id": encodeURIComponent((intId)), "langId": encodeURIComponent((intLang)) },
@@ -325,10 +325,10 @@ $(function () {
         }
     });
 
-    function BindParentCMSMenu(id) {
+    async function BindParentCMSMenu(id) {
         ShowLoader();
         if (id == undefined && id == null) {
-            $.easyAjax({
+            await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/BindParentCMSMenus"),
                 data: { lgId: id },
@@ -345,7 +345,7 @@ $(function () {
             HideLoader();
         }
         else {
-            $.easyAjax({
+            await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/BindParentCMSMenus"),
                 data: { lgId: id },
@@ -361,9 +361,9 @@ $(function () {
         }
     }
 
-    function BindMenuTypes() {
+    async function BindMenuTypes() {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindMenuType"),
             success: function (res) {
@@ -388,9 +388,9 @@ $(function () {
         }
     }
 
-    function BindMenuType() {
+    async function BindMenuType() {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindMenuResourceType"),
             success: function (res) {
@@ -413,9 +413,9 @@ $(function () {
         }
     }
 
-    window.SwapModel = function (row, dir, type, parentid) {
+    window.SwapModel = async function (row, dir, type, parentid) {
         ShowLoader();
-        $.easyAjax({
+        await safeAjax({
             type: "POST",
             url: ResolveUrl("/Admin/CMSMenuResourceSwapDetails"),
             data: { "rank": row, "dir": dir, "type": type, "parentid": parentid },
