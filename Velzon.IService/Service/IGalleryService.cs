@@ -20,5 +20,7 @@ namespace Velzon.IService.Service
         JsonResponseModel Delete(long id, string username);
 
         JsonResponseModel SwapSequance(long rank, string dir, string username);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }

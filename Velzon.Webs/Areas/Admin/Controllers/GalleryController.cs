@@ -265,11 +265,11 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(objreturn);
         }
 
-        [Route("/Admin/SaveGalleryPartOneData")]
+        [Route("/Admin/SaveGalleryData")]
         [HttpPost]
         [DisableRequestSizeLimit]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
-        public async Task<JsonResult> SaveGalleryPartOneData(GalleryFormModel objModel)
+        public async Task<JsonResult> SaveGalleryData(GalleryFormModel objModel)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
@@ -482,8 +482,8 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         #region Sub Image/Video
 
         [HttpPost]
-        [Route("/Admin/GetGallaryImageVideoData")]
-        public JsonResult GetGallaryImageVideoData()
+        [Route("/Admin/GetGallaryImageData")]
+        public JsonResult GetGallaryImageData()
         {
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
@@ -565,9 +565,9 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(objreturn);
         }
 
-        [Route("/Admin/DeleteGallaryImageVideoData")]
+        [Route("/Admin/DeleteGallaryImageData")]
         [HttpPost]
-        public JsonResult DeleteGallaryImageVideoData(string id)
+        public JsonResult DeleteGallaryImageData(string id)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
@@ -621,11 +621,11 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(objreturn);
         }
 
-        [Route("/Admin/SaveGallaryImageVideoData")]
+        [Route("/Admin/SaveGalleryImageData")]
         [DisableRequestSizeLimit]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
         [HttpPost]
-        public async Task<JsonResult> SaveGallaryImageVideoData([FromForm] EventImageModel objModel)
+        public async Task<JsonResult> SaveGalleryImageData([FromForm] EventImageModel objModel)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
@@ -651,49 +651,16 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         if (objModel.Image.Count() > 0)
                         {
                             string strFileName = ""; int countVIdeo = 0;
-                            //foreach (EventImageModel item in lstData)
-                            //{
-                            //    if (Functions.ValidateFileExtention(System.IO.Path.GetExtension(item.ImageName).Replace(".", "").ToUpper(), FileType.VideoType))
-                            //    {
-                            //        countVIdeo++;
-                            //    }
-                            //}
                             foreach (IFormFile image in objModel.Image)
                             {
-                                //if (objModel.IsVideoGallery)
-                                //{
-                                //    if (!Functions.ValidateFileExtention(System.IO.Path.GetExtension(image.FileName).Replace(".", "").ToUpper(), FileType.VideoType))
-                                //    {
-                                //        strFileName += " File => " + image.FileName + ",";
-                                //    }
-                                //    else if (Functions.ValidateFileExtention(System.IO.Path.GetExtension(image.FileName).Replace(".", "").ToUpper(), FileType.VideoType))
-                                //    {
-                                //        countVIdeo++;
-                                //    }
-                                //}
-                                //else
                                 {
 
                                     if (!Functions.ValidateFileExtention(System.IO.Path.GetExtension(image.FileName).Replace(".", "").ToUpper(), FileType.ImageType))
                                     {
-                                        //strFileName += " File => " + image.FileName + ",";
-                                        strFileName += " only allow images!!!";
+                                        strFileName += $" File => {image.FileName} is not a valid image file.";
                                     }
                                 }
-
-                                //if (!Functions.ValidateFileExtention(System.IO.Path.GetExtension(image.FileName).Replace(".", "").ToUpper(), FileType.ImageVideoType))
-                                //{
-                                //    strFileName += " File => " + image.FileName + ",";
-                                //}
                             }
-                            //if (countVIdeo > 1)
-                            //{
-                            //    objreturn.strMessage = "Only One Video Allow..";
-                            //    objreturn.isError = true;
-                            //    objreturn.type = PopupMessageType.error.ToString();
-                            //    return Json(objreturn);
-
-                            //}
                             if (strFileName.Length > 0)
                             {
                                 objreturn.strMessage = "File type is not valid " + strFileName.Remove(strFileName.Length - 1, 1);
@@ -806,6 +773,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
                 objreturn.strMessage = "Record not saved, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
+        [Route("/Admin/UpdateGalleryStatus")]
+        [HttpPost]
+        public JsonResult UpdateGalleryStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = galleryService.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
                 objreturn.isError = true;
                 objreturn.type = PopupMessageType.error.ToString();
             }

@@ -100,7 +100,7 @@ $(function () {
     });
 
     // add
-    $(document).on("click", "#addedit" + main + "Submit", function () {
+    $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#Title'), "banner title", "none")) return;
         $("#Description").val(sanitizeCKEditorHTML(CKEDITOR.instances['Description'].getData()));
         if (!ValidateControl($('#Description'))) {
@@ -111,7 +111,7 @@ $(function () {
             if ($.ValidateImageAndShowError('#ImageName', "banner image", true)) return;
         }
         $('#LanguageId').attr('disabled', false);
-        $.easyAjax({
+        await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
             buttonSelector: "#addedit" + main + "Submit",
@@ -122,6 +122,7 @@ $(function () {
             restrictPopupClose: true,
             datatable: datatable,
         });
+        $('#LanguageId').attr('disabled', true);
     });
 
     // render edit data

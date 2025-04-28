@@ -575,14 +575,13 @@
         return false;
     };
 
-
     /**
      * Binds language options to the dropdown by fetching data from the server.
      * This function sends an AJAX POST request with an anti-forgery token,
      * retrieves language options, and updates the #LanguageId dropdown.
      */
-    $.BindLanguage = function () {
-        $.easyAjax({
+    $.BindLanguage = async function () {
+        await $.easyAjax({
             type: "POST",
             url: ResolveUrl("/Admin/BindLanguage"), // Resolve the URL dynamically
             success: function (res) { // Callback function on successful response
@@ -595,6 +594,56 @@
         });
     }
 
+    /**
+     * Parse the response text safely
+     * @param {Object} jqXHR The jqXHR object containing the server response
+     * @returns {Object|null} Parsed response or null if parsing fails
+     */
+    $.ParseResponse = function (jqXHR) {
+        if (!jqXHR.responseText) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(jqXHR.responseText);
+        } catch (e) {
+            console.error("Failed to parse response:", e);
+            return null;
+        }
+    }
+
+    /**
+     * Get the appropriate error message based on the status code and other parameters
+     * @param {Object} jqXHR The jqXHR object
+     * @param {string} textStatus The status of the request (e.g., 'timeout')
+     * @returns {string} The error message
+     */
+    $.GetErrorMessage = function (jqXHR, textStatus) {
+        let message = "A server-side error occurred. Please try again later.";
+
+        switch (jqXHR.status) {
+            case 404:
+                message = "Requested resource not found (404).";
+                break;
+            case 500:
+                message = "Internal Server Error (500).";
+                break;
+            case 403:
+                message = "You are not authorized to perform this action (403).";
+                break;
+            case 401:
+                // Session expired, reload the login page
+                window.location.reload();
+                return; // Exit to prevent further processing
+            default:
+                if (textStatus === "timeout") {
+                    message = "Connection timed out! Please check your internet connection.";
+                }
+                break;
+        }
+
+        return message;
+    }
 })(jQuery);
 
 (function ($) {
@@ -630,285 +679,217 @@
             datatable: false, // Whether request is related to DataTable
             initSelect2: false, // Initialize Select2 plugin
             confirmation: false, // Whether to show confirmation before request
-            statusSwitch: false // Handle toggle switch UI
+            statusSwitch: false, // Handle toggle switch UI
         };
 
-        var opt = defaults;
-
         // Merge user-defined options with defaults
-        var opt = $.extend(defaults, options || {});
-        console.log(opt);
+        const opt = $.extend({}, defaults, options || {});
 
-        // ✅ If `blockUI` is true and `opt.container` is still `"body"`, set a new value
-        if (opt.blockUI === true) {
-            opt.blockUI = opt.container; // Change to your desired container
-        }
+        return new Promise((resolve, reject) => {
+            // ✅ If `blockUI` is true and `opt.container` is still `"body"`, set a new value
+            if (opt.blockUI === true) {
+                opt.blockUI = opt.container; // Change to your desired container
+            }
 
-        // Set default methods if not provided in options
-        if (typeof opt.beforeSend != "function") {
-            console.log('beforeSend');
-            opt.beforeSend = function () {
-                if (opt.historyPush) {
-                    historyPush(opt.url);
-                }
+            // Set default methods if not provided in options
+            if (typeof opt.beforeSend != "function") {
+                opt.beforeSend = function () {
+                    if (opt.historyPush) historyPush(opt.url);
+                    if (opt.blockUI) $.easyBlockUI(opt.blockUI, opt.blockUIMessage);
+                    if (opt.disableButton) $.loadingButton(opt.buttonSelector);
+                    if (opt.restrictPopupClose) {
+                        $.blockPopupClose("#" + $(opt.container).parents("div.modal").attr("id"));
+                    }
+                };
+            }
 
-                if (opt.blockUI) {
-                    $.easyBlockUI(opt.blockUI, opt.blockUIMessage);
-                }
-
-                if (opt.disableButton) {
-                    $.loadingButton(opt.buttonSelector);
-                }
-
-                if (opt.restrictPopupClose) {
-                    $.blockPopupClose(
-                        "#" + $(opt.container).parents("div.modal").attr("id")
-                    );
-                }
-            };
-        }
-
-        // Set default methods if not provided in options
-        if (typeof opt.complete != "function") {
-            console.log('complete');
-            opt.complete = function (jqXHR, textStatus) {
-                if (opt.blockUI) {
-                    $.easyUnblockUI(opt.blockUI);
-                }
-
-                if (opt.disableButton) {
-                    $.unloadingButton(opt.buttonSelector);
-                }
-
-                if (opt.restrictPopupClose) {
-                    $.unblockPopupClose(
-                        "#" + $(opt.container).parents("div.modal").attr("id")
-                    );
-                }
-
-                if (opt.initSelect2) {
-                    if (typeof initSelect2 == "function") {
+            // Set default methods if not provided in options
+            if (typeof opt.complete != "function") {
+                opt.complete = function (jqXHR, textStatus) {
+                    if (opt.blockUI) $.easyUnblockUI(opt.blockUI);
+                    if (opt.disableButton) $.unloadingButton(opt.buttonSelector);
+                    if (opt.restrictPopupClose) {
+                        $.unblockPopupClose("#" + $(opt.container).parents("div.modal").attr("id"));
+                    }
+                    if (opt.initSelect2 && typeof initSelect2 == "function") {
                         initSelect2(opt.initSelect2);
                     }
-                }
-
-                if (opt.showModal) {
-                    if (typeof initDatePicker == "function") {
+                    if (opt.showModal && typeof initDatePicker == "function") {
                         initDatePicker();
                     }
-                }
+                };
+            }
 
-            };
-        }
+            // Enhance error handling and status code handling
+            if (typeof opt.error !== "function") {
+                opt.error = function (jqXHR, textStatus, errorThrown) {
+                    try {
+                        // Attempt to parse the response if available
+                        let response = ParseResponse(jqXHR);
 
-        // Set default methods if not provided in options
-        if (typeof opt.error !== "function") {
-            opt.error = function (jqXHR, textStatus, errorThrown) {
-                try {
-                    let response = jqXHR.responseText
-                        ? (() => {
-                            try { return JSON.parse(jqXHR.responseText); }
-                            catch { return null; }
-                        })()
-                        : null;
-
-                    if (response && typeof response === "object") {
-                        $.handleFail(response, opt);
-                    } else {
-                        let msg = "A server-side error occurred. Please try again later.";
-
-                        switch (jqXHR.status) {
-                            case 404:
-                                msg = "Requested resource not found (404).";
-                                break;
-                            case 500:
-                                msg = "Internal Server Error (500).";
-                                break;
-                            case 403:
-                                msg = "You are not authorized to perform this action (403).";
-                                break;
-                            default:
-                                if (textStatus === "timeout") {
-                                    msg = "Connection timed out! Please check your internet connection.";
-                                }
-                                break;
+                        // Handle the parsed response if it's an object
+                        if (response && typeof response === "object") {
+                            $.handleFail(response, opt);
+                        } else {
+                            // Default error message
+                            let errorMessage = GetErrorMessage(jqXHR, textStatus);
+                            $.ShowMessage(errorMessage, "Error!", "error");
                         }
-
-                        $.ShowMessage(msg, "Error!", "error");
+                    } catch (e) {
+                        // Handle any unexpected errors
+                        console.error("Unexpected error during AJAX error handling:", e);
+                        $.ShowMessage("An unexpected error occurred. Please try again later.", "Error!", "error");
                     }
-                } catch (e) {
-                    // When session expires, reload the login page
-                    if (jqXHR.status === 401) {
-                        window.location.reload();
-                    } else {
-                        $.ShowMessage("An unexpected error occurred!", "Error!", "error");
+                };
+            }
+
+            /**
+             * Function to load AJAX request
+             * @param {object} options - The AJAX request options
+             */
+            $.loadAjax = function () {
+                let post_data = {};
+
+                // ✅ If `opt.data` is explicitly provided and not empty
+                if (opt.data && typeof opt.data === "object" && Object.keys(opt.data).length > 0) {
+                    post_data = { ...opt.data }; // Shallow copy to avoid mutation
+
+                    // 🔒 Add CSRF token if missing
+                    if (!post_data.AntiforgeryFieldname && opt.antiforgeryToken) {
+                        post_data.AntiforgeryFieldname = opt.antiforgeryToken;
                     }
-                }
-            };
-        }
 
-        /**
-         * Function to load AJAX request
-         * @param {object} options - The AJAX request options
-         */
-        $.loadAjax = function () {
-            console.log('loadAjax');
-            //set post data based on file object //if file upload is set to true then it will set to formdata format
-            var post_data = {};
-            if (typeof opt.data !== "undefined" && Object.keys(opt.data).length > 0) {
-                post_data = opt.data;
-                // Check if post_data is an object before adding a new property
-                if (typeof post_data === "object" && !post_data.AntiforgeryFieldname && opt.antiforgeryToken) {
-                    post_data.AntiforgeryFieldname = opt.antiforgeryToken;
-                }
-            } else {
-                if (opt.file === true) {
-                    var data = new FormData($(opt.container)[0]); // initialize FormData from the form
-                    post_data = data; // set this early in case you use it later
+                } else if (opt.file === true) {
+                    // 📎 Initialize FormData from form for file uploads
+                    const form = $(opt.container)[0];
+                    const formData = new FormData(form);
 
-                    // Add any extra fields from opt.data
+                    // 🔁 Append any extra fields from opt.data (if present)
                     if (opt.data && typeof opt.data === "object") {
-                        var keys = Object.keys(opt.data);
-                        console.log("Extra fields from opt.data:", keys);
-
-                        for (var i = 0; i < keys.length; i++) {
-                            data.append(keys[i], opt.data[keys[i]]);
-                        }
+                        Object.entries(opt.data).forEach(([key, value]) => {
+                            formData.append(key, value);
+                        });
                     }
 
-                    // Check if antiforgery token exists, if not, add it
-                    if (!data.has("AntiforgeryFieldname") && opt.antiforgeryToken) {
-                        data.append("AntiforgeryFieldname", opt.antiforgeryToken);
-                        console.log("Antiforgery token appended to FormData.");
+                    // 🔒 Ensure CSRF token is included
+                    if (!formData.has("AntiforgeryFieldname") && opt.antiforgeryToken) {
+                        formData.append("AntiforgeryFieldname", opt.antiforgeryToken);
                     }
+
+                    post_data = formData;
+
                 } else {
+                    // 📝 Use form serialization for non-file requests
                     post_data = $(opt.container).serialize();
 
-                    // Check if antiforgery token exists in serialized data
+                    // 🔒 Ensure CSRF token is included
                     if (!post_data.includes("AntiforgeryFieldname") && opt.antiforgeryToken) {
                         post_data += (post_data ? "&" : "") + "AntiforgeryFieldname=" + encodeURIComponent(opt.antiforgeryToken);
                     }
                 }
-            }
 
-            console.log("post_data" + post_data)
-
-            $.ajax({
-                async: opt.async,
-                type: opt.type,
-                url: opt.url ? opt.url : $(opt.container).prop("action"),
-                dataType: opt.dataType,
-                data: post_data,
-                beforeSend: opt.beforeSend,
-                contentType: opt.file
-                    ? false
-                    : 'application/x-www-form-urlencoded; charset=UTF-8',
-                processData: !opt.file,
-                error: opt.error,
-                complete: opt.complete,
-                cache: false,
-                success: function (response) {
-                    if (typeof response !== "undefined" && response !== null) {
-                        // If a custom success callback is provided, execute it
+                $.ajax({
+                    async: opt.async,
+                    type: opt.type,
+                    url: opt.url ? opt.url : $(opt.container).prop("action"),
+                    dataType: opt.dataType,
+                    data: post_data,
+                    beforeSend: opt.beforeSend,
+                    contentType: opt.file
+                        ? false
+                        : 'application/x-www-form-urlencoded; charset=UTF-8',
+                    processData: !opt.file,
+                    error: opt.error,
+                    complete: opt.complete,
+                    cache: false,
+                    success: function (response) {
                         if (typeof opt.success === "function") {
                             opt.success(response);
-                        } else {
-                            // Check if the response indicates success
-                            if (response.success || response.type === "success") {
-                                // Handle redirection if a redirect URL is provided
-                                if (typeof response.redirect_url !== "undefined" && response.redirect_url) {
-                                    window.location.href = response.redirect_url;
-                                } else if (opt.redirect && response.url) {
-                                    window.location.href = response.url;
-                                }
-
-                                // Append response data to the specified element, if applicable
-                                if (response.data && opt.appendHtml) {
-                                    $(opt.appendHtml).html(response.data);
-                                }
-
-                                // Show modal if `opt.showModal` is specified
-                                if (opt.showModal) {
-                                    console.log('showModal')
-                                    $(opt.showModal).modal("show");
-                                }
-
-                                // Reset the form if `opt.formReset` is true and the form exists
-                                if (opt.formReset && $(opt.container).length) {
-                                    $.resetForm(opt.container, {
-                                        skipFields: ["IsActive"] // This now merges with Antiforgery token instead of replacing it
-                                    })
-                                }
-
-                                // Reload the page if `opt.reload` is true
-                                if (opt.reload) {
-                                    window.location.reload();
-                                }
-
-                                // If a DataTable instance is provided, refresh it
-                                if (opt.datatable && typeof opt.datatable.ajax.reload === "function") {
-                                    //opt.datatable.ajax.reload(null, false); // `false` keeps pagination, `true` resets to page 1
-                                    opt.datatable.ajax.reload(function () {
-                                        opt.datatable.column(0).nodes().each(function (cell, i) {
-                                            cell.innerHTML = i + 1;
-                                        });
-
-                                        // Get DataTable ID dynamically
-                                        let tableId = opt.datatable.table().node().id;
-
-                                        // Adjust content height after reload
-                                        setTimeout(() => $.forceLayoutFix(tableId), 50);
-                                    }, false);
-                                    $('.modal').modal("hide"); // Hide any open modal after updating DataTable
-                                    $.ShowMessage(response.strMessage, "Success!", "success");
-                                }
-                            }
-
-                            // Handle error messages if the response contains an error
-                            if (response.isError || response.error) {
-                                $.ShowMessage(response.strMessage, "Error!", "error");
-                            }
-
-                            // Display informational messages if present in the response
-                            if (response.info) {
-                                $.ShowMessage(response.strMessage, "Success!", "info");
-                            }
                         }
-                    }
-                },
-            });
-        }
 
-        /**
-         * Helper function to adjust layout after AJAX load.
-         * @param {string} tableId - The ID of the table to fix layout for
-         */
-        $.forceLayoutFix = function(tableId) {
-            let table = $('#' + tableId); // Select table dynamically
-            let windowHeight = $(window).height();
-            let tableBottom = table.offset().top + table.outerHeight();
-            let footerHeight = $('.footer').outerHeight();
+                        if (response.success || response.type === "success") {
+                            if (response.redirect_url) {
+                                window.location.href = response.redirect_url;
+                                return;
+                            } else if (opt.redirect && response.url) {
+                                window.location.href = response.url;
+                                return;
+                            }
 
-            if (tableBottom + footerHeight < windowHeight) {
-                $('.footer').css({ position: 'fixed', bottom: '0', width: '100%' });
-            } else {
-                $('.footer').css({ position: 'absolute' });
-            }
-        }
+                            if (opt.appendHtml && response.data) {
+                                $(opt.appendHtml).html(response.data);
+                            }
 
-        // ✅ Call after defining $.loadAjax
-        if (opt.confirmation) {
-            if (opt.statusSwitch) {
-                $.showConfirmation({
-                    statusSwitch: opt.statusSwitch, // ✅ Pass switch element to revert on cancel
+                            if (opt.showModal) $(opt.showModal).modal("show");
+
+                            if (opt.formReset && $(opt.container).length) {
+                                $.resetForm(opt.container, { skipFields: ["IsActive"] });
+                            }
+
+                            if (opt.reload) {
+                                window.location.reload();
+                                return;
+                            }
+
+                            if (opt.datatable && typeof opt.datatable.ajax.reload === "function") {
+                                opt.datatable.ajax.reload(function () {
+                                    opt.datatable.column(0).nodes().each(function (cell, i) {
+                                        cell.innerHTML = i + 1;
+                                    });
+                                    let tableId = opt.datatable.table().node().id;
+                                    setTimeout(() => $.forceLayoutFix(tableId), 50);
+                                }, false);
+
+                                $('.modal').modal("hide");
+
+                                $.ShowMessage(response.strMessage, "Success!", "success");
+                            }
+                            resolve(response);
+                        }
+
+                        if (response.isError || response.error) {
+                            $.ShowMessage(response.strMessage, "Error!", "error");
+                            reject(response);
+                        }
+
+                        if (response.info) {
+                            $.ShowMessage(response.strMessage, "Success!", "info");
+                            resolve(response);
+                        }
+                    },
                 });
-            } else {
-                $.showConfirmation();
             }
-        } else {
-            $.loadAjax(opt);
-        }
-        
+
+            /**
+             * Helper function to adjust layout after AJAX load.
+             * @param {string} tableId - The ID of the table to fix layout for
+             */
+            $.forceLayoutFix = function(tableId) {
+                let table = $('#' + tableId); // Select table dynamically
+                let windowHeight = $(window).height();
+                let tableBottom = table.offset().top + table.outerHeight();
+                let footerHeight = $('.footer').outerHeight();
+
+                if (tableBottom + footerHeight < windowHeight) {
+                    $('.footer').css({ position: 'fixed', bottom: '0', width: '100%' });
+                } else {
+                    $('.footer').css({ position: 'absolute' });
+                }
+            }
+
+            // ✅ Call after defining $.loadAjax
+            if (opt.confirmation) {
+                if (opt.statusSwitch) {
+                    $.showConfirmation({
+                        statusSwitch: opt.statusSwitch, // ✅ Pass switch element to revert on cancel
+                    });
+                } else {
+                    $.showConfirmation();
+                }
+            } else {
+                $.loadAjax(opt);
+            }
+        });
     };
 
     /**
@@ -917,7 +898,6 @@
      * @param {object} opt - Optional additional settings for error handling.
      */
     $.handleFail = function(response, opt) {
-        console.log('handleFail');
         if (typeof response.strMessage != "undefined" && response.strMessage != "") {
             $.ShowMessage(response.strMessage + '!', 'Error!', "error");
         } else {
@@ -995,6 +975,28 @@
             }
         }
     }
+
+    /**
+     * A safe wrapper around $.easyAjax to handle errors globally.
+     * Use this function with `await` to ensure proper flow.
+     *
+     * @param {object} options - Options to pass to $.easyAjax
+     * @returns {object|null} - Returns the AJAX response object or null on error
+     */
+    window.safeAjax = async function (options) {
+        try {
+            // Call the easyAjax function and wait for the response
+            const response = await $.easyAjax(options);
+            HideLoader(); // ✅ Make sure loader hides after success
+            return response;
+        } catch (err) {
+            // Handle any unhandled errors from $.easyAjax
+            HideLoader();
+            $.ShowMessage(err?.strMessage || "Something went wrong.", "Error!", "error");
+            return null; // Return null so the caller can check for failure
+        }
+    };
+
 })(jQuery);
 
 //history pushstate
