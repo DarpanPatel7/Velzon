@@ -1004,6 +1004,7 @@ namespace Velzon.Webs.Common
                 Regex regexNumber = new Regex(regNumber);
                 Regex regexEmail = new Regex(@regEmail.Replace(@"\\", @"\"));
                 Regex regexPassword = new Regex(@regPassword.Replace(@"\\", @"\"));
+                Regex regexURL = new Regex(regURL);
                 string strControlValue = controlValue != null ? controlValue.ToString().Trim() : "";
 
                 if (!string.IsNullOrEmpty(strControlValue) && regexGlobalValidation.IsMatch(strControlValue))
@@ -1039,6 +1040,13 @@ namespace Velzon.Webs.Common
                     else if (type == ControlInputType.pincode)
                     {
                         if (regexPincode.IsMatch(strControlValue))
+                        {
+                            allow = true;
+                        }
+                    }
+                    else if (type == ControlInputType.url)
+                    {
+                        if (regexURL.IsMatch(strControlValue))
                         {
                             allow = true;
                         }

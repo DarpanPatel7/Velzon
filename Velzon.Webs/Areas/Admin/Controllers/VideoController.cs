@@ -8,6 +8,7 @@ using Velzon.Webs.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Web;
+using Velzon.Services.Service;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -172,13 +173,13 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         }
 
         // Route for saving gallery video data
-        [Route("/Admin/SaveGallaryVideoData")]
+        [Route("/Admin/SaveSubVideoData")]
         // Disable request size limit for file uploads
         [DisableRequestSizeLimit]
         // Set request form limits for value length and multipart body length
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
         [HttpPost]
-        public async Task<JsonResult> SaveGallaryVideoData([FromForm] VideoNameModelform objModel)
+        public async Task<JsonResult> SaveSubVideoData([FromForm] VideoNameModelform objModel)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             int urllink = 0;
@@ -700,12 +701,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         objreturn.result = data;
                     }
                 }
-                //else
-                //{
-                //    objreturn.strMessage = "Enter Valid Id.";
-                //    objreturn.isError = true;
-                //    objreturn.type = PopupMessageType.error.ToString();
-                //}
                 else
                 {
                     mdlVideoFrontModel = new VideoFormModel();
@@ -892,8 +887,8 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         }
         // Retrieves gallery video data and returns it in a JSON format suitable for DataTables or similar components.
         [HttpPost]
-        [Route("/Admin/GetGallaryVideoData")]
-        public JsonResult GetGallaryVideoData()
+        [Route("/Admin/GetSubVideoData")]
+        public JsonResult GetSubVideoData()
         {
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
@@ -928,58 +923,10 @@ namespace Velzon.Webs.Areas.Admin.Controllers
 
         }
 
-        // Retrieves the details of a specific gallery video based on the provided ID.
-        [Route("/Admin/GetGallaryVideoDetails")]
-        [HttpPost]
-        public JsonResult GetGallaryVideoDetails(string id)
-        {
-            JsonResponseModel objreturn = new JsonResponseModel();
-            try
-            {
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
-                if (long.TryParse(Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid))
-                {
-                    objreturn.strMessage = "";
-                    objreturn.isError = false;
-                    var data = mdlVideoFrontModel.lstEventVideoMasterModels[(int)lgid - 1];
-                    if (data != null)
-                    {
-                        //{
-                        //    var Type = ((TenderDocumentType)Convert.ToInt16(data.DocType));
-                        //    data.DocType = Functions.DescriptionAttr<TenderDocumentType>(Type);
-                        //}
-                        objreturn.result = data;
-                    }
-                    else
-                    {
-                        objreturn.strMessage = "Record not Found.";
-                        objreturn.isError = true;
-                        objreturn.type = PopupMessageType.error.ToString();
-                    }
-                }
-                else
-                {
-                    objreturn.strMessage = "Enter Valid Id.";
-                    objreturn.isError = true;
-                    objreturn.type = PopupMessageType.error.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
-
-                objreturn.strMessage = "Record not Found.";
-                objreturn.isError = true;
-                objreturn.type = PopupMessageType.error.ToString();
-            }
-            return Json(objreturn);
-        }
-
         // Deletes a gallery video data based on the provided ID.
-        [Route("/Admin/DeleteGallaryVideoData")]
+        [Route("/Admin/DeleteSubVideo")]
         [HttpPost]
-        public JsonResult DeleteGallaryVideoData(string id)
+        public JsonResult DeleteSubVideo(string id)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
@@ -1064,6 +1011,43 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 objreturn.type = PopupMessageType.error.ToString();
             }
             return allow;
+        }
+
+        [Route("/Admin/UpdateVideoStatus")]
+        [HttpPost]
+        public JsonResult UpdateVideoStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = objVideoMasterServices.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
         }
 
         #endregion

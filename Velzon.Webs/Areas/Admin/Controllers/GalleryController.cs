@@ -131,7 +131,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                if (long.TryParse((HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse((HttpUtility.UrlDecode(langId)), out long lgLangId))
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(langId)), out long lgLangId))
                 {
                     objreturn.strMessage = "";
                     objreturn.isError = false;
@@ -165,8 +165,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                     mdlGalleryFrontModel = new GalleryFormModel();
                     return Json(objreturn);
                 }
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
                 if (long.TryParse(Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse(Functions.FrontDecrypt(HttpUtility.UrlDecode(langId)), out long lgLangId))
                 {
                     objreturn.strMessage = "";
@@ -467,13 +465,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                     return true;
                 }
             }
-            //if (string.IsNullOrWhiteSpace(objModel.GalleryTargetAudiences))
-            //{
-            //    objreturn.strMessage = "Please Select At least One TargetAudiences.";
-            //    objreturn.isError = true;
-            //    objreturn.type = PopupMessageType.error.ToString();
-            //    return true;
-            //}
             return isError;
         }
 
@@ -525,8 +516,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
                 if (long.TryParse(Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid))
                 {
                     objreturn.strMessage = "";
@@ -534,10 +523,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                     var data = mdlGalleryFrontModel.lstEventImagesMasterModels[(int)lgid - 1];
                     if (data != null)
                     {
-                        //{
-                        //    var Type = ((TenderDocumentType)Convert.ToInt16(data.DocType));
-                        //    data.DocType = Functions.DescriptionAttr<TenderDocumentType>(Type);
-                        //}
                         objreturn.result = data;
                     }
                     else

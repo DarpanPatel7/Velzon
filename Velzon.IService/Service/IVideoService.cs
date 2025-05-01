@@ -26,8 +26,11 @@ namespace Velzon.IService.Service
 
         // Deletes a video model by its unique identifier and returns the result.
         JsonResponseModel Delete(long id, string username);
+
         // Adds or updates a video model based on the provided model.
         JsonResponseModel AddOrUpdate(VideoModel model);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
 
     }
 }

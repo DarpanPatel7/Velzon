@@ -105,6 +105,7 @@ namespace Velzon.Model.System
         password,
         mobileno,
         pincode,
+        url,
         dropdown,
         date,
         time

@@ -1,194 +1,175 @@
 ﻿@model VideoFormModel
-
 @{
     ViewData["Title"] = "Video Master";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     var rightsModel = Functions.GetPageRightsCheck(Context.Session);
 }
 
-@section Styles {
-    <style>
-        .modal-dialog {
-            max-width: 1007px;
-        }
-
-    </style>
+@section DataTableCssLoad {}
+@section DataTableJsLoad {}
+@section Scripts {
+    <script src="@Href("~/Admin/js/PageDetails/VideoMaster/VideoMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
 }
 
-<section class="basic-elements">
-    <div class="row">
-        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
-        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
-        <input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
-
-        <div class="col-md-12">
-            <div class="card card-outline-primary">
-                <div class="card-body collapse show">
-                    <div class="card-block card-dashboard">
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                @if (rightsModel.Insert)
-                                {
-                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
-                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
-                                    </button>
-                                }
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table display table-Responsive nowrap table-striped table-bordered scroll-horizontal w-100 text-center nowrap responsive dataTable no-footer" id="tbldata" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Video Title</th>
-                                            <th>Is Active</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-@section Scripts {
-    <script src="@Href("~/Admin/CKEditor/ckeditor.js")"></script>
-    <script src="@Href("~/Admin/js/PageDetails/VideoMaster/VideoMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+@section Modals {
+    <div id="addeditVideoModal" class="modal fade" tabindex="-1" aria-labelledby="mdlLabel" style="display: none;">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h4 class="modal-title text-white" id="myModalLabel9">@ViewData["Title"] Form</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="mdlLabel">Video Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="frmAddEdit" autocomplete="off">
+                    <form id="addeditVideoForm" action="@Url.Content("~/Admin/SaveVideoData")" autocomplete="off">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="VideoId" />
-                        <div class="form-group mt-2">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label asp-for="LanguageId" class="control-label">Language<span style="color:red">*</span></label>
-                                        <select class="form-control" asp-for="LanguageId">
-                                            <option value="">--Select Language--</option>
-                                        </select>
-                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label asp-for="VideoTitle" class="control-label">Section Name<span class="text-danger">*</span></label>
-                                        <input type="text" asp-for="VideoTitle" class="form-control border-primary" placeholder="Enter Section Name">
-                                        <span asp-validation-for="VideoTitle" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mt-1">
-                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                                        <br />
-                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
-                                        <label class="custom-control-label float-left" asp-for="IsActive">Is Active</label>
-                                    </div>
+                        <input type="hidden" asp-for="Id" value="0" />
+                        <input type="hidden" asp-for="VideoId" value="0"/>
+                        <div class="row gx-3 gy-2">
+                            <div class="col-md-4">
+                                <label asp-for="LanguageId" class="form-label">Language<span style="color:red">*</span></label>
+                                <select class="form-select" asp-for="LanguageId">
+                                    <option value="">--Select Language--</option>
+                                </select>
+                                <span asp-validation-for="LanguageId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="VideoTitle" class="form-label">Section Name<span class="text-danger">*</span></label>
+                                <input type="text" asp-for="VideoTitle" class="form-control" placeholder="Enter Section Name">
+                                <span asp-validation-for="VideoTitle" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="IsActive" class="form-label">Status</label>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" asp-for="IsActive" />
+                                    <label class="form-check-label" for="IsActive">Is Active</label>
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <div class="">
-                        <form id="frmAddEditVideo" autocomplete="off">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" id="RowIndex" name="RowIndex" value="0" />
-                            <input type="hidden" id="Command" name="Command" value="0" />
-                            <input type="hidden" id="ImagePath" name="ImagePath" value="" />
-                            <input type="hidden" id="urllink" name="urllink" value="0" />
-                            <div class="row mt-0">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-radio display-inline-block">
-                                            <input type="radio" id="customRadioInline4" checked="checked" onchange="return getradiovalue(this);" name="customRadioInline3" class="custom-control-input">
-                                            <label class="custom-control-label" for="customRadioInline4">Link Insert</label>
-                                        </div>
-                                        <div class="custom-control custom-radio display-inline-block">
-                                            <input type="radio" id="customRadioInline3" name="customRadioInline3" onchange="return getradiovalue(this);" class="custom-control-input">
-                                            <label class="custom-control-label" for="customRadioInline3">Video Upload</label>
-                                        </div>
+                    <form id="addeditSubVideoForm" action="@Url.Content("~/Admin/SaveSubVideoData")" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="RowIndex" name="RowIndex" value="0" />
+                        <input type="hidden" id="Command" name="Command" value="0" />
+                        <input type="hidden" id="ImagePath" name="ImagePath" value="" />
+                        <input type="hidden" id="urllink" name="urllink" value="0" />
+                        <div class="row gx-3 gy-2">
+                            <div class="col-lg-12">
+                                <div>
+                                    <p class="text-muted"></p>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="customRadioInline3" id="customRadioInline4" onchange="return $.getradiovalue(this);" checked="checked">
+                                        <label class="form-check-label" for="customRadioInline4">
+                                            Link Insert
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="customRadioInline3" id="customRadioInline3" onchange="return $.getradiovalue(this);">
+                                        <label class="form-check-label" for="customRadioInline3">
+                                            Video Upload
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="col-md-3" id="vnameid">
-                                    <div class="form-group">
-                                        <label for="VideoName" class="control-label">Video Name<span class="text-danger">*</span></label>
-                                        <input type="text" for="VideoName" id="VideoName" name="VideoName" class="form-control border-primary" placeholder="Enter Video Name">
-                                        <span validation-for="VideoName" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="thumbid">
-                                    <div class="form-group">
-                                        <label for="ThumbImage" class="control-label">Thumb Image<span class="text-danger">*</span></label>
-                                        <input type="text" for="ThumbImage" id="ThumbImage" name="ThumbImage" class="form-control border-primary" placeholder="Enter Thumb Image Url">
-                                        <span validation-for="ThumbImage" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="thumbiploadid">
-                                    <div class="form-group">
-                                        <label for="ThumbFile" class="control-label">Upload Photo</label><span style="color:red">*</span>
-                                        <input type="file" name="ThumbFile" id="ThumbFile" multiple accept="image/*" />
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="vurlid">
-                                    <div class="form-group">
-                                        <label for="VideoUrl" class="control-label">Video Url<span class="text-danger">*</span></label>
-                                        <input type="text" for="VideoUrl" id="VideoUrl" name="VideoUrl" class="form-control border-primary" placeholder="Enter Video Url">
-                                        <span validation-for="VideoUrl" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-3" id="vimagesid">
-                                    <div class="form-group">
-                                        <label for="Image" class="control-label">Upload Video</label><span style="color:red">*</span>
-                                        <input type="file" name="Image" id="Image" multiple accept="video/*" />
-                                    </div>
-                                </div>
-
-
                             </div>
-
-                            <div class="col-md-12 pl-1">
-                                <button type="button" class="btn btn-primary btn-round" id="btnMdlSaveVideo"><i class="fa fa-check mr-1"></i>Save</button>
-                                <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlClearVideo"><i class="fa fa-check mr-1"></i>Clear</button>
+                            <div class="col-md-4" id="vnameid">
+                                <label for="VideoName" class="form-label">Video Name<span class="text-danger">*</span></label>
+                                <input type="text" for="VideoName" id="VideoName" name="VideoName" class="form-control" placeholder="Enter Video Name">
+                                <span validation-for="VideoName" class="text-danger"></span>
                             </div>
-                        </form>
-                        <div class="row table-responsive pl-3">
-                            <table class="table display table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tblSubdata">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Video Title</th>
-                                        <th>Thumb Image</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div class="col-md-4" id="thumbid">
+                                <label for="ThumbImage" class="form-label">Thumb Image<span class="text-danger">*</span></label>
+                                <input type="text" for="ThumbImage" id="ThumbImage" name="ThumbImage" class="form-control" placeholder="Enter Thumb Image Url">
+                                <span validation-for="ThumbImage" class="text-danger"></span>
+                            </div>
+                            @* <div class="col-md-4" id="thumbiploadid">
+                                <label for="ThumbFile" class="form-label">Upload Photo</label><span style="color:red">*</span>
+                                <input type="file" name="ThumbFile" id="ThumbFile" multiple accept="image/*" />
+                            </div> *@
+                            <div class="col-md-4" id="thumbiploadid">
+                                <label for="ThumbFile" class="form-label">Upload Photo<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" name="ThumbFile" id="ThumbFile" accept="image/*" multiple>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="vurlid">
+                                <label for="VideoUrl" class="form-label">Video Url<span class="text-danger">*</span></label>
+                                <input type="text" for="VideoUrl" id="VideoUrl" name="VideoUrl" class="form-control" placeholder="Enter Video Url">
+                                <span validation-for="VideoUrl" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4" id="vimagesid">
+                                <label for="Image" class="form-label">Upload Video<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" name="Image" id="Image" accept="video/*" multiple>
+                                </div>
+                            </div>
+                            @* <div class="col-md-4" id="vimagesid">
+                                <label for="Image" class="form-label">Upload Video</label><span style="color:red">*</span>
+                                <input type="file" name="Image" id="Image" multiple accept="video/*" />
+                            </div> *@
                         </div>
+                        <div class="hstack gap-2 mt-3">
+                            <button type="button" class="btn btn-primary btn-label rounded-pill" id="saveVideoSubmit"><i class="ri-check-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save Video</button>
+                            <button type="button" class="btn btn-light btn-label rounded-pill" id="clearVideoSubmit"><i class="ri-close-line label-icon align-middle rounded-pill fs-16 me-2"></i> Clear Video</button>
+                        </div>
+                    </form>
+                    <div class="row gx-3 gy-2 mt-4">
+                        <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableSubVideo" data-url="@Url.Content("~/Admin/GetSubVideoData")">
+                            <thead class="table-light">
+                                <tr class="text-uppercase">
+                                    <th>#</th>
+                                    <th>Video Title</th>
+                                    <th>Image</th>
+                                    <th>Video</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
-                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addeditVideoSubmit">Save</button>
                 </div>
             </div>
         </div>
     </div>
 }
+
+<input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+<input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+<input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header border-bottom-dashed">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm">
+                        <div>
+                            <h5 class="card-title mb-0">Video List</h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-auto">
+                        <div class="d-flex flex-wrap align-items-start gap-2">
+                            @if (rightsModel.Insert)
+                            {
+                                <button type="button" class="btn btn-success add-btn" id="addVideo"><i class="ri-add-line align-bottom me-1"></i> Add New Video</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableVideo" data-url="@Url.Content("~/Admin/GetVideoData")">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Video Title</th>
+                            <th>Is Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -51,7 +51,7 @@
                     },
                     error: function (xhr, error, thrown) {
                         console.error(`DataTable AJAX Error: ${error}, ${thrown}`, xhr);
-                        alert("An error occurred while loading the data. Please try again.");
+                        ShowMessage("An error occurred while loading the data. Please try again.", "Error!", "error"); // Show required field error
                     }
                 },
                 columnDefs: [
@@ -424,7 +424,7 @@
      * @param {string} type - The type of validation (text, email, mobileno, password, pincode, dropdown, date, time, etc.).
      * @returns {boolean} - True if the value is valid, false otherwise.
      */
-    $.ValidControlValue = function(controlValue, type = "none") {
+    $.ValidControlValue = function (controlValue, type = "none") {
         let allow = false;
         try {
             let strControlValue = controlValue instanceof jQuery ? controlValue.val().trim() : controlValue.toString().trim();
@@ -445,6 +445,9 @@
                         break;
                     case "pincode":
                         allow = regexPincode.test(strControlValue);
+                        break;
+                    case "url":
+                        allow = regexURL.test(strControlValue);
                         break;
                     case "dropdown":
                         let dropdownValue = parseInt(strControlValue, 10);

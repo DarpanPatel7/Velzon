@@ -36,7 +36,7 @@
                                     </select>
                                     <span asp-validation-for="LanguageId" class="text-danger"></span>
                                 </div>
-                                <div class="col-md-3 pl-3">
+                                <div class="col-md-4 pl-3">
                                     <label asp-for="PlaceName" class="form-label">Album Name<span style="color:red">*</span></label>
                                     <input type="text" asp-for="PlaceName" class="form-control" placeholder="Enter Album Name">
                                     <span asp-validation-for="PlaceName" class="text-danger"></span>
@@ -63,7 +63,6 @@
                                         <input type="file" class="form-control" name="Image" id="Image" aria-label="Upload" accept="image/*" multiple>
                                     </div>
                                 </div>
-                                
                             </div>
                             <div class="hstack gap-2 mt-3">
                                 <button type="button" class="btn btn-primary btn-label rounded-pill" id="saveImageSubmit"><i class="ri-check-line label-icon align-middle rounded-pill fs-16 me-2"></i> Save Image</button>
