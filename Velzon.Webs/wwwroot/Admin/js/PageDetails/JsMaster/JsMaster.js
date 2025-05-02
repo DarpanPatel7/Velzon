@@ -1,15 +1,15 @@
 ﻿/**
- * Page Css Master
+ * Page Js Master
  */
 
 "use strict";
 
 var datatable; // Declare globally
-var cssEditor;
-var cssEditorInitialized = false;
+var jsEditor;
+var jsEditorInitialized = false;
 
 $(function () {
-    var main = 'Css';
+    var main = 'Js';
     var yesBadge = '<td><span class="badge badge-soft-success text-uppercase">Active</span></td>';
     var noBadge = '<td><span class="badge badge-soft-danger text-uppercase">In Active</span></td>';
 
@@ -30,7 +30,7 @@ $(function () {
                 render: function (data, type, row) {
                     var checked = row.isActive ? "checked" : "";
                     return `<div class="form-check form-switch">
-                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateCssStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
+                        <input class="form-check-input toggle-status status${main}" type="checkbox" data-url="${ResolveUrl("/Admin/UpdateJsStatus")}" data-id="${FrontValue(row.id)}" ${checked}>
                         | ${row.isActive ? yesBadge : noBadge}
                     </div>`;
                 }
@@ -38,8 +38,8 @@ $(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 edit${main}' data-url='${ResolveUrl('/Admin/GetCssDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
-                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 delete${main}' data-url='${ResolveUrl('/Admin/DeleteCssData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
+                    var strEdit = `<a href='javascript:void(0);' class='link-success fs-15 edit${main}' data-url='${ResolveUrl('/Admin/GetJsDetails')}' data-id='${FrontValue(row.id)}' title='Edit'> <i class='ri-edit-2-line'></i> </a>`;
+                    var strRemove = `<a href='javascript:void(0);' class='link-danger fs-15 delete${main}' data-url='${ResolveUrl('/Admin/DeleteJsData')}' data-id='${FrontValue(row.id)}' title='Delete'> <i class='ri-delete-bin-line'></i> </a>`;
 
                     return "<div class='hstack gap-3 flex-wrap'>" +
                         (frmPageUpdate == "true" ? strEdit : "") +
@@ -52,10 +52,10 @@ $(function () {
         ]
     });
 
-    function initCssEditor() {
-        if (!cssEditorInitialized) {
-            cssEditor = CodeMirror.fromTextArea(document.getElementById("Cssfile"), {
-                mode: "css",
+    function initJsEditor() {
+        if (!jsEditorInitialized) {
+            jsEditor = CodeMirror.fromTextArea(document.getElementById("Jsfile"), {
+                mode: "javascript",
                 lineNumbers: true,
                 theme: "monokai",
                 lineWrapping: true,
@@ -65,12 +65,13 @@ $(function () {
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             });
-            cssEditorInitialized = true;
+            jsEditorInitialized = true;
         } else {
-            cssEditor.setValue($('#Cssfile').val());
-            cssEditor.refresh();
+            jsEditor.setValue($('#Jsfile').val());
+            jsEditor.refresh();
         }
     }
+
 
     // Delete Record
     $(document).on("click", ".delete" + main, async function () {
@@ -100,18 +101,17 @@ $(function () {
             });
         });
 
-        initCssEditor();
+        initJsEditor();
     });
 
     // add
     $(document).on("click", "#addedit" + main + "Submit", async function () {
         // Get the CodeMirror instance and sync it back to the original textarea
-        if (window.cssEditor && typeof window.cssEditor.getValue === "function") {
-            $('#Cssfile').val(window.cssEditor.getValue());
+        if (window.jsEditor && typeof window.jsEditor.getValue === "function") {
+            $('#Jsfile').val(window.jsEditor.getValue());
         }
         // Now validation will work correctly
-        if ($.ValidateAndShowError($('#Title'), "css name", "none")) return;
-        if ($.ValidateAndShowError($('#Cssfile'), "css", "none")) return;
+        if ($.ValidateAndShowError($('#Title'), "js name", "none")) return;
         await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",
@@ -145,9 +145,9 @@ $(function () {
                         if ($('#' + capitalizeFirstLetter(key)) != null && $('#' + key) != undefined) {
                             if (key.includes("isActive")) {
                                 $('#' + capitalizeFirstLetter(key)).prop('checked', dataList[key]).change();
-                            } else if (key == "cssfile") {
-                                // Update CodeMirror with the Cssfile content
-                                $('#Cssfile').val(dataList[key]);
+                            } else if (key == "jsfile") {
+                                // Update CodeMirror with the Jsfile content
+                                $('#Jsfile').val(dataList[key]);
                             } else {
                                 $('#' + capitalizeFirstLetter(key)).val(dataList[key]);
                             }
@@ -166,7 +166,7 @@ $(function () {
                     });
                 });
 
-                initCssEditor();
+                initJsEditor();
                 HideLoader();
             },
         });

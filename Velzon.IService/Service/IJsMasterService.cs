@@ -20,5 +20,7 @@ namespace Velzon.IService.Service
         List<JSMasterModel> JSMasterSiteData();
 
         JSMasterModel GetJSFileByName(string strFileName);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }
