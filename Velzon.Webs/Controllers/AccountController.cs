@@ -362,8 +362,8 @@ namespace Velzon.Webs.Controllers
             objreturn.isError = false;
             try
             {
-                int width = 140;
-                int height = 40;
+                int width = 150;
+                int height = 45;
 
                 Random random = new Random();
                 string combination = "0123456789ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
