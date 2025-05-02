@@ -1,44 +1,57 @@
 ﻿@model SqlExecuteModel
-
 @{
     ViewData["Title"] = "SQL Execute";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<section class="basic-elements">
-    <form id="formSQLExecute">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-outline-primary">
-                    <div class="card-body">
-                        <div class="card-block">
-                            <div class="row">
-                                <div class="col-md-12 col-12">
-                                    <div class="form-group mb-3">
-                                        <label asp-for="SqlQuery" class="control-label">SQL Query :</label>
-                                        <textarea asp-for="SqlQuery" class="form-control" rows="4" placeholder="SQL query"></textarea>
-                                    </div>
+@section DataTableCssLoad {}
+@section DataTableJsLoad {}
+@section Scripts {
+    @* <script src="@Href("~/Areas/Admin/Views/Home/SqlExecute.cshtml.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script> *@
+    <script src="@Href("~/Admin/js/PageDetails/SqlExecute/SqlExecute.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
+}
+
+<form id="addeditSQLExecuteForm" action="@Url.Content("~/Admin/GETMYSQLResult")" autocomplete="off">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header border-bottom-dashed">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-sm">
+                            <div>
+                                <h5 class="card-title mb-0">
+                                    Sql Execute
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SqlQuery" class="control-label">SQL Query :</label>
+                                    <textarea asp-for="SqlQuery" class="form-control" rows="4" placeholder="SQL query"></textarea>
                                 </div>
                             </div>
-                            <div class="row text-center">
-                                <div class="col-md-12 col-12">
-                                    <button type="button" class="btn btn-primary btn-round mr-2" id="btnSQlQueryExecute"><i class="fa fa-check mr-2"></i>Execute</button>
-                                    <button type="button" class="btn grey btn-outline-secondary btn-round mr-2" id="btnClear"><i class="fa fa-times mr-2"></i>Clear</button>
-                                </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-12 col-12">
+                                <button type="button" class="btn btn-primary btn-label rounded-pill" id="addeditSQLExecuteSubmit"><i class="ri-check-line label-icon align-middle rounded-pill fs-16 me-2"></i> Execute </button>
+                                <button type="button" class="btn btn-light btn-label rounded-pill" id="clearSQLExecuteSubmit"><i class="ri-close-line label-icon align-middle rounded-pill fs-16 me-2"></i> Clear </button>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12" id="tbldata">
-                                </div>
-                            </div>
+                        </div>
+                        <div class="row">
+                            <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableSQLExecute">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-</section>
-
-@section Scripts {
-      <script src="@Href("~/Areas/Admin/Views/Home/SqlExecute.cshtml.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-}
+    </div>
+</form>

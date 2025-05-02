@@ -229,14 +229,27 @@ namespace Velzon.Services.Service
             return isError;
         }
 
-        public JsonResponseModel ExecuteQueryData(string QueryData)
+        public JsonResponseModel ExecuteQueryData(string query)
         {
             JsonResponseModel jsonResponseModel = new JsonResponseModel();
             try
             {
-                var rslt = dapperConnection.GetDataTable(QueryData, CommandType.Text, out string strError);
-                jsonResponseModel.result = Functions.ConvertDataTableToHTML(rslt);
-                jsonResponseModel.strMessage = "Record executed success";
+                var rslt = dapperConnection.GetDataTable(query, CommandType.Text, out string strError);
+
+                if (rslt == null || rslt.Rows.Count == 0)
+                {
+                    jsonResponseModel.strMessage = "No records found.";
+                    jsonResponseModel.isError = false;
+                    jsonResponseModel.result = new { columns = new List<string>(), rows = new List<object>() };
+                    jsonResponseModel.type = PopupMessageType.info.ToString();
+                    return jsonResponseModel;
+                }
+
+                var columns = rslt.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+                var rows = rslt.AsEnumerable().Select(r => r.ItemArray.Select(item => item?.ToString()).ToArray()).ToList();
+
+                jsonResponseModel.result = new { columns, rows };
+                jsonResponseModel.strMessage = "Query executed successfully.";
                 jsonResponseModel.isError = false;
                 jsonResponseModel.type = PopupMessageType.success.ToString();
             }

@@ -1055,27 +1055,58 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         {
             return View();
         }
-
+        
         [Route("/Admin/GETMYSQLResult")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult GETMYSQLResult(SqlExecuteModel objModel)
         {
-            JsonResponseModel objreturn = new JsonResponseModel();
+            var response = new JsonResponseModel();
             try
             {
-                string strQuery = objModel.SqlQuery;
-                //DataTable dt = (DataTable)JsonConvert.DeserializeObject(objreturn.result, (typeof(DataTable)));
-                objreturn.result = accountService.ExecuteQueryData(strQuery);
-                objreturn.strMessage = "Execute Query!!!";
-                objreturn.isError = true;
-                objreturn.type = PopupMessageType.success.ToString();
+                if (string.IsNullOrWhiteSpace(objModel.SqlQuery))
+                {
+                    response.strMessage = "Query is empty.";
+                    response.isError = true;
+                    response.type = PopupMessageType.error.ToString();
+                    return Json(response);
+                }
+
+                var query = objModel.SqlQuery.Trim();
+
+                // Allow only SELECT queries, disallow DROP/DELETE/UPDATE/INSERT
+                if (!query.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+                {
+                    response.strMessage = "Only SELECT queries are allowed.";
+                    response.isError = true;
+                    response.type = PopupMessageType.error.ToString();
+                    return Json(response);
+                }
+
+                // Optional: further sanitize input
+                string disallowed = "UPDATE|DELETE|INSERT|DROP|ALTER|TRUNCATE";
+                if (Regex.IsMatch(query, $@"\b({disallowed})\b", RegexOptions.IgnoreCase))
+                {
+                    response.strMessage = "Only SELECT queries are permitted. Query contains invalid keywords.";
+                    response.isError = true;
+                    response.type = PopupMessageType.error.ToString();
+                    return Json(response);
+                }
+
+                response = accountService.ExecuteQueryData(query);
             }
             catch (Exception ex)
             {
                 ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                response.strMessage = "An error occurred while executing the query.";
+                response.isError = true;
+                response.type = PopupMessageType.error.ToString();
             }
-            return Json(objreturn);
+
+            return Json(response);
         }
+
+
         #endregion
     }
 }
