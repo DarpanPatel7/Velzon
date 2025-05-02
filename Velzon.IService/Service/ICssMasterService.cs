@@ -21,6 +21,8 @@ namespace Velzon.IService.Service
         List<CssMasterModel> CSSMasterSiteData();
 
         CssMasterModel GetFileByName(string strFileName);
+
+        JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
     }
 }
 
