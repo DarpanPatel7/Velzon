@@ -949,7 +949,7 @@
     font-family: Poppins, sans-serif
 }
 
-.navbar-menu .navbar-nav .nav-sm .nav-link:before {
+/*.navbar-menu .navbar-nav .nav-sm .nav-link:before {
     content: "";
     width: 6px;
     height: 1.5px;
@@ -960,7 +960,7 @@
     -webkit-transition: all .4s ease-in-out;
     transition: all .4s ease-in-out;
     opacity: .5
-}
+}*/
 
 .navbar-menu .navbar-nav .nav-sm .nav-link:hover {
     color: var(--vz-vertical-menu-sub-item-hover-color)

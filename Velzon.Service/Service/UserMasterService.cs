@@ -170,6 +170,31 @@ namespace Velzon.Services.Service
             }
             return jsonResponseModel;
         }
+        
+        public JsonResponseModel UpdateProfilePic(long id, string strData, string username)
+        {
+            JsonResponseModel jsonResponseModel = new JsonResponseModel();
+            try
+            {
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary.Add("pId", id);
+                dictionary.Add("pStrData", strData);
+                dictionary.Add("pUsername", username);
+                dapperConnection.GetListResult<UserMasterModel>("cmsUpdateProfilePicUserMaster", CommandType.StoredProcedure, dictionary).ToList();
+
+                jsonResponseModel.strMessage = "Profile picture updated successfully!";
+                jsonResponseModel.isError = false;
+                jsonResponseModel.type = PopupMessageType.success.ToString();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsUpdateProfilePicUserMaster", ex.ToString(), "UserMasterService", "UpdateProfilePic");
+                jsonResponseModel.strMessage = ex.Message;
+                jsonResponseModel.isError = true;
+                jsonResponseModel.type = PopupMessageType.error.ToString();
+            }
+            return jsonResponseModel;
+        }
 
         #endregion
 

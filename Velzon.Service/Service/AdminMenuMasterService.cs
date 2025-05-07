@@ -87,6 +87,7 @@ namespace Velzon.Services.Service
                 dictionary.Add("MenuId", model.MenuId);
                 dictionary.Add("Name", model.Name);
                 dictionary.Add("MenuType", model.MenuType);
+                dictionary.Add("MenuIcon", model.MenuIcon);
                 dictionary.Add("MenuRank", model.MenuRank);
                 dictionary.Add("ParentId", model.ParentId);
                 dictionary.Add("IsActive", model.IsActive);

@@ -711,10 +711,11 @@ namespace Velzon.Webs.Common
 
             if (lstSubList.Count > 0) // If has submenus
             {
+                string iconParentClass = !string.IsNullOrWhiteSpace(mainMenu.MenuIcon) ? mainMenu.MenuIcon : "ri-pages-line";
                 strMenu.Append($@"
                 <li class='nav-item'>
                     <a class='nav-link menu-link{parentActiveClass}' href='#sidebar-{mainMenu.Id}' data-bs-toggle='collapse' role='button' aria-expanded='{(hasActiveChild ? "true" : "false")}' aria-controls='sidebar-{mainMenu.Id}'>
-                        <i class='ri-dashboard-2-line'></i> <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
+                        <i class='{iconParentClass}'></i> <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
                     </a>
                     <div class='collapse menu-dropdown{parentExpandedClass}' id='sidebar-{mainMenu.Id}'>
                         <ul class='nav nav-sm flex-column'>");
@@ -732,11 +733,11 @@ namespace Velzon.Webs.Common
                 string strPath = mainMenu.MenuURL;
                 string activeClass = isActive ? " active" : "";
                 string href = string.IsNullOrWhiteSpace(strPath) || strPath == "#" ? "#" : urlHelper.Content("~" + strPath);
-
+                string iconChildClass = !string.IsNullOrWhiteSpace(mainMenu.MenuIcon) ? mainMenu.MenuIcon : "ri-checkbox-blank-circle-line";
                 strMenu.Append($@"
                 <li class='nav-item'>
-                    <a href='{href}' class='nav-link{activeClass}'>
-                        <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
+                    <a href='{href}' class='nav-link{activeClass}' style='left: -8px;'>
+                       <i class='{iconChildClass}'></i> <span data-key='t-{mainMenu.Name.ToLower()}'>{mainMenu.Name}</span>
                     </a>
                 </li>");
             }

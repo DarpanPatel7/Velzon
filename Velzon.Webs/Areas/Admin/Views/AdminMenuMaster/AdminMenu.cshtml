@@ -50,6 +50,11 @@
                                 <span asp-validation-for="ParentId" class="text-danger"></span>
                             </div>
                             <div class="col-md-4">
+                                <label asp-for="MenuIcon" class="control-label">Menu Icon</label>
+                                <input type="text" asp-for="MenuIcon" class="form-control border-primary" placeholder="Enter Menu Icon">
+                                <span asp-validation-for="MenuIcon" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
                                 <label asp-for="IsActive" class="form-label">Status</label>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" asp-for="IsActive" />

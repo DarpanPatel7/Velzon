@@ -66,6 +66,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                         adminMenuMasterModel.Name = objModel.Name;
                         adminMenuMasterModel.ParentId = (objModel.ParentId==null?0: objModel.ParentId);
                         adminMenuMasterModel.MenuType = objModel.MenuType;
+                        adminMenuMasterModel.MenuIcon = objModel.MenuIcon;
                         adminMenuMasterModel.IsActive = objModel.IsActive;
                         adminMenuMasterModel.CreatedBy = UserModel.Username;
 

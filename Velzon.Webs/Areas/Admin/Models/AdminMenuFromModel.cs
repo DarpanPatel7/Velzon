@@ -6,8 +6,8 @@
         public string Name { get; set; }
         public long MenuId { get; set; }
         public string? MenuType { get; set; }
+        public string? MenuIcon { get; set; }
         public long? ParentId { get; set; }
-        //public long MenuRank { get; set; }
         public bool IsActive { get; set; }
     }
 }

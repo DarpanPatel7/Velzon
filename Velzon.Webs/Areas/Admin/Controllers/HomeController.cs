@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using Velzon.Services.Service;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -41,6 +42,12 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             this.couchDBMasterService = _couchDBMasterService;
 
             _hostingEnvironment = hostingEnvironment;
+        }
+
+        public SessionUserModel UserDetails
+        {
+            get { return SessionWrapper.Get<SessionUserModel>(this.HttpContext.Session, "UserDetails"); }
+            set { SessionWrapper.Set<SessionUserModel>(this.HttpContext.Session, "UserDetails", value); }
         }
 
         #endregion
@@ -196,7 +203,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 {
                     return RedirectToAction("Logout", "Account");
                 }
-
 
                 try
                 {
@@ -774,6 +780,42 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             }
 
             return isError;
+        }
+
+        [HttpPost]
+        [Route("/Admin/UpdateProfilePic")]
+        public IActionResult UpdateProfilePic(string strData)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (strData != null)
+                {
+                    objreturn = userMasterService.UpdateProfilePic(UserModel.Id, strData, UserModel.Username);
+                    var userDetails = this.UserDetails;
+                    if (userDetails != null)
+                    {
+                        userDetails.ProfilePic = strData; // Modify any property
+                        this.UserDetails = userDetails; // Set it back to update session
+                    }
+
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Profile picture not updated, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
         }
 
         #endregion

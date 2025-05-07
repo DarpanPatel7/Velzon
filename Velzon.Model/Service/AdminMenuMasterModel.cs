@@ -6,6 +6,7 @@
         public long MenuId { get; set; }
         public string Name { get; set; }
         public string MenuType { get; set; }
+        public string MenuIcon { get; set; }
         public long? ParentId { get; set; }
         public string ParentName { get; set; }
         public long MenuRank { get; set; }
@@ -14,6 +15,7 @@
         public bool IsDelete { get; set; }
         public string CreatedBy { get; set; }
     }
+
     public class SearchFormModel
     {
         public string serch { get; set; }
