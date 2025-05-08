@@ -61,6 +61,7 @@ $(function () {
         }).then(async function (resp) {
             $('.preview-profile-image').attr('src', resp);
             $('.profile_photo').val(resp);
+            $('.header-profile-user').attr('src', resp);
             await safeAjax({
                 type: "POST",
                 url: ResolveUrl("/Admin/UpdateProfilePic"),

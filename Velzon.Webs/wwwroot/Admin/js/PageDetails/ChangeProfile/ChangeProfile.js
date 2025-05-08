@@ -52,6 +52,7 @@ $(function () {
         imageId = $(this).data('id'); tempFilename = $(this).val();
         $('#cancelCropBtn').data('id', imageId); readFile(this);
     });
+
     $('#cropImageBtn').on('click', function (ev) {
         $uploadCrop.croppie('result', {
             type: 'base64',
@@ -59,6 +60,7 @@ $(function () {
             size: { width: 105, height: 105 }
         }).then(async function (resp) {
             $('.preview-profile-image').attr('src', resp);
+            $('.header-profile-user').attr('src', resp);
             $('.profile_photo').val(resp);
             await safeAjax({
                 type: "POST",
