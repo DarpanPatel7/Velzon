@@ -78,7 +78,7 @@ $(function () {
     // add
     $(document).on("click", "#addedit" + main + "Submit", async function () {
         if ($.ValidateAndShowError($('#MenuName'), "menu name", "text")) return;
-        if ($.ValidateAndShowError($('#MenuURL'), "menu url", "text")) return;
+        if ($.ValidateAndShowError($('#MenuURL'), "menu url", "none")) return;
         await safeAjax({
             container: "#addedit" + main + "Form",
             type: "POST",

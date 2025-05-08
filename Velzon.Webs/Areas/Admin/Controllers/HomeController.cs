@@ -423,9 +423,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                     changeMyProfileModel.TestSMTPFromEmail = smtpModel.TestSMTPFromEmail;
                     changeMyProfileModel.TestSMTPPort = smtpModel.TestSMTPPort == null ? "" : smtpModel.TestSMTPPort;
                     changeMyProfileModel.TestSMTPIsSecure = smtpModel.TestSMTPIsSecureFlag == null ? false : smtpModel.TestSMTPIsSecureFlag.Value;
-
                 }
-
             }
             catch (Exception ex)
             {

@@ -40,8 +40,6 @@ public class ProjectService : IProjectService
                 dictionary.Add("FileName", model.FileUpload);
                 dictionary.Add("FilePath", model.FilePath);
 
-
-
                 var data = dapperConnection.GetListResult<int>("InsertOrUpdateProjectMaster", CommandType.StoredProcedure, dictionary).FirstOrDefault();
                 if (model.Id == 0)
                 {
