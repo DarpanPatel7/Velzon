@@ -31,6 +31,5 @@ namespace Velzon.IService.Service
         JsonResponseModel AddOrUpdate(VideoModel model);
 
         JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
-
     }
 }

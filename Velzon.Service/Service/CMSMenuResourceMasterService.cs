@@ -379,24 +379,6 @@ namespace Velzon.Services.Service
             return jsonResponseModel;
         }
 
-        public CMSMenuResourceModel PageDeails(long Id)
-        {
-            try
-            {
-                Dictionary<string, object> dictionary = new Dictionary<string, object>();
-                dictionary.Add("p_pageid", Id);
-                var data = dapperConnection.GetListResult<CMSMenuResourceModel>("cmsGetPageDataFromPageName", CommandType.StoredProcedure, dictionary).FirstOrDefault();
-
-                return data;
-
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into cmsGetPageDataFromPageName", ex.ToString(), "CMSMenuResourceMasterService", "PageDeails");
-                return null;
-            }
-        }
-
         public JsonResponseModel UpdateStatus(long id, string username, int isActive)
         {
             JsonResponseModel jsonResponseModel = new JsonResponseModel();

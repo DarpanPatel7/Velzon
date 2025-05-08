@@ -11,6 +11,7 @@ namespace Velzon.Common
         public string FieldName { get; set; }
 
         public string? FieldType { get; set; }
+
         public string? StrTypeMessage { get; set; }
 
         public string? RegExVAlidation { get; set; }
@@ -22,13 +23,19 @@ namespace Velzon.Common
         public bool IsFormClickTab { get; set; } = false;
 
         public long? CharacterMinLength { get; set; }
+
         public long? CharacterMaxLength { get; set; }
+
         public string? StrMessage { get; set; }
 
         public long? TabNumber { get; set; }
+
         public long? TotalTabNumber { get; set; }
+
         public string? strTabName { get; set; }
+
         public string? FrontFormName { get; set; }
+
         public string? BackEndFormName { get; set; }
 
     }

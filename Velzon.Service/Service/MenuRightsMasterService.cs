@@ -120,28 +120,6 @@ namespace Velzon.Services.Service
             }
         }
 
-        public bool DeleteByRole(long id, out string strMessage)
-        {
-            bool isError = true;
-            strMessage = "";
-            try
-            {
-                Dictionary<string, object> dictionaryUserRole = new Dictionary<string, object>();
-                dictionaryUserRole.Add("UserRoleId", id);
-                dapperConnection.GetListResult<MenuResourceMasterModel>("cmsRemoveRoleMenuRightsByRoleId", CommandType.StoredProcedure, dictionaryUserRole).ToList();
-
-                strMessage = "Record removed successfully!";
-                isError = false;
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into cmsRemoveRoleMenuRightsByRoleId", ex.ToString(), "MenuRightsMasterService", "DeleteByRole");
-                strMessage = ex.Message;
-                isError = true;
-            }
-            return isError;
-        }
-
         public bool Insert(List<MenuRightsMasterModel> model, long lgRoleId, string strUsername, out string strMessage)
         {
             bool isError = true;

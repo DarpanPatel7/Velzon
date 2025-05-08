@@ -14,8 +14,6 @@ namespace Velzon.IService.Service
 
         List<DocumentModel> GetList(long lgLangId = 1);
 
-        List<DocumentModel> GetFeesDoc(long lgLangId = 1);
-
         JsonResponseModel Delete(long Doc_Id, string username);
 
         JsonResponseModel AddOrUpdate(DocumentModel model, string username);

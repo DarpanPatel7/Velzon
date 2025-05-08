@@ -62,25 +62,6 @@ namespace Velzon.Services.Service
             }
         }
 
-        public List<DocumentModel> GetFeesDoc(long lgLangId = 1)
-        {
-            try
-            {
-                Dictionary<string, object> dictionary = new Dictionary<string, object>();
-                dictionary.Add("pLanguageId", lgLangId);
-                var data = dapperConnection.GetListResult<DocumentModel>("cmsGetFeesDocument", CommandType.StoredProcedure, dictionary).ToList();
-                data.ForEach(x => {
-                    x.Doc_Id = (long)x.Doc_Id;
-                });
-                return data;
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into cmsGetFeesDocument", ex.ToString(), "DocumentService", "GetFeesDoc");
-                return null;
-            }
-        }
-
         public JsonResponseModel Delete(long Doc_Id, string username)
         {
             JsonResponseModel jsonResponseModel = new JsonResponseModel();

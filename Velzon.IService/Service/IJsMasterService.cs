@@ -17,6 +17,7 @@ namespace Velzon.IService.Service
         JsonResponseModel AddOrUpdate(JSMasterModel model, string username);
 
         JsonResponseModel Delete(long id, string username);
+
         List<JSMasterModel> JSMasterSiteData();
 
         JSMasterModel GetJSFileByName(string strFileName);

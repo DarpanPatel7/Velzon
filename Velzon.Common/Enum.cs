@@ -24,25 +24,16 @@ namespace Velzon.Common
         LettersWithWhiteSpace,
         [Description(@"^([\w\-\.\,]|([^\u0000-\u0080]*[^\u0000-\u0080]*))+$")]
         AlphanumericOnly,
-
         [Description(@"^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$")]
         Url,
 
-
-
         [Description(@"^([\w ]|([^\u0000-\u0080]+\s*[^\u0000-\u0080]+\s*))+$")]
         AlphanumericSpace,
-        
         [Description(@"^(?=[a-zA-Z0-9[()_\.,/]]*$)")]
         Alphanumericslash,
-
-
         [Description(@"^[a-zA-Z0-9]|([^\u0000-\u0080]*[^\u0000-\u0080]*)[\w\d\s-()_,./\\]*$")]
         TitleString,
         
-
-
-
         [Description(@"^[0-9]*$")]
         NumberOnly,
         [Description(@"^([0-9]*\.?[0-9]*)$")]
