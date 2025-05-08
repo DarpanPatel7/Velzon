@@ -8,6 +8,7 @@ using Velzon.Webs.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Web;
+using Velzon.Services.Service;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -61,16 +62,16 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         #endregion
 
         #region Save Method
-        [Route("/Admin/SaveGoiLogoMasterData")]
+        [Route("/Admin/SaveGoiLogoData")]
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<JsonResult> SaveGoiLogoMasterData(GoiFormModel objModel)
+        public async Task<JsonResult> SaveGoiLogoData(GoiFormModel objModel)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                    if (ValidGoiLogoData(objModel, ref objreturn))
-                    {
+                if (ValidGoiLogoData(objModel, ref objreturn))
+                {
                     if (ModelState.IsValid)
                     {
                         GoiLogoModel goiLogoModel = new GoiLogoModel();
@@ -190,8 +191,8 @@ namespace Velzon.Webs.Areas.Admin.Controllers
 
         #region Get Master Data
         [HttpPost]
-        [Route("/Admin/GetGoiLogoMasterData")]
-        public JsonResult GetGoiLogoMasterData()
+        [Route("/Admin/GetGoiLogoData")]
+        public JsonResult GetGoiLogoData()
         {
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
@@ -219,8 +220,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             JsonResponseModel objreturn = new JsonResponseModel();
             try
             {
-                //id = HttpUtility.UrlDecode(id).Replace('+', '-');
-                //langId = HttpUtility.UrlDecode(langId).Replace('+', '-');
                 if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(id)), out long lgid) && long.TryParse(Velzon.Common.Functions.FrontDecrypt(HttpUtility.UrlDecode(langId)), out long lgLangId))
                 {
                     objreturn.strMessage = "";
@@ -243,9 +242,9 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         #endregion
 
         #region Delete Data
-        [Route("/Admin/DeleteGoiLogoMasterData")]
+        [Route("/Admin/DeleteGoiLogoData")]
         [HttpPost]
-        public JsonResult DeleteGoiLogoMasterData(string id)
+        public JsonResult DeleteGoiLogoData(string id)
         {
             JsonResponseModel objreturn = new JsonResponseModel();
             try
@@ -279,6 +278,44 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             }
             return Json(objreturn);
         }
+
+        [Route("/Admin/UpdateGoiLogoStatus")]
+        [HttpPost]
+        public JsonResult UpdateGoiLogoStatus(string id, int isActive)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+                {
+                    if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                    {
+                        objreturn = goiLogoServices.UpdateStatus(lgid, UserModel.Username, isActive);
+                    }
+                    else
+                    {
+                        objreturn.strMessage = "You Don't have Rights to perform this action.";
+                        objreturn.isError = true;
+                        objreturn.type = PopupMessageType.error.ToString();
+                    }
+                }
+                else
+                {
+                    objreturn.strMessage = "Status not updated, Try again";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                objreturn.strMessage = "Status not updated, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+            return Json(objreturn);
+        }
+
         #endregion
         public IActionResult Index()
         {
