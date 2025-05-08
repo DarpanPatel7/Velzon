@@ -20,4 +20,9 @@
     {
         public string serch { get; set; }
     }
+
+    public class SearchMenuModel
+    {
+        public string Search { get; set; }
+    }
 }

@@ -1632,3 +1632,17 @@ function GetDateWithFormat(date, sep = '/') {
         return "-";
     }
 }
+
+$(document).on('keyup', '#search-options', async function () {
+    await safeAjax({
+        type: "POST",
+        url: ResolveUrl("/Admin/GetSearchData"),
+        data: { search: $(this).val() },
+        success: function (res) {
+            if (res && res.result && !res.isError) {
+                $("#search-result").empty();
+                $("#search-result").html(res.result);
+            }
+        }
+    });
+});

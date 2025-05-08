@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using Velzon.Services.Service;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -27,6 +28,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         private ICouchDBMasterService couchDBMasterService { get; set; }
         private IAccountService accountService { get; set; }
         private IUserMasterService userMasterService { get; set; }
+        private IAdminMenuMasterService adminMenuMasterService { get; set; }
 
         private Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
 
@@ -34,7 +36,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
 
         #region Controller Constructor
 
-        public HomeController(ILogger<HomeController> logger, IAccountService _accountService, IUserMasterService _userMasterService, ICouchDBMasterService _couchDBMasterService, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment, ISMTPMasterService _sMTPMasterService, IHttpClientFactory _httpClientFactory) : base(_httpClientFactory)
+        public HomeController(ILogger<HomeController> logger, IAccountService _accountService, IUserMasterService _userMasterService, ICouchDBMasterService _couchDBMasterService, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment, ISMTPMasterService _sMTPMasterService , IHttpClientFactory _httpClientFactory, IAdminMenuMasterService _adminMenuMasterService) : base(_httpClientFactory)
         {
             this.accountService = _accountService;
             this.userMasterService = _userMasterService;
@@ -42,6 +44,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             this.couchDBMasterService = _couchDBMasterService;
 
             _hostingEnvironment = hostingEnvironment;
+            adminMenuMasterService = _adminMenuMasterService;
         }
 
         public SessionUserModel UserDetails
@@ -132,6 +135,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
                 return Redirect(strReturnPath);
             }
         }
+        
         [IgnoreAntiforgeryToken]
         [Route("/Admin/DownloadFile")]
         public async Task<ActionResult> DownloadFile(string fileName)
@@ -823,10 +827,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         #region Change Password
 
         [Route("/Admin/ChangePassword")]
-        //public IActionResult ChangePassword()
-        //{
-        //    return View(new ChangePasswordFormModel());
-        //}
         public IActionResult ChangePassword()
         {
             ChangePasswordFormModel changePasswordModel = new ChangePasswordFormModel();
@@ -903,53 +903,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             }
         }
 
-        //public IActionResult ChangePassword(ChangePasswordModel changePasswordModel)
-        //{
-        //    JsonResponseModel objreturn = new JsonResponseModel();
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            string strError = "";
-        //            UserMasterModel userMasterModel = new UserMasterModel();
-        //            if (ValidateChangePassword(changePasswordModel, ref objreturn))
-        //            {
-        //                var mdl = userMasterService.AddOrUpdate(userMasterModel);
-        //                if (!mdl.isError)
-        //                {
-        //                    userMasterModel.Id = (int)UserModel.Id;
-        //                    userMasterModel.UserPassword = Functions.Decrypt(userMasterModel.UserPassword);
-        //                    userMasterModel.UserPassword=Functions.FrontEncrypt(userMasterModel.UserPassword);
-        //                    SessionUserModel objUserModel = new SessionUserModel();
-        //                    accountService.LogInValidation(userMasterModel.Username, userMasterModel.UserPassword, "", out objUserModel, out strError);
-        //                    UserModel = objUserModel;
-        //                    Functions.MessagePopup(this, "Password Updated Successfully..", PopupMessageType.success);
-        //                    return View();
-        //                }
-        //                else
-        //                {
-        //                    Functions.MessagePopup(this, mdl.strMessage, PopupMessageType.error);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Functions.MessagePopup(this, strError, PopupMessageType.error);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Functions.MessagePopup(this, "Form Details Are Not Valid.", PopupMessageType.error);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ErrorLogger.Error(" Controller Name => HomeController \n\r Action Name ChangeMyProfile \n\r Method => POST ", ex.ToString());
-        //        DapperConnection.ErrorLogEntry(ex.ToString(), "HomeController", "ChangeMyProfile", "Web", "");
-        //        return RedirectToAction("Logout", "Account");
-        //    }
-        //    return View();
-        //}
-
         private bool ValidateChangePassword(ChangePasswordFormModel ChangePasswordFormModel, ref JsonResponseModel objreturn)
         {
             bool allow = false;
@@ -1013,75 +966,6 @@ namespace Velzon.Webs.Areas.Admin.Controllers
 
             return allow;
         }
-
-        //private bool ValidateChangePassword(ChangePasswordModel changePasswordModel, ref UserMasterModel userMasterModel, out string strError)
-        //{
-        //    bool isError = true;
-        //    strError = "";
-        //    userMasterModel.Id = UserModel.Id;
-
-        //    var mdl = userMasterService.Get(UserModel.Id);
-        //    userMasterModel.RoleId = mdl.RoleId;
-        //    userMasterModel.Username = UserModel.Username;
-        //    userMasterModel.FirstName = UserModel.FirstName;
-        //    userMasterModel.LastName = UserModel.LastName;
-        //    userMasterModel.Email = UserModel.Email;
-        //    userMasterModel.PhoneNo = UserModel.PhoneNo;
-        //    userMasterModel.CreatedBy = UserModel.Username;
-
-        //    changePasswordModel.OldPassword = Functions.FrontDecrypt(changePasswordModel.OldPassword);
-        //    changePasswordModel.NewPassword = Functions.FrontDecrypt(changePasswordModel.NewPassword);
-        //    changePasswordModel.ConfirmPassword = Functions.FrontDecrypt(changePasswordModel.ConfirmPassword);
-
-        //    Regex rxValidate = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$");
-
-        //    if (string.IsNullOrWhiteSpace(changePasswordModel.OldPassword))
-        //    {
-        //        strError = "Please Enter Old Password.";
-        //        return false;
-        //    }
-        //    else if (changePasswordModel.OldPassword != Functions.Decrypt(mdl.UserPassword))
-        //    {
-        //        strError = " Enter Old Password is wrong.";
-        //        return false;
-        //    }
-        //    if (string.IsNullOrWhiteSpace(changePasswordModel.NewPassword))
-        //    {
-        //        strError = "Please Enter New Password.";
-        //        return false;
-        //    }
-        //    else if(!rxValidate.IsMatch(changePasswordModel.NewPassword))
-        //    {
-        //        strError = "Minimum eight and maximum 30 characters, at least one uppercase letter, one lowercase letter, one number and one special character..";
-        //        return false;
-        //    }
-        //    else if (changePasswordModel.NewPassword == Functions.Decrypt(mdl.UserPassword))
-        //    {
-        //        strError = "Enter New Password is same as your Old Password.";
-        //        return false;
-        //    }
-
-        //    if (string.IsNullOrWhiteSpace(changePasswordModel.NewPassword))
-        //    {
-        //        strError = "Please Enter New Password";
-        //        return false;
-        //    }
-        //    else if (changePasswordModel.NewPassword != changePasswordModel.ConfirmPassword)
-        //    {
-        //        strError = "Enter New Password is same as your Confirm Password.";
-        //        return false;
-        //    }
-
-        //    changePasswordModel.OldPassword = Functions.Encrypt(changePasswordModel.OldPassword);
-
-        //    changePasswordModel.NewPassword = Functions.Encrypt(changePasswordModel.NewPassword);
-
-        //    changePasswordModel.ConfirmPassword = Functions.Encrypt(changePasswordModel.ConfirmPassword);
-
-        //    userMasterModel.UserPassword = changePasswordModel.ConfirmPassword;
-
-        //    return isError;
-        //}
 
         #endregion
 
@@ -1148,6 +1032,38 @@ namespace Velzon.Webs.Areas.Admin.Controllers
             return Json(response);
         }
 
+        #region Search
+
+        [HttpPost]
+        [Route("/Admin/GetSearchData")]
+        public JsonResult GetSearchData(string search)
+        {
+            JsonResponseModel objreturn = new JsonResponseModel();
+            try
+            {
+                SearchMenuModel menuItem = adminMenuMasterService.GetSearch(UserModel.RoleId, search);
+
+                if (menuItem.Search != null)
+                {
+                    objreturn.result = menuItem.Search;
+                    objreturn.isError = false;
+                }
+                else
+                {
+                    objreturn.result = null;
+                    objreturn.isError = false;
+                }
+
+                return Json(objreturn);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+                return Json("");
+            }
+        }
+
+        #endregion
 
         #endregion
     }

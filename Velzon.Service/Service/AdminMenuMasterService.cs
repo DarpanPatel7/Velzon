@@ -252,6 +252,22 @@ namespace Velzon.Services.Service
             return jsonResponseModel;
         }
 
+        public SearchMenuModel GetSearch(long roleid, string search)
+        {
+            try
+            {
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                dictionary.Add("pRoleId", roleid);
+                dictionary.Add("pSearchText", search);
+                return dapperConnection.GetListResult<SearchMenuModel>("cmsGetAllSearchedAdminMenu", CommandType.StoredProcedure, dictionary).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Error("Error Into cmsGetAllSearchedAdminMenu", ex.ToString(), "AdminMenuMasterService", "GetSearch");
+                return null;
+            }
+        }
+
         #endregion
 
         #region Disposing Method(s)

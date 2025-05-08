@@ -16,5 +16,7 @@ namespace Velzon.IService.Service
         JsonResponseModel SwapSequance(long rank, string dir, string username, string type, long parentid);
 
         JsonResponseModel UpdateStatus(long id, string username, int isActive = 0);
+
+        SearchMenuModel GetSearch(long roleid, string search);
     }
 }
