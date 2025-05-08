@@ -127,84 +127,27 @@ public class ProjectService : IProjectService
         return jsonResponseModel;
     }
 
-
-    public JsonResponseModel SwapSequance(long rank, string dir, string username)
+    public JsonResponseModel UpdateStatus(long id, string username, int isActive)
     {
         JsonResponseModel jsonResponseModel = new JsonResponseModel();
-
-        using (var transactionScope = new TransactionScope())
+        try
         {
-            try
-            {
-                var getDetails = GetList();
+            Dictionary<string, object> dictionary = new Dictionary<string, object>();
+            dictionary.Add("pId", id);
+            dictionary.Add("pIsActive", isActive);
+            dictionary.Add("pUsername", username);
+            dapperConnection.GetListResult<UserMasterModel>("cmsUpdateStatusProjectMaster", CommandType.StoredProcedure, dictionary).ToList();
 
-                ProjectModel masterModel = getDetails.Where(x => x.ProjectRank == rank).FirstOrDefault();
-
-                var cuurentLevelList = getDetails.OrderBy(x => x.ProjectRank).ToList();
-
-                long minValue = cuurentLevelList.Min(x => x.ProjectRank);
-                long maxValue = cuurentLevelList.Max(x => x.ProjectRank);
-
-                long updateRank = 0;
-
-                if (dir == "up" && (rank - 1) < minValue)
-                {
-                    jsonResponseModel.strMessage = "This Menu already have min rank!";
-                    jsonResponseModel.isError = true;
-                    jsonResponseModel.type = PopupMessageType.error.ToString();
-                }
-                else if (dir == "down" && (rank + 1) > maxValue)
-                {
-                    jsonResponseModel.strMessage = "This Menu already have max rank!";
-                    jsonResponseModel.isError = true;
-                    jsonResponseModel.type = PopupMessageType.error.ToString();
-                }
-                else
-                {
-                    var indexList = cuurentLevelList.Select((x, i) => new
-                    {
-                        item = x,
-                        index = i
-                    }).ToList();
-
-                    foreach (var cuurentLevel in indexList)
-                    {
-                        if (dir == "up" && cuurentLevel.item.ProjectRank == rank)
-                        {
-                            updateRank = indexList.Where(x => x.index == (cuurentLevel.index - 1)).FirstOrDefault().item.ProjectRank;
-                            break;
-                        }
-                        else if (dir == "down" && cuurentLevel.item.ProjectRank == rank)
-                        {
-                            updateRank = indexList.Where(x => x.index == (cuurentLevel.index + 1)).FirstOrDefault().item.ProjectRank;
-                            break;
-                        }
-                    }
-
-
-                    ProjectModel masterupdateRankModel = getDetails.Where(x => x.ProjectRank == updateRank).FirstOrDefault();
-
-                    if (masterModel != null && masterupdateRankModel != null)
-                    {
-                        masterModel.ProjectRank = updateRank;
-                        masterupdateRankModel.ProjectRank = rank;
-                        jsonResponseModel = AddOrUpdate(masterModel);
-                        jsonResponseModel = AddOrUpdate(masterupdateRankModel);
-
-                        jsonResponseModel.strMessage = "Data Swap Successfully";
-
-                        transactionScope.Complete();
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error("Error Into SwapSequance", ex.ToString(), "CMSMenuMasterService", "SwapSequance");
-                jsonResponseModel.strMessage = ex.Message;
-                jsonResponseModel.isError = true;
-                jsonResponseModel.type = PopupMessageType.error.ToString();
-            }
+            jsonResponseModel.strMessage = "Record updated successfully!";
+            jsonResponseModel.isError = false;
+            jsonResponseModel.type = PopupMessageType.success.ToString();
+        }
+        catch (Exception ex)
+        {
+            ErrorLogger.Error("Error Into cmsUpdateStatusProjectMaster", ex.ToString(), "ProjectService", "UpdateStatus");
+            jsonResponseModel.strMessage = ex.Message;
+            jsonResponseModel.isError = true;
+            jsonResponseModel.type = PopupMessageType.error.ToString();
         }
         return jsonResponseModel;
     }

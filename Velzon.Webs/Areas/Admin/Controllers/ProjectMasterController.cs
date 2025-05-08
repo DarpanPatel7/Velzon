@@ -6,6 +6,7 @@ using Velzon.Webs.Areas.Admin.Models;
 using Velzon.Webs.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using Velzon.Services.Service;
 
 namespace Velzon.Webs.Areas.Admin.Controllers;
 
@@ -56,7 +57,7 @@ public class ProjectMasterController : BaseController<ProjectMasterController>
     }
 
 
-    [Route("Admin/SaveProject")]
+    [Route("Admin/SaveProjectData")]
     [DisableRequestSizeLimit]
     [HttpPost]
 
@@ -67,7 +68,7 @@ public class ProjectMasterController : BaseController<ProjectMasterController>
 
         try
         {
-            if (ValidBannerData(projectMasterModel, ref response))
+            if (ValidProjectData(projectMasterModel, ref response))
             {
                 if (ModelState.IsValid)
                 {
@@ -174,9 +175,9 @@ public class ProjectMasterController : BaseController<ProjectMasterController>
 
     }
 
-    [Route("/Admin/GetProjectDataDetails")]
+    [Route("/Admin/GetProjectDetails")]
     [HttpPost]
-    public JsonResult GetProjectDataDetails(string id, string langId)
+    public JsonResult GetProjectDetails(string id, string langId)
     {
         JsonResponseModel objreturn = new JsonResponseModel();
         try
@@ -239,46 +240,7 @@ public class ProjectMasterController : BaseController<ProjectMasterController>
         return Json(objreturn);
     }
 
-    
-    [Route("/Admin/ProjectSwapDetails")]
-    [HttpPost]
-    public JsonResult ProjectSwapDetails(string rank, string dir)
-    {
-        JsonResponseModel objreturn = new JsonResponseModel();
-        try
-        {
-            dir = Velzon.Common.Functions.FrontDecrypt(dir);
-            if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(rank), out long lgid))
-            {
-                if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
-                {
-                    objreturn = projectService.SwapSequance(lgid, dir, UserModel.Username);
-                }
-                else
-                {
-                    objreturn.strMessage = "You Don't have Rights perform this action.";
-                    objreturn.isError = true;
-                    objreturn.type = PopupMessageType.error.ToString();
-                }
-            }
-            else
-            {
-                objreturn.strMessage = "Record not Swap, Try again";
-                objreturn.isError = true;
-                objreturn.type = PopupMessageType.error.ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
-            objreturn.strMessage = "Record not deleted, Try again";
-            objreturn.isError = true;
-            objreturn.type = PopupMessageType.error.ToString();
-        }
-        return Json(objreturn);
-    }
-
-    public bool ValidBannerData(ProjectMasterModel formmodel, ref JsonResponseModel objreturn)
+    public bool ValidProjectData(ProjectMasterModel formmodel, ref JsonResponseModel objreturn)
     {
         bool allow = true; // Start with true, and set to false if any validation fails
         try
@@ -365,6 +327,43 @@ public class ProjectMasterController : BaseController<ProjectMasterController>
         }
 
         return allow;
+    }
+
+    [Route("/Admin/UpdateProjectStatus")]
+    [HttpPost]
+    public JsonResult UpdateProjectStatus(string id, int isActive)
+    {
+        JsonResponseModel objreturn = new JsonResponseModel();
+        try
+        {
+            if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
+            {
+                if (Common.Functions.GetPageRightsCheck(HttpContext.Session).Update)
+                {
+                    objreturn = projectService.UpdateStatus(lgid, UserModel.Username, isActive);
+                }
+                else
+                {
+                    objreturn.strMessage = "You Don't have Rights to perform this action.";
+                    objreturn.isError = true;
+                    objreturn.type = PopupMessageType.error.ToString();
+                }
+            }
+            else
+            {
+                objreturn.strMessage = "Status not updated, Try again";
+                objreturn.isError = true;
+                objreturn.type = PopupMessageType.error.ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
+            objreturn.strMessage = "Status not updated, Try again";
+            objreturn.isError = true;
+            objreturn.type = PopupMessageType.error.ToString();
+        }
+        return Json(objreturn);
     }
 
 }

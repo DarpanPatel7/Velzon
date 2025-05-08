@@ -1,6 +1,6 @@
 ﻿@model CMSMenuResourceFrontModel
 @{
-    ViewData["Title"] = "CMS Menu Resource";
+    ViewData["Title"] = "CMS Menu Resource Master";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     var rightsModel = Functions.GetPageRightsCheck(Context.Session);
 }
@@ -13,12 +13,11 @@
 }
 
 @section Modals {
-    @* <script src="@Href("~/Admin/libs/CKEditor/ckeditor.js")"></script> *@
     <div id="addeditCMSMenuResourceModal" class="modal fade" tabindex="-1" aria-labelledby="mdlLabel" style="display: none;">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-light p-3">
-                    <h5 class="modal-title" id="mdlLabel">@ViewData["Title"] Form</h5>
+                    <h5 class="modal-title" id="mdlLabel">CMS Menu Resource Form</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -150,14 +149,14 @@
                 <div class="row g-4 align-items-center">
                     <div class="col-sm">
                         <div>
-                            <h5 class="card-title mb-0">@ViewData["Title"] List</h5>
+                            <h5 class="card-title mb-0">CMS Menu Resource List</h5>
                         </div>
                     </div>
                     <div class="col-sm-auto">
                         <div class="d-flex flex-wrap align-items-start gap-2">
                             @if (rightsModel.Insert)
                             {
-                                <button type="button" class="btn btn-success add-btn" id="addCMSMenuResource"><i class="ri-add-line align-bottom me-1"></i> Add New @ViewData["Title"]</button>
+                                <button type="button" class="btn btn-success add-btn" id="addCMSMenuResource"><i class="ri-add-line align-bottom me-1"></i> Add New CMS Menu Resource</button>
                             }
                         </div>
                     </div>

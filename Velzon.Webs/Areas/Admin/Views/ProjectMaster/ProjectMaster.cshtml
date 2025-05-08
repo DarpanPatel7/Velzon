@@ -1,222 +1,140 @@
 ﻿@model ProjectMasterModel
-
 @{
     ViewData["Title"] = "Project";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
     var rightsModel = Functions.GetPageRightsCheck(Context.Session);
 }
 
-@section Styles {
-    <style>
-        .modal-dialog {
-            max-width: 1007px;
-        }
-
-    </style>
+@section DataTableCssLoad {}
+@section DataTableJsLoad {}
+@section CkEditorJsLoad {}
+@section Scripts {
+    <script src="@Href("~/Admin/js/PageDetails/ProjectMaster/ProjectMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
 }
 
-<section class="basic-elements">
-    <div class="row">
-        <input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
-        <input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
-        <input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
-
-        <div class="col-md-12">
-            <div class="card card-outline-primary">
-                <div class="card-body collapse show">
-                    <div class="card-block card-dashboard">
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                @if (rightsModel.Insert)
-                                {
-                                    <button type="button" class="btn btn-outline-primary btn-round mr-2" id="btnAddNew">
-                                        <i class="fa fa-plus mr-1"></i>Add New @ViewData["Title"]
-                                    </button>
-                                }
+@section Modals {
+    <div id="addeditProjectModal" class="modal fade" tabindex="-1" aria-labelledby="mdlLabel" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light p-3">
+                    <h5 class="modal-title" id="mdlLabel">Project Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addeditProjectForm" action="@Url.Content("~/Admin/SaveProjectData")" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" value="0"/>
+                        <input type="hidden" asp-for="ProjectMasterId" value="0"/>
+                        <input type="hidden" asp-for="FilePath" value=""/>
+                        <div class="row gx-3 gy-2">
+                            <div class="col-md-4">
+                                <label asp-for="LanguageId" class="form-label">Language<span style="color:red">*</span></label>
+                                <select class="form-select" asp-for="LanguageId">
+                                    <option value="">--Select Language--</option>
+                                </select>
+                                <span asp-validation-for="LanguageId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ProjectName" class="form-label">Project Name<span style="color:red">*</span></label>
+                                <input type="text" asp-for="ProjectName" class="form-control" placeholder="Enter Project Name">
+                                <span asp-validation-for="ProjectName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="ProjectDate" class="form-label">Project Date<span style="color:red">*</span></label>
+                                <input type="text" data-provider="flatpickr" data-date-format="d M, Y" asp-for="ProjectDate" class="form-control pickadate" placeholder="Enter Project Date">
+                                <span asp-validation-for="ProjectDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="MetaTitle" class="form-label">Meta Title</label>
+                                <input type="text" asp-for="MetaTitle" class="form-control" placeholder="Enter Meta Title">
+                                <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-5">
+                                <label asp-for="MetaDescription" class="form-label">Meta Description</label>
+                                <input type="text" asp-for="MetaDescription" class="form-control" placeholder="Enter Meta Description">
+                                <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Location" class="form-label">Location</label>
+                                <input type="text" asp-for="Location" class="form-control" placeholder="Enter Location">
+                                <span asp-validation-for="Location" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="IsActive" class="form-label">Status</label>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" asp-for="IsActive" />
+                                    <label class="form-check-label" for="IsActive">Is Active</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label asp-for="Description" class="form-label">Description Details<span style="color:red">*</span></label>
+                                <textarea rows="5" cols="12" asp-for="Description" class="form-control" placeholder="Enter Achievements Details"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                                <script type="text/javascript">
+                                    CKEDITOR.dtd.$removeEmpty['i'] = false;
+                                    var editor = CKEDITOR.replace('Description', {
+                                        extraPlugins: 'tableresize',
+                                        allowedContent: true,
+                                        startupMode: 'source'
+                                    });
+                                </script>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="File" class="form-label">Upload Document</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" asp-for="File" aria-label="Upload" accept="image/*">
+                                    <a class="input-group-text" href="#" title="View" target="_Target" id="ViewfileIF"><i class="ri-eye-fill align-bottom me-2 text-muted"></i></a>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table display nowrap Table-Responsive table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="tbldata">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Date</th>
-                                            <th>Is Active</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addeditProjectSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<input type="hidden" id="frmPageUpdate" value="@rightsModel.Update.ToString().ToLower()" />
+<input type="hidden" id="frmPageDelete" value="@rightsModel.Delete.ToString().ToLower()" />
+<input type="hidden" id="frmPageView" value="@rightsModel.View.ToString().ToLower()" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header border-bottom-dashed">
+                <div class="row g-4 align-items-center">
+                    <div class="col-sm">
+                        <div>
+                            <h5 class="card-title mb-0">Project List</h5>
+                        </div>
+                    </div>
+                    <div class="col-sm-auto">
+                        <div class="d-flex flex-wrap align-items-start gap-2">
+                            @if (rightsModel.Insert)
+                            {
+                                <button type="button" class="btn btn-success add-btn" id="addProject"><i class="ri-add-line align-bottom me-1"></i> Add New @ViewData["Title"]</button>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-@section Scripts {
-    <script src="@Href("~/Admin/CKEditor/ckeditor.js")"></script>
-
-
-    <script src="@Href("~/Admin/js/PageDetails/ProjectMaster/ProjectMaster.js?dt="+DateTime.Now.ToString("ddMMyyyyfffttfff"))"></script>
-
-    <div class="modal fade text-left" id="mdlAddNew" role="dialog" aria-labelledby="myModalLabel9" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h4 class="modal-title text-white" id="myModalLabel9">@ViewData["Title"] Form</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="frmAddEdit" autocomplete="off">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="ProjectMasterId" />
-                        <input type="hidden" asp-for="FilePath" />
-                        <div class="form-group mt-2">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label asp-for="LanguageId" class="control-label">Language<span style="color:red">*</span></label>
-                                        <select class="form-control" asp-for="LanguageId">
-                                            <option value="">--Select Language--</option>
-                                        </select>
-                                        <span asp-validation-for="LanguageId" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                @* <div class="col-md-3">
-                            <div class="form-group">
-                            <label asp-for="TypeId" class="control-label">Type<span style="color:red">*</span></label>
-                            <select class="form-control" asp-for="TypeId">
-                            <option value="0">--Select Type--</option>
-                            <option value="1">Scheme</option>
-                            <option value="2">Project</option>
-                            </select>
-                            <span asp-validation-for="TypeId" class="text-danger"></span>
-                            </div>
-                            </div> *@
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label asp-for="ProjectName" class="control-label">Project Name<span style="color:red">*</span></label>
-                                        <input type="text" asp-for="ProjectName" class="form-control border-primary" placeholder="Enter Project Name">
-                                        <span asp-validation-for="ProjectName" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3" id="Date">
-                                    <div class="form-group">
-                                        <label for="ProjectDate" class="control-label">Project Date<span style="color:red">*</span></label>
-                                        <input type="text" asp-for="ProjectDate" class="form-control border-primary datepicker" placeholder="Enter Project Date">
-                                        <span for="ProjectDate" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label asp-for="MetaTitle" class="control-label">Meta Title</label>
-                                        <input type="text" asp-for="MetaTitle" class="form-control border-primary" placeholder="Enter Meta Title">
-                                        <span asp-validation-for="MetaTitle" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label asp-for="MetaDescription" class="control-label">Meta Description</label>
-                                        <input type="text" asp-for="MetaDescription" class="form-control border-primary" placeholder="Enter Meta Description">
-                                        <span asp-validation-for="MetaDescription" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label asp-for="Location" class="control-label">Location</label>
-                                        <input type="text" asp-for="Location" class="form-control border-primary" placeholder="Enter Location">
-                                        <span asp-validation-for="Location" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                @* <div class="col-md-6">
-                            <div class="form-group">
-                            <label asp-for="BlogBy" class="control-label">Scheme By</label>
-                            <input type="text" asp-for="BlogBy" class="form-control border-primary" placeholder="Enter Scheme By">
-                            <span asp-validation-for="BlogBy" class="text-danger"></span>
-                            </div>
-                            </div>*@
-                                <div class="col-md-3 mt-1">
-                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                                        <br />
-                                        <input type="checkbox" class="custom-control-input" asp-for="IsActive" />
-                                        <label class="custom-control-label float-left" asp-for="IsActive">Is Active</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label asp-for="Description" class="control-label">Description Details<span style="color:red">*</span></label>
-                                        <textarea rows="5" cols="12" asp-for="Description" class="form-control border-primary" placeholder="Enter Achievements Details"></textarea>
-                                        <span asp-validation-for="Description" class="text-danger"></span>
-                                        <script type="text/javascript">
-                                            CKEDITOR.dtd.$removeEmpty['i'] = false;
-                                            var editor = CKEDITOR.replace('Description', {
-                                                extraPlugins: 'tableresize',
-                                                allowedContent: true,
-                                                startupMode: 'source'
-                                            });
-                                        </script>
-                                    </div>
-                                </div>
-                            </div>
-                            @*  <div class="row">
-                        <div class="col-md-4 mt-1">
-                        <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                        <label asp-for="File" class="control-label">File</label>
-                        <input type="file" name="File" asp-for="File" />
-                        </div>
-                        </div>
-
-
-                        </div>*@
-
-                        </div>
-
-                        <div class=" ">
-
-
-                            @Html.AntiForgeryToken()
-
-                            <input type="hidden" id="RowIndex" name="RowIndex" value="0" />
-                            <input type="hidden" id="Command" name="Command" value="0" />
-                            <input type="hidden" id="ImagePath" name="ImagePath" value="" />
-
-                            <div class="form-group row">
-                                <div class="col-md-8 mt-1">
-                                    <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0">
-                                        <label for="File" class="control-label">Upload File<span style="color:red">*</span></label><br />
-                                        <input type="file" asp-for="File" accept="image/*" required />
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </form>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn grey btn-outline-secondary btn-round" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Close</button>
-                    <button type="button" class="btn btn-outline-primary btn-round" id="btnMdlSave"><i class="fa fa-check mr-1"></i>Save</button>
-                </div>
+            <div class="card-body">
+                <table class="table table-striped table-bordered scroll-horizontal w-100 text-center nowrap dataTable no-footer" id="datatableProject" data-url="@Url.Content("~/Admin/GetProjectData")">
+                    <thead class="table-light">
+                        <tr class="text-uppercase">
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Is Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
-
-}
+</div>
