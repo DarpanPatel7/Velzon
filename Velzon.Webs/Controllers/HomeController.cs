@@ -29,7 +29,6 @@ namespace Velzon.Webs.Controllers
         protected readonly ICommonService objCommonService;
         private readonly IConfiguration _configuration;
         private readonly IProjectService projectService;
-        private readonly IServiceRateService serviceRateService;
         public long LanguageId
         {
             get
@@ -52,7 +51,7 @@ namespace Velzon.Webs.Controllers
 
         #region Controller Constructor
 
-        public HomeController(IDocumentServices _objDocumentService, IGlobleSerchService _objSerchServices, ICMSTemplateMasterService _objCMSTemplateMasterService, ICMSMenuMasterService _adminMenuMasterService, ICMSMenuResourceMasterService _menuResourceMasterService, IMinisterServices _objMinisterServices, IBannerService _objBannerService, IHttpClientFactory _httpClientFactory, IGoiLogoServices _objGoiLogoServices, INewsMasterService _objNewsMasterService, IPopupServices _objPopupServices, IStatisticServices _objstatisticService, IConfiguration configuration, ICommonService _objCommonService, IProjectService projectService, IServiceRateService serviceRateService)
+        public HomeController(IDocumentServices _objDocumentService, IGlobleSerchService _objSerchServices, ICMSTemplateMasterService _objCMSTemplateMasterService, ICMSMenuMasterService _adminMenuMasterService, ICMSMenuResourceMasterService _menuResourceMasterService, IMinisterServices _objMinisterServices, IBannerService _objBannerService, IHttpClientFactory _httpClientFactory, IGoiLogoServices _objGoiLogoServices, INewsMasterService _objNewsMasterService, IPopupServices _objPopupServices, IStatisticServices _objstatisticService, IConfiguration configuration, ICommonService _objCommonService, IProjectService projectService)
         {
             objCMSMenuMasterService = _adminMenuMasterService;
             objMenuResourceMasterService = _menuResourceMasterService;
@@ -69,7 +68,6 @@ namespace Velzon.Webs.Controllers
             objCommonService = _objCommonService;
             _configuration = configuration;
             this.projectService = projectService;
-            this.serviceRateService = serviceRateService;
         }
 
         #endregion
@@ -385,45 +383,6 @@ namespace Velzon.Webs.Controllers
             return Json("");
         }
 
-        [HttpPost]
-        [Route("/GetServiceRate")]
-        public JsonResult GetServiceRate()
-        {
-
-			JsonResponseModel objreturn = new JsonResponseModel();
-			try
-			{
-				List<ServiceRateModel> serviceList = serviceRateService.GetList(LanguageId).ToList();
-
-				if (serviceList.Count() == 0)
-				{
-					serviceList = serviceRateService.GetList(1).OrderBy(x => x.ServiceRank).ToList();
-				}
-				if (serviceList.Count() > 0)
-				{
-					objreturn.result = serviceList.Where(x => x.IsActive == true).OrderBy(x => x.ServiceRank);
-					objreturn.isError = false;
-				}
-
-				else
-				{
-					objreturn.isError = false;
-
-				}
-			}
-			catch (Exception ex)
-			{
-				ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
-				objreturn.strMessage = "Record not Found, Try again";
-				objreturn.isError = true;
-				objreturn.type = PopupMessageType.error.ToString();
-			}
-
-			return Json(objreturn);
-
-
-		}
-
         [Route("/GetNews")]
         public JsonResult GetNews()
         {
@@ -538,29 +497,6 @@ namespace Velzon.Webs.Controllers
                     if (model == null)
                     {
                         model = projectService.Get(lgid, 1);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorLogger.Error(ex.Message, ex.ToString(), ControllerContext.ActionDescriptor.ControllerName, ControllerContext.ActionDescriptor.ActionName, ControllerContext.HttpContext.Request.Method);
-            }
-            return View(model);
-        }
-
-        public IActionResult ServiceRateDetails(string id)
-        {
-            ServiceRateModel model = new ServiceRateModel();
-            try
-            {
-                if (long.TryParse(Velzon.Common.Functions.FrontDecrypt(id), out long lgid))
-                {
-                    model = serviceRateService.Get(lgid, LanguageId);
-
-                    // If model is null, call the service with LanguageId = 1
-                    if (model == null)
-                    {
-                        model = serviceRateService.Get(lgid, 1);
                     }
                 }
             }
