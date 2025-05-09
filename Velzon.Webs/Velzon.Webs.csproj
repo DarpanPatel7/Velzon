@@ -76,7 +76,6 @@
   <ItemGroup>
     <Compile Include="Common\CustomResultFilterAttribute.cs" />
     <Compile Include="Common\Functions.cs" />
-    <Compile Include="Common\MyMiddleware.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,14 +1,12 @@
 ﻿<!doctype html>
 <html class="no-js" lang="en">
 @{
-    @using Microsoft.AspNetCore.Http;
     @inject IHttpContextAccessor HttpContextAccessor;
     @using System.Text.Json;
 
     long LangId = 1;
     try
     {
-        // Check if the session value for "LanguageId" is not null before deserializing
         var langIdSession = HttpContextAccessor.HttpContext.Session.Get("LanguageId");
         if (langIdSession != null)
         {
@@ -16,15 +14,11 @@
         }
         else
         {
-            // If session is null or empty, set default value
             Velzon.Common.SessionWrapper.Set<long>(HttpContextAccessor.HttpContext.Session, "LanguageId", 1);
             LangId = 1;
         }
     }
-    catch (Exception ex)
-    {
-       
-    }
+    catch (Exception ex) { }
 }
 
 <head>
@@ -107,40 +101,7 @@
                                  <a href="#skipdata" id="Skiptomain">Skip to main Content</a>
                             </div>
                             <div class="pbmit-pre-header-right" id="dvHeader">
-                                @* <ul class="pbmit-top-links">
-                                    <li>
-                                        <ul class="pbmit-social-links">
-                                            <li class="pbmit-social-li pbmit-social-facebook ">
-                                                <a href="#" target="_blank" title="Home">
-                                                    <span>
-                                                        <i class="fa fa-home"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li class="pbmit-social-li pbmit-social-twitter ">
-                                                <a href="#" target="_blank" title="Feedback">
-                                                    <span>
-                                                        <i class="fa fa-envelope"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li class="pbmit-social-li pbmit-social-instagram ">
-                                                <a href="#" target="_blank" title="Contact us">
-                                                    <span>
-                                                        <i class="fa fa-phone"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            <li class="pbmit-social-li pbmit-social-youtube ">
-                                                <a href="#" target="_blank" title="Sitemap">
-                                                    <span>
-                                                        <i class="fa fa-sitemap"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul> *@
+                                
                             </div>
 
                             <div class="pbmit-pre-header-right">
@@ -152,8 +113,7 @@
                                 <div class="side-nav">
                                     <div class="dropdown nav-flag-dropdown">
                                         <select class="goog-te-combo" id="langId">
-                                            @* <option value="1">English</option>
-                                            <option value="2">Gujarati</option> *@
+                                            
                                         </select>
                                     </div>
                                 </div>
@@ -164,24 +124,7 @@
                 <div class="headersub" id="bkMainLogo">
                     <div class="container">
                         <div class="d-flex align-items-center justify-content-between" id="dvMainLogo">
-                            @* <div class="site-branding">
-                                <a href="#">
-                                    <img class="logo-img" src="images/header/logowithouttitle.png" alt="#">
-                                </a>
-                                <div class="logotitle">
-                                    <h5>Gujarat Mineral Research & Development Soceity</h5>
-                                    <p>
-                                        Industries & Mines Department<br />Commisioner of
-                                        Geology & Mining, Gandhinagar<br />Govt.of Gujarat
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="pbmit-header-info d-flex align-items-center">
-
-                                <a href="#" class="pbmit-btn pbmit-btn-outline loginbtn">
-                                    <span>Login</span>
-                                </a>
-                            </div> *@
+                            
                         </div>
                     </div>
                 </div>
@@ -212,87 +155,7 @@
                                                                 @Html.Raw(stringData)
                                                             }
                                                         }
-                                                        @* <li class=" active"><a href="#">Home</a></li>
-                                                        <li class="dropdown">
-                                                            <a href="#">About Us</a>
-                                                            <ul>
-                                                                <li><a href="#">Introduction</a></li>
-                                                                <li><a href="#">Mission & Vision</a></li>
-                                                                <li><a href="#">Objectives</a></li>
-                                                                <li><a href="#">Organizational Chart</a></li>
-                                                                <li><a href="#">Activities</a></li>
-                                                                <li><a href="#">Future Plan</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="dropdown">
-                                                            <a href="#">Projects</a>
-                                                            <ul>
-                                                                <li><a href="#">Laboratory</a></li>
-                                                                <li><a href="#">KGCMP</a></li>
-                                                                <li><a href="#">System Audit</a></li>
-                                                                <li><a href="#">Mineral Exploration</a></li>
-                                                                <li><a href="#">Geo - Parks</a></li>
-
-                                                            </ul>
-                                                        </li>
-                                                        <li class="dropdown">
-                                                            <a href="#">At Your Service</a>
-                                                            <ul>
-                                                                <li><a href="#">Testing Rates</a></li>
-                                                                <li><a href="#">Registration</a></li>
-                                                                <li><a href="#">Reports</a></li>
-                                                                <li class="dropdown">
-                                                                    <a href="#">Opportunities</a>
-                                                                    <ul>
-                                                                        <li><a href="#">Testing Rates</a></li>
-                                                                        <li><a href="#">Registration</a></li>
-                                                                        <li><a href="#">Reports</a></li>
-                                                                        <li class="dropdown">
-                                                                            <a href="#">Opportunities</a>
-                                                                            <ul>
-                                                                                <li><a href="#">Testing Rates</a></li>
-                                                                                <li><a href="#">Registration</a></li>
-                                                                                <li><a href="#">Reports</a></li>
-                                                                                <li><a href="#">Opportunities</a></li>
-                                                                            </ul>
-                                                                        </li>
-                                                                    </ul>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="dropdown">
-                                                            <a href="#">Media Corner</a>
-                                                            <ul>
-                                                                <li><a href="#">Photo Gallery</a></li>
-                                                                <li><a href="#">Video Gallery</a></li>
-                                                                <li><a href="#">News & Events</a></li>
-                                                                <li><a href="#">Publication</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="dropdown">
-                                                            <a href="#">E-Citizen</a>
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        Right to
-                                                                        Information
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">Acts & Rules</a>
-                                                                </li>
-
-                                                                <li>
-                                                                    <a href="#">
-                                                                        Government
-                                                                        Resolution
-                                                                    </a>
-                                                                </li>
-                                                                <li><a href="#">FAQs</a></li>
-                                                                <li><a href="#">Downloads</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li><a href="#">Contact Us</a></li> *@
+                                                        
                                                     </ul>
                                                 </div>
                                             </div>
@@ -314,103 +177,7 @@
             <div class="pbmit-footer-widget-area">
                 <div class="container">
                     <div class="row" id="dvFooter">
-                        @* <div class="col-lg-4">
-                            <div class="pbmit-first-widget pbmit-widget">
-                                <div class="footer-logo">
-                                    <h5>GUJARAT MINERAL RESEARCH & DEVELOPMENT SOCIETY</h5>
-                                </div>
-                                <p class="text">
-                                    We are the leaders in the building industries and factories. We’re wordl
-                                    wide. We never give up on the challenges.
-                                </p>
-                                <div class="pbmit-free-call-box">
-                                    <i class="pbmit-base-icon-phone-call"></i>
-                                    <div class="pbmit-call-text">
-                                        Talk To Our Support
-                                        <h3>079-23271010</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="pbmit-two-widget pbmit-widget">
-                                <h2 class="widget-title">Importamt Links</h2>
-                                <div class="menu-services-menu-container">
-                                    <ul id="menu-services-menu_1" class="menu">
-                                        <li id="menu-item-11" class="menu-item">
-                                            <a href="#">Terms & Conditions</a>
-                                        </li>
-                                        <li id="menu-item-22" class="menu-item">
-                                            <a href="#">Privacy Policy</a>
-                                        </li>
-                                        <li id="menu-item-33" class="menu-item">
-                                            <a href="#">Copyright Policy</a>
-                                        </li>
-                                        <li id="menu-item-44" class="menu-item">
-                                            <a href="#">Hyperlinking Policy</a>
-                                        </li>
-                                        <li id="menu-item-55" class="menu-item">
-                                            <a href="#">Disclaimer</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="pbmit-two-widget pbmit-widget">
-                                <h2 class="widget-title">Quick Links</h2>
-                                <div class="menu-services-menu-container">
-                                    <ul id="menu-services-menu_1" class="menu">
-                                        <li id="menu-item-11" class="menu-item">
-                                            <a href="#">Project</a>
-                                        </li>
-                                        <li id="menu-item-22" class="menu-item">
-                                            <a href="#">Registration</a>
-                                        </li>
-                                        <li id="menu-item-33" class="menu-item">
-                                            <a href="#">News</a>
-                                        </li>
-                                        <li id="menu-item-44" class="menu-item">
-                                            <a href="#">Feedback</a>
-                                        </li>
-                                        <li id="menu-item-55" class="menu-item">
-                                            <a href="#">Testing Rates</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="pbmit-three-widget pbmit-widget">
-                                <h2 class="widget-title">Address</h2>
-                                <div class="f-item address">
-                                    <ul>
-                                        <li>
-                                            <i class="fas fa-map"></i>
-                                            <p>
-                                                <span>
-                                                    Petrography & Mineral Chemistry Laboratory
-                                                    Nr. P.D.P.U, near Solar Park
-                                                    Puri Foundation, Raysan, Gandhinagar
-                                                </span>
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <i class="fas fa-envelope"></i>
-                                            <p>
-                                                <span>
-                                                    <a href="mailto:exe@gujarat.gov.in,">exemple@gujarat.gov.in,</a>
-                                                </span>
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <i class="fas fa-mobile-alt"></i>
-                                            <p> <span>079-23271010</span></p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div> *@
+                        
                     </div>
                 </div>
             </div>
@@ -545,26 +312,6 @@
             items: 3,
         })
     </script>
-
-    @*<script>
-        Fancybox.bind('[data-fancybox="gallery"]', {
-            Toolbar: {
-                display: {
-                    left: ["infobar"],
-                    middle: [
-                        "zoomIn",
-                        "zoomOut",
-                        "toggle1to1",
-                        "rotateCCW",
-                        "rotateCW",
-                        "flipX",
-                        "flipY",
-                    ],
-                    right: ["slideshow", "thumbs", "close"],
-                },
-            },
-        });
-    </script> *@
     <!-- Hidden Template Start -->
     @* <div id="dvHiddenTemplate">
     </div> *@
