@@ -13,6 +13,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 DapperConnection.isDevlopment = true;
+
 #region Connection string read
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 Configuration = config.Build();
@@ -61,12 +62,6 @@ builder.Services.AddCors(options => {
 });
 
 // Configure application cookie settings for authentication
-/*builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure cookies are sent over HTTPS
-    options.Cookie.SameSite = SameSiteMode.Strict; // or SameSiteMode.Lax as required
-});*/
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -155,9 +150,6 @@ app.Use(async (context, next) =>
 
 #endregion
 
-
-//app.UseHealthChecks("/Account/DBStatus");
-
 app.UseResponseCaching();
 
 app.UseStatusCodePages();
@@ -179,7 +171,6 @@ app.UsePathBase("/velzon");
 
 
 app.UseStaticFiles(new StaticFileOptions()
-
 {
     OnPrepareResponse = x =>
     {
@@ -200,6 +191,24 @@ app.UseStaticFiles(new StaticFileOptions()
             Environment.NewLine + "Requested:" + requested + Environment.NewLine +
 
             "On disk: ");*/
+        }
+    }
+});
+
+app.UseStatusCodePages(async context =>
+{
+    var requestPath = context.HttpContext.Request.Path;
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 404)
+    {
+        if (requestPath.StartsWithSegments("/Admin", StringComparison.OrdinalIgnoreCase))
+        {
+            response.Redirect("/Admin/Error/404");
+        }
+        else
+        {
+            response.Redirect("/Error/404");
         }
     }
 });

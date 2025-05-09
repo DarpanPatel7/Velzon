@@ -15,11 +15,11 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.Drawing;
 using System.Runtime.InteropServices;
-namespace Velzon.Webs.Controllers
+
+namespace Velzon.Webs.Areas.Admin.Controllers
 {
     public class AccountController : Controller
     {
-
         private IHttpClientFactory httpClientFactory { get; set; }
         private readonly ILogger<AccountController> _logger;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
@@ -46,7 +46,7 @@ namespace Velzon.Webs.Controllers
         #region Login
         public IActionResult Index()
         {
-            return View();
+            return View("~/Areas/Admin/Views/Account/Index.cshtml");
         }
 
         [HttpPost]
@@ -148,8 +148,7 @@ namespace Velzon.Webs.Controllers
                 ErrorLogger.Error(ex.Message, ex.ToString(), this.ControllerContext.ActionDescriptor.ControllerName, this.ControllerContext.ActionDescriptor.ActionName);
                 ModelState.Clear();
             }
-            return View();
-
+            return View("~/Areas/Admin/Views/Account/Index.cshtml");
         }
 
         #endregion
@@ -158,7 +157,7 @@ namespace Velzon.Webs.Controllers
 
         public IActionResult ForgetPassword()
         {
-            return View();
+            return View("~/Areas/Admin/Views/Account/ForgetPassword.cshtml");
         }
 
         [HttpPost]
@@ -236,7 +235,7 @@ namespace Velzon.Webs.Controllers
                 Functions.MessagePopup(this, "Message=> " + ex.Message + " InnerMessage=> " + ex.InnerException, PopupMessageType.error);
                 ErrorLogger.Error(ex.Message, ex.ToString(), this.ControllerContext.ActionDescriptor.ControllerName, this.ControllerContext.ActionDescriptor.ActionName);
             }
-            return View();
+            return View("~/Areas/Admin/Views/Account/ForgetPassword.cshtml");
         }
 
         private bool ValidateEmailExist(ForgetPasswordModel forgetPasswordModel, out string strError)
@@ -352,7 +351,7 @@ namespace Velzon.Webs.Controllers
             Response.Cookies.Delete("LoginCookie");
             this.HttpContext.Session.Remove("UserDetails");
             //this.HttpContext.Session.Clear();
-            return View();
+            return View("~/Areas/Admin/Views/Account/Logout.cshtml");
         }
 
         [Route("/GetCaptchaDetails")]

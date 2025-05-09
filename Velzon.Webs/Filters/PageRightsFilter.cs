@@ -37,7 +37,7 @@ namespace Velzon.Webs.Filters
                 var pageRight = Common.Functions.GetViewPageRights(userModel.RoleId, httpContext);
                 if (pageRight?.View == false)
                 {
-                    context.Result = new RedirectToActionResult("Dashboard", "Home", null);
+                    context.Result = new RedirectToActionResult("AccessDenied", "Error", new { area = "Admin" });
                 }
             }
             catch (Exception ex)
