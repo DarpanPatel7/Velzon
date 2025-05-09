@@ -39,6 +39,11 @@
                                 <input type="text" asp-for="Username" class="form-control" autocomplete="off" placeholder="Enter User Name">
                                 <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
+                            <div class="mt-2" id="noteUserPassword" style="display: none;">
+                                <small class="text-warning">
+                                    ⚠ Note: Leave the <strong>User Password</strong> field blank to keep the existing password.
+                                </small>
+                            </div>
                             <div class="col-md-4">
                                 <label asp-for="UserPassword" class="form-label">User Password<span style="color:red">*</span></label>
                                 <input type="password" asp-for="UserPassword" autocomplete="off" class="form-control validpassword" placeholder="Enter User Password">

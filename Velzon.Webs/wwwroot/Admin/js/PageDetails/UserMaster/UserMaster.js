@@ -71,6 +71,7 @@ $(function () {
 
     // open form modal
     $(document).on("click", "#add" + main, function () {
+        $("#noteUserPassword").hide();
         $('#Username').attr('readonly', false);
         $.resetForm('#addedit' + main + 'Form', {
             defaultValues: {
@@ -114,6 +115,7 @@ $(function () {
     $(document).on("click", ".edit" + main, async function () {
         let url = $(this).attr("data-url"); // Get edit URL
         let id = $(this).attr("data-id"); // Get edit id
+        $("#noteUserPassword").show();
         await safeAjax({
             url: url,
             type: "POST",
