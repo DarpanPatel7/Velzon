@@ -1,0 +1,68 @@
+﻿@model Velzon.Webs.Areas.Admin.Models.SiteFormModel
+@{
+    ViewData["Title"] = "Site Settings";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Basic form layout section start -->
+<section id="basic-form-layouts">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-wrap bar-success">
+                        <div class=row style="align-content:center;">
+                            <div class="col-lg-6">
+                                <h4 class="card-title" id="basic-layout-form">Change Site</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="SiteSettings" id="frmChangeSite" asp-area="Admin" method="post" asp-controller="Home" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row gx-3 gy-2">
+                            <div class="col-md-4">
+                                <label asp-for="SiteName">SiteName</label>
+                                <input type="text" asp-for="SiteName" class="form-control" placeholder="SiteName" />
+                                <span asp-validation-for="SiteName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SiteFaviconWhite" class="form-label">Site Favicon White<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" asp-for="SiteFaviconWhite" aria-label="Upload" accept="image/*">
+                                    <a class="input-group-text" href="#" title="View" target="_Target" id="ViewfileSiteFaviconWhite"><i class="ri-eye-fill align-bottom me-2 text-muted"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SiteFaviconDark" class="form-label">Site Favicon Dark<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" asp-for="SiteFaviconDark" aria-label="Upload" accept="image/*">
+                                    <a class="input-group-text" href="#" title="View" target="_Target" id="ViewfileSiteFaviconDark"><i class="ri-eye-fill align-bottom me-2 text-muted"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SiteLogoWhite" class="form-label">Site Logo White<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" asp-for="SiteLogoWhite" aria-label="Upload" accept="image/*">
+                                    <a class="input-group-text" href="#" title="View" target="_Target" id="ViewfileSiteLogoWhite"><i class="ri-eye-fill align-bottom me-2 text-muted"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SiteLogoDark" class="form-label">Site Logo Dark<span style="color:red">*</span></label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" asp-for="SiteLogoDark" aria-label="Upload" accept="image/*">
+                                    <a class="input-group-text" href="#" title="View" target="_Target" id="ViewfileSiteLogoDark"><i class="ri-eye-fill align-bottom me-2 text-muted"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <button type="submit" value="ChangeSite" class="btn btn-primary"><i class="icon-settings"></i> Save Setting</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

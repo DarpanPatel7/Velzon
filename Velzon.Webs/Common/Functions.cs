@@ -89,6 +89,7 @@ namespace Velzon.Webs.Common
             services.AddScoped<ICommonService, CommonService>();
             services.AddScoped<IUtilityService, UtilityService>();
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<PageRightsFilter>();
         }
         #region Admin Panel Breadcum
