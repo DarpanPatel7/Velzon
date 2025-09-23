@@ -1,6 +1,5 @@
 ﻿namespace Velzon.Model.CouchDB
 {
-
     public class CouchResponseModel
     {
         public bool ok { get; set; }

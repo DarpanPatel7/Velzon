@@ -1,5 +1,4 @@
-﻿
-namespace Velzon.Model.System
+﻿namespace Velzon.Model.System
 {
     public class CommonModel
     {

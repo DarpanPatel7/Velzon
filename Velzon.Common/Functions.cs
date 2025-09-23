@@ -1,21 +1,16 @@
-﻿
-using Velzon.IService.Service;
-using Velzon.Model.CouchDB;
-using Velzon.Model.System;
-using Velzon.Security;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using Velzon.Model.CouchDB;
+using Velzon.Model.System;
+using Velzon.Security;
 
 
 namespace Velzon.Common

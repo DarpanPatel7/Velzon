@@ -1,17 +1,10 @@
-﻿using Velzon.Model.CouchDB;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Runtime.Serialization.Json;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using Velzon.Model.CouchDB;
 
 namespace Velzon.Common
 {

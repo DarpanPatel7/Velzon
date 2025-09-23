@@ -1,8 +1,6 @@
-﻿
-using Dapper;
-using System.Data;
+﻿using Dapper;
 using MySql.Data.MySqlClient;
-using Velzon.Model.Service;
+using System.Data;
 
 namespace Velzon.Common
 {
