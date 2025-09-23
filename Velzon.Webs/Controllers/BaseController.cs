@@ -14,9 +14,7 @@ namespace Velzon.Webs.Controllers
         private ILogger<T> _logger;
         protected ILogger<T> Logger => _logger ?? (_logger = HttpContext.RequestServices.GetService<ILogger<T>>());
         protected IRoleMasterService _objIRoleMasterService { get; set; }
-        //protected IPayScalServices _objPayScalServices { get; set; }
         protected IRoleMasterService objIRoleMasterService => _objIRoleMasterService ?? (_objIRoleMasterService = HttpContext.RequestServices.GetService<IRoleMasterService>());
-        //protected IPayScalServices objPayScalServices => _objPayScalServices ?? (_objPayScalServices = HttpContext.RequestServices.GetService<IPayScalServices>());
         public SessionUserModel UserModel
         {
             get { return SessionWrapper.Get<SessionUserModel>(this.HttpContext.Session, "UserDetails"); }

@@ -10,9 +10,7 @@ namespace Velzon.Webs.Models
         public string Password { get; set; }
 
         public string Captcha { get; set; }
+
         public string? hfCaptcha { get; set; }
-
-        //public string Password { get; set; }
-
     }
 }

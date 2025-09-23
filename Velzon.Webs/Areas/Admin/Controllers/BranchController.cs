@@ -1,13 +1,12 @@
-﻿using Velzon.Common;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Web;
+using Velzon.Common;
 using Velzon.IService.Service;
 using Velzon.Model.Service;
 using Velzon.Model.System;
 using Velzon.Webs.Areas.Admin.Models;
 using Velzon.Webs.Controllers;
 using Velzon.Webs.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Web;
 
 namespace Velzon.Webs.Areas.Admin.Controllers
 {
@@ -18,7 +17,7 @@ namespace Velzon.Webs.Areas.Admin.Controllers
         #region Controller Variable
         private IBranchService BranchService { get; set; }
         public long LanguageId
-        {
+        { 
             get
             {
                 long Lang = 1;
