@@ -1,5 +1,4 @@
-﻿
-using Velzon.Common;
+﻿using Velzon.Common;
 using Velzon.Model.Service;
 using System.Data;
 using Velzon.IService.Service;

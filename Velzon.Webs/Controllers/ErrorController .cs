@@ -1,11 +1,4 @@
-﻿using Velzon.Common;
-using Velzon.IService.Service;
-using Velzon.Model.Service;
-using Velzon.Model.System;
-using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Velzon.Webs.Controllers
 {

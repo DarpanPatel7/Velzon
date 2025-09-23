@@ -1,13 +1,8 @@
-﻿using Velzon.Common;
+﻿using System.Data;
+using Velzon.Common;
 using Velzon.IService.Service;
 using Velzon.Model.Service;
 using Velzon.Model.System;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Velzon.Services.Service
 {
