@@ -1,5 +1,4 @@
-﻿
-namespace Velzon.Model.Service
+﻿namespace Velzon.Model.Service
 {
     //Document Model
     public class DocumentModel

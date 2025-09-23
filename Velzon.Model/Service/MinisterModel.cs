@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Velzon.Model.Service
+﻿namespace Velzon.Model.Service
 {
     public class MinisterModel
     {
@@ -21,8 +15,6 @@ namespace Velzon.Model.Service
         public string LastUpdateBy { get; set; }
         public string CreatedBy { get; set; }
         public long MinisterRank { get; set; }
-        //  public long MinisterSection { get; set; }
-        // public string SectionName { get; set; }
         public string? MetaTitle { get; set; }
         public string? MetaDescription { get; set; }
 

@@ -19,14 +19,6 @@
         public string? ApplicantPhoto { get; set; }
         public DateTime? UpdateDate { get; set; }
     }
-
-    /*public class ChangePasswordModel
-    {
-        public int Id { get; set; }
-        public string UserPassword { get; set; }
-        public string CreateBy { get; set; }
-
-    }*/
     public class AttmptOrLockModel
     {
         public int AttemptsLogin { get; set; }

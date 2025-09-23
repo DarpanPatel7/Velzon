@@ -11,14 +11,11 @@ public class ProjectModel
     public DateTime? ProjectDate { get; set; }
     public string? FileUpload { get; set; }
     public string? File { get; set; }
-
     public string? FilePath { get; set; }
     public bool IsActive { get; set; }
     public bool IsDelete { get; set; }
     public string? CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
-
-    //public DateTime CreatedDate{ get;set;}
     public string? Location { get; set; }
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }

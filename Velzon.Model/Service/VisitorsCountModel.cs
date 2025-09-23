@@ -1,6 +1,4 @@
-﻿
-
-namespace Velzon.Model.Service
+﻿namespace Velzon.Model.Service
 {
     public class VisitorsCountModel
     {
