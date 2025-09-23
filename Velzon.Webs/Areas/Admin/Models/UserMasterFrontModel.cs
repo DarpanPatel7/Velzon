@@ -1,6 +1,4 @@
-﻿using Velzon.Model.System;
-
-namespace Velzon.Webs.Areas.Admin.Models
+﻿namespace Velzon.Webs.Areas.Admin.Models
 {
     public class UserMasterFrontModel
     {

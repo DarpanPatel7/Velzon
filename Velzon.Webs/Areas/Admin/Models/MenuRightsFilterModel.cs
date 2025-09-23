@@ -1,6 +1,4 @@
-﻿
-using Velzon.Model.System;
-using System.ComponentModel.DataAnnotations;
+﻿using Velzon.Model.System;
 
 
 namespace Velzon.Webs.Areas.Admin.Models

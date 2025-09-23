@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Velzon.Webs.Areas.Admin.Models
+﻿namespace Velzon.Webs.Areas.Admin.Models
 {
     public class ChangePasswordModelOld
     {

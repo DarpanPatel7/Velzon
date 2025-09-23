@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Velzon.Webs.Areas.Admin.Models
+﻿namespace Velzon.Webs.Areas.Admin.Models
 
 {
     public class MinisterFormModel
